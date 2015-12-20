@@ -16,7 +16,7 @@
           "c": "violet",
           "a": 8,
           "b": [
-            "red",
+            "JOHNDELETEME!",
             {
               "a": 37
             },
@@ -51,8 +51,8 @@
           "violet",
           "blue",
           -43,
-          "!Deleted Object!",
-          "red"
+          "!DELETED OBJECT!",
+          "JOHNDELETEME!"
         ]
       },
       "d": {
@@ -61,7 +61,7 @@
         "d": "blue",
         "c": "blue",
         "h": "orange",
-        "b": "!Deleted Object!",
+        "b": "!DELETED OBJECT!",
         "g": 173,
         "f": [
           "orange",
@@ -83,7 +83,7 @@
           94,
           "yellow"
         ],
-        "d": "!Deleted Object!"
+        "d": "!DELETED OBJECT!"
       }
     },
     "b": [
@@ -111,14 +111,14 @@
               "orange",
               -17,
               192,
-              "red"
+              "JOHNDELETEME!"
             ],
             {
               "a": "violet"
             },
             "green",
-            "!Deleted Object!",
-            "!Deleted Object!"
+            "!DELETED OBJECT!",
+            "!DELETED OBJECT!"
           ],
           57,
           "violet"
@@ -177,7 +177,7 @@
             "g": 177,
             "f": "blue"
           },
-          "red",
+          "JOHNDELETEME!",
           "violet",
           96
         ],
@@ -186,10 +186,10 @@
         [
           {
             "a": [
-              "red",
-              "red",
+              "JOHNDELETEME!",
+              "JOHNDELETEME!",
               46,
-              "red"
+              "JOHNDELETEME!"
             ],
             "b": [
               "green",
@@ -214,7 +214,7 @@
             196
           ],
           "yellow",
-          "red",
+          "JOHNDELETEME!",
           {
             "a": [
               "green",
@@ -225,7 +225,7 @@
               39,
               -2,
               46,
-              "red",
+              "JOHNDELETEME!",
               54
             ]
           },
@@ -285,9 +285,9 @@
             },
             80
           ],
-          "!Deleted Object!"
+          "!DELETED OBJECT!"
         ],
-        "!Deleted Object!",
+        "!DELETED OBJECT!",
         {
           "e": {
             "c": 40,
@@ -321,7 +321,7 @@
         "orange",
         "violet",
         [
-          "red"
+          "JOHNDELETEME!"
         ],
         [
           "green",
@@ -358,7 +358,7 @@
           "blue",
           "green",
           65,
-          "red",
+          "JOHNDELETEME!",
           "green"
         ],
         "violet"
@@ -380,29 +380,29 @@
           49
         ],
         "orange",
-        "!Deleted Object!",
+        "!DELETED OBJECT!",
         "green",
         {
           "a": 170,
           "b": 32
         },
         [
-          "!Deleted Object!",
+          "!DELETED OBJECT!",
           [
             "yellow",
             36,
             "yellow",
             "violet",
             149,
-            "!Deleted Object!",
+            "!DELETED OBJECT!",
             69,
             "orange",
             19,
             [
               87,
-              "red",
+              "JOHNDELETEME!",
               167,
-              "red",
+              "JOHNDELETEME!",
               77,
               110
             ]
@@ -416,16 +416,16 @@
       ],
       [
         [
-          "red"
+          "JOHNDELETEME!"
         ],
         "violet"
       ],
       {
         "a": [
           [
-            "red",
+            "JOHNDELETEME!",
             83,
-            "!Deleted Object!",
+            "!DELETED OBJECT!",
             49,
             "green",
             "violet"
@@ -472,11 +472,11 @@
           ],
           -8,
           [
-            "red",
+            "JOHNDELETEME!",
             81,
             -11,
             "green",
-            "red",
+            "JOHNDELETEME!",
             "blue",
             "yellow",
             "blue",
@@ -495,78 +495,7 @@
       "orange"
     ],
     "a": [
-      {
-        "e": "blue",
-        "a": "violet",
-        "d": [
-          {
-            "a": "blue",
-            "b": 46
-          },
-          "violet",
-          72,
-          35,
-          61,
-          161
-        ],
-        "j": [
-          "green",
-          78,
-          144,
-          [
-            168,
-            [
-              "red",
-              77,
-              38,
-              "green",
-              "red"
-            ],
-            "green",
-            "yellow",
-            -8,
-            "yellow"
-          ],
-          190,
-          40,
-          "yellow",
-          17,
-          171
-        ],
-        "c": "!Deleted Object!",
-        "h": [
-          [
-            [
-              83,
-              "green",
-              69,
-              "red"
-            ],
-            "green",
-            155,
-            133
-          ],
-          106,
-          1,
-          "orange"
-        ],
-        "b": -41,
-        "g": {
-          "a": 27
-        },
-        "f": "red",
-        "i": {
-          "e": "green",
-          "c": "green",
-          "a": 182,
-          "g": "orange",
-          "b": "orange",
-          "d": [
-            "orange"
-          ],
-          "f": "orange"
-        }
-      },
+      "!DELETED OBJECT!",
       "yellow",
       "green",
       -26
@@ -575,13 +504,7 @@
       "e": [
         -32,
         -11,
-        {
-          "e": "red",
-          "c": "yellow",
-          "a": "!Deleted Object!",
-          "b": 143,
-          "d": "!Deleted Object!"
-        },
+        "!DELETED OBJECT!",
         58,
         [
           147
@@ -601,9 +524,9 @@
           }
         ],
         "a": [
-          "red",
-          "red",
-          "!Deleted Object!",
+          "JOHNDELETEME!",
+          "JOHNDELETEME!",
+          "!DELETED OBJECT!",
           "yellow",
           [
             "green",
@@ -612,7 +535,7 @@
             -40,
             149,
             "orange",
-            "!Deleted Object!"
+            "!DELETED OBJECT!"
           ],
           "blue",
           "yellow",
@@ -652,7 +575,7 @@
           "c": [
             94,
             "violet",
-            "red",
+            "JOHNDELETEME!",
             18,
             166,
             "yellow"
@@ -670,165 +593,10 @@
             "i": 119
           },
           "b": 144,
-          "d": "!Deleted Object!"
+          "d": "!DELETED OBJECT!"
         }
       },
-      "d": {
-        "e": {
-          "e": 140,
-          "a": "!Deleted Object!",
-          "d": [
-            "blue",
-            6
-          ],
-          "c": -29,
-          "h": "green",
-          "b": [
-            "violet",
-            106,
-            "violet",
-            "orange",
-            -38,
-            175
-          ],
-          "g": 54,
-          "f": [
-            177,
-            31,
-            "violet",
-            "yellow"
-          ],
-          "i": 185
-        },
-        "a": "green",
-        "d": [
-          111,
-          49,
-          "yellow",
-          "blue",
-          "orange",
-          {
-            "e": "yellow",
-            "a": "orange",
-            "d": "violet",
-            "j": "blue",
-            "c": "red",
-            "h": 88,
-            "b": -1,
-            "g": "red",
-            "f": "red",
-            "i": "!Deleted Object!"
-          },
-          64,
-          [
-            "violet",
-            [
-              "blue",
-              76,
-              "blue",
-              "red",
-              "red"
-            ],
-            [
-              "violet",
-              "blue",
-              "orange",
-              "yellow",
-              144
-            ],
-            185,
-            {
-              "a": 66,
-              "b": "orange"
-            },
-            199,
-            "green",
-            "green"
-          ],
-          14
-        ],
-        "c": {
-          "e": "green",
-          "a": "orange",
-          "d": {
-            "c": [
-              -23,
-              189,
-              -11,
-              "green",
-              "violet",
-              178,
-              -4,
-              "blue",
-              68,
-              "violet"
-            ],
-            "a": [
-              "orange",
-              "red"
-            ],
-            "b": "yellow",
-            "d": "yellow"
-          },
-          "j": {
-            "c": -33,
-            "a": "blue",
-            "b": "violet"
-          },
-          "c": 107,
-          "h": {
-            "e": -16,
-            "a": 174,
-            "d": {
-              "e": "orange",
-              "c": "green",
-              "a": -28,
-              "b": -30,
-              "d": 73
-            },
-            "j": "yellow",
-            "c": "orange",
-            "h": "orange",
-            "b": [
-              "blue",
-              "violet",
-              -4,
-              76,
-              "red",
-              "red"
-            ],
-            "g": 59,
-            "f": 12,
-            "i": 199
-          },
-          "b": {
-            "a": "green",
-            "b": 54
-          },
-          "g": "violet",
-          "f": 174,
-          "i": [
-            "orange",
-            41,
-            85,
-            "yellow",
-            "green",
-            25,
-            "red",
-            -20,
-            156,
-            143
-          ]
-        },
-        "h": "yellow",
-        "b": "red",
-        "g": 90,
-        "f": -37,
-        "i": {
-          "a": 146,
-          "b": "violet"
-        }
-      },
+      "d": "!DELETED OBJECT!",
       "j": "blue",
       "c": [
         1,
@@ -837,7 +605,7 @@
           -11,
           "green",
           66,
-          "red",
+          "JOHNDELETEME!",
           90,
           "green",
           "yellow",
@@ -877,18 +645,18 @@
           35,
           [
             122,
-            "red",
+            "JOHNDELETEME!",
             "yellow",
-            "!Deleted Object!",
+            "!DELETED OBJECT!",
             "blue",
             "orange",
             "violet"
           ],
           "violet",
-          "!Deleted Object!"
+          "!DELETED OBJECT!"
         ],
         [
-          "!Deleted Object!",
+          "!DELETED OBJECT!",
           {
             "a": 183,
             "b": 89
@@ -908,10 +676,10 @@
             -32,
             "orange",
             121,
-            "!Deleted Object!",
+            "!DELETED OBJECT!",
             97,
             7,
-            "red"
+            "JOHNDELETEME!"
           ],
           195,
           "blue",
@@ -923,7 +691,7 @@
       "i": [
         "violet",
         1,
-        "!Deleted Object!",
+        "!DELETED OBJECT!",
         "blue",
         128,
         147
@@ -942,7 +710,7 @@
           "a": [
             "violet",
             [
-              "red",
+              "JOHNDELETEME!",
               "violet",
               "orange",
               "yellow",
@@ -959,17 +727,17 @@
               "orange",
               31,
               144,
-              "red",
+              "JOHNDELETEME!",
               "yellow",
               73,
               "orange",
-              "red",
+              "JOHNDELETEME!",
               "green"
             ],
             [
               "green",
               -31,
-              "red"
+              "JOHNDELETEME!"
             ],
             "orange",
             "blue"
@@ -992,7 +760,7 @@
               125,
               185,
               "yellow",
-              "red",
+              "JOHNDELETEME!",
               152,
               89,
               -18,
@@ -1040,7 +808,7 @@
         129,
         67,
         {
-          "c": "!Deleted Object!",
+          "c": "!DELETED OBJECT!",
           "a": [
             "blue",
             "green",
@@ -1050,7 +818,7 @@
           "d": [
             60,
             "green",
-            "red",
+            "JOHNDELETEME!",
             126,
             [
               48,
@@ -1061,9 +829,9 @@
               "yellow",
               "green",
               150,
-              "red",
+              "JOHNDELETEME!",
               "violet",
-              "red",
+              "JOHNDELETEME!",
               "violet",
               59,
               -12
@@ -1089,7 +857,7 @@
             197,
             [
               "orange",
-              "red",
+              "JOHNDELETEME!",
               138,
               67,
               "orange",
@@ -1097,7 +865,7 @@
               2,
               "orange"
             ],
-            "red"
+            "JOHNDELETEME!"
           ]
         },
         "a": "violet",
@@ -1107,7 +875,7 @@
             "c": 171,
             "a": "yellow",
             "b": 191,
-            "d": "!Deleted Object!"
+            "d": "!DELETED OBJECT!"
           }
         },
         "d": [
@@ -1161,14 +929,14 @@
             198,
             -9,
             183,
-            "!Deleted Object!",
+            "!DELETED OBJECT!",
             "yellow",
             0
           ],
           "b": 58,
           "d": 33
         },
-        "red",
+        "JOHNDELETEME!",
         [
           125,
           23,
@@ -1189,13 +957,13 @@
             ],
             "violet",
             -1,
-            "red",
+            "JOHNDELETEME!",
             66,
             "blue"
           ],
           "green",
-          "red",
-          "red",
+          "JOHNDELETEME!",
+          "JOHNDELETEME!",
           [
             -31,
             "blue",
@@ -1221,7 +989,7 @@
               -27
             ],
             "green",
-            "!Deleted Object!",
+            "!DELETED OBJECT!",
             "yellow"
           ]
         ],
@@ -1229,10 +997,10 @@
         [
           59,
           158,
-          "!Deleted Object!"
+          "!DELETED OBJECT!"
         ],
         [
-          "red",
+          "JOHNDELETEME!",
           [
             31,
             [
@@ -1268,42 +1036,13 @@
       ],
       43,
       [
-        {
-          "e": "red",
-          "c": {
-            "e": [
-              "green",
-              -33,
-              11,
-              154,
-              "yellow",
-              -4
-            ],
-            "c": "yellow",
-            "a": [
-              7,
-              "orange",
-              "orange",
-              "yellow",
-              118,
-              169,
-              "red",
-              "blue"
-            ],
-            "b": "green",
-            "d": 114
-          },
-          "a": "!Deleted Object!",
-          "b": "green",
-          "d": 13,
-          "f": "yellow"
-        }
+        "!DELETED OBJECT!"
       ],
       [
         "blue",
         "violet",
         "orange",
-        "red",
+        "JOHNDELETEME!",
         {
           "e": "green",
           "a": [
@@ -1340,19 +1079,7 @@
           ],
           "d": 31,
           "c": "orange",
-          "h": {
-            "e": -45,
-            "a": "green",
-            "d": [
-              "violet"
-            ],
-            "c": "red",
-            "h": 105,
-            "b": 130,
-            "g": -36,
-            "f": "orange",
-            "i": "!Deleted Object!"
-          },
+          "h": "!DELETED OBJECT!",
           "b": -41,
           "g": {
             "e": 6,
@@ -1378,7 +1105,7 @@
           },
           "green",
           66,
-          "!Deleted Object!"
+          "!DELETED OBJECT!"
         ],
         [
           98,
@@ -1438,8 +1165,8 @@
           "a": 5,
           "d": 1,
           "c": 72,
-          "h": "!Deleted Object!",
-          "b": "!Deleted Object!",
+          "h": "!DELETED OBJECT!",
+          "b": "!DELETED OBJECT!",
           "g": -26,
           "f": [
             186,
@@ -1475,16 +1202,16 @@
           68,
           28,
           29,
-          "!Deleted Object!",
+          "!DELETED OBJECT!",
           38,
           28,
           65,
           {
             "e": -26,
             "c": [
-              "red",
+              "JOHNDELETEME!",
               132,
-              "red",
+              "JOHNDELETEME!",
               124,
               "yellow",
               115
@@ -1493,7 +1220,7 @@
             "g": "yellow",
             "b": "green",
             "d": -18,
-            "f": "!Deleted Object!"
+            "f": "!DELETED OBJECT!"
           }
         ],
         "a": "orange",
@@ -1511,16 +1238,16 @@
       [
         64,
         -20,
-        "!Deleted Object!",
-        "!Deleted Object!",
+        "!DELETED OBJECT!",
+        "!DELETED OBJECT!",
         [
           [
             104,
             99,
             "yellow",
             -13,
-            "red",
-            "!Deleted Object!",
+            "JOHNDELETEME!",
+            "!DELETED OBJECT!",
             -13,
             9
           ],
@@ -1530,7 +1257,7 @@
           [
             "green",
             [
-              "red",
+              "JOHNDELETEME!",
               188,
               "green",
               "green"
@@ -1581,7 +1308,7 @@
         "b": [
           "violet",
           "violet",
-          "!Deleted Object!",
+          "!DELETED OBJECT!",
           44,
           114,
           "yellow",
@@ -1615,15 +1342,15 @@
           "a": 46,
           "d": [
             50,
-            "red",
+            "JOHNDELETEME!",
             "violet",
             63,
-            "red",
+            "JOHNDELETEME!",
             56,
             -18,
             "orange",
             "violet",
-            "red"
+            "JOHNDELETEME!"
           ],
           "c": "blue",
           "h": {
@@ -1642,23 +1369,16 @@
         "a": "green",
         "d": [
           196,
-          {
-            "e": "!Deleted Object!",
-            "c": "red",
-            "a": 64,
-            "b": "orange",
-            "d": 179,
-            "f": 8
-          },
+          "!DELETED OBJECT!",
           "yellow",
           103,
           "violet",
-          "!Deleted Object!",
+          "!DELETED OBJECT!",
           -26
         ],
         "c": -19,
         "h": [
-          "red",
+          "JOHNDELETEME!",
           134,
           "green",
           "green",
@@ -1680,7 +1400,7 @@
         [
           [
             "orange",
-            "red"
+            "JOHNDELETEME!"
           ],
           [
             151,
@@ -1782,7 +1502,7 @@
               17,
               "violet",
               "green",
-              "red"
+              "JOHNDELETEME!"
             ],
             "i": 67
           },
@@ -1802,7 +1522,7 @@
             193,
             "orange",
             "orange",
-            "red",
+            "JOHNDELETEME!",
             39,
             44,
             43,
@@ -1814,23 +1534,13 @@
       ],
       "orange",
       [
-        "red",
+        "JOHNDELETEME!",
         "violet",
         "yellow",
         [
-          "red",
+          "JOHNDELETEME!",
           54,
-          {
-            "e": {
-              "a": 41,
-              "b": "violet"
-            },
-            "c": "red",
-            "a": "!Deleted Object!",
-            "b": 181,
-            "d": "violet",
-            "f": "green"
-          },
+          "!DELETED OBJECT!",
           49,
           "yellow"
         ],
@@ -1866,7 +1576,7 @@
             -26,
             -25,
             "blue",
-            "red",
+            "JOHNDELETEME!",
             108,
             169,
             [
@@ -1898,7 +1608,7 @@
               -47,
               "violet"
             ],
-            "red",
+            "JOHNDELETEME!",
             {
               "e": 97,
               "c": -21,
@@ -1912,7 +1622,7 @@
           ],
           {
             "a": [
-              "red",
+              "JOHNDELETEME!",
               "orange",
               "violet",
               "blue",
@@ -1922,7 +1632,7 @@
               "blue"
             ]
           },
-          "!Deleted Object!",
+          "!DELETED OBJECT!",
           "yellow",
           {
             "a": "orange"
@@ -1943,7 +1653,7 @@
             "green",
             -29
           ],
-          "red",
+          "JOHNDELETEME!",
           -9,
           [
             9,
@@ -1967,14 +1677,14 @@
             "blue"
           ]
         ],
-        "red",
+        "JOHNDELETEME!",
         {
-          "c": "!Deleted Object!",
+          "c": "!DELETED OBJECT!",
           "a": 22,
           "b": 24,
           "d": 33
         },
-        "red",
+        "JOHNDELETEME!",
         "violet",
         {
           "e": 181,
@@ -1994,19 +1704,19 @@
             [
               -3,
               28,
-              "red"
+              "JOHNDELETEME!"
             ],
             -21,
-            "red",
+            "JOHNDELETEME!",
             "violet",
             {
               "a": 180
             },
-            "red",
+            "JOHNDELETEME!",
             "blue",
             -15
           ],
-          "!Deleted Object!",
+          "!DELETED OBJECT!",
           "violet",
           158,
           "green",
@@ -2015,7 +1725,7 @@
         ],
         19
       ],
-      "red"
+      "JOHNDELETEME!"
     ],
     {
       "e": {
@@ -2031,7 +1741,7 @@
           ],
           {
             "a": "green",
-            "b": "!Deleted Object!"
+            "b": "!DELETED OBJECT!"
           }
         ],
         "a": "blue",
@@ -2039,7 +1749,7 @@
         "d": {
           "e": [
             "orange",
-            "red",
+            "JOHNDELETEME!",
             {
               "c": -19,
               "a": "green",
@@ -2049,7 +1759,7 @@
             "green",
             "orange",
             "orange",
-            "red",
+            "JOHNDELETEME!",
             "green"
           ],
           "a": "green",
@@ -2067,9 +1777,9 @@
               "green",
               109,
               59,
-              "red",
+              "JOHNDELETEME!",
               74,
-              "red",
+              "JOHNDELETEME!",
               "blue",
               "green"
             ],
@@ -2123,19 +1833,7 @@
         {
           "e": 11,
           "a": "green",
-          "d": {
-            "e": "!Deleted Object!",
-            "a": 183,
-            "d": [
-              -36,
-              "yellow"
-            ],
-            "c": "red",
-            "h": 71,
-            "b": "yellow",
-            "g": 2,
-            "f": "orange"
-          },
+          "d": "!DELETED OBJECT!",
           "c": "green",
           "h": "yellow",
           "b": 29,
@@ -2159,7 +1857,7 @@
               "yellow",
               "yellow",
               74,
-              "red",
+              "JOHNDELETEME!",
               163
             ],
             "b": 198,
@@ -2173,7 +1871,7 @@
       "d": "blue"
     },
     {
-      "c": "!Deleted Object!",
+      "c": "!DELETED OBJECT!",
       "a": -48,
       "b": "blue"
     }
@@ -2195,7 +1893,7 @@
       "orange",
       131,
       "yellow",
-      "!Deleted Object!",
+      "!DELETED OBJECT!",
       "blue"
     ],
     [
@@ -2235,34 +1933,7 @@
         112,
         "yellow"
       ],
-      "a": {
-        "e": 19,
-        "a": "orange",
-        "d": 61,
-        "c": "red",
-        "h": "blue",
-        "b": 164,
-        "g": "!Deleted Object!",
-        "f": 157,
-        "i": {
-          "e": "green",
-          "a": "orange",
-          "d": -8,
-          "j": [
-            159,
-            73,
-            182,
-            "red",
-            "green"
-          ],
-          "c": 13,
-          "h": "blue",
-          "b": "yellow",
-          "g": 186,
-          "f": "orange",
-          "i": 81
-        }
-      },
+      "a": "!DELETED OBJECT!",
       "d": 13,
       "c": [
         186,
@@ -2280,7 +1951,7 @@
           "blue",
           [
             119,
-            "red",
+            "JOHNDELETEME!",
             119,
             91,
             181
@@ -2289,17 +1960,17 @@
         ],
         -15,
         190,
-        "!Deleted Object!",
+        "!DELETED OBJECT!",
         "blue",
         -43
       ],
-      "h": "!Deleted Object!",
+      "h": "!DELETED OBJECT!",
       "b": [
         [
           -2,
           "violet",
           "violet",
-          "red",
+          "JOHNDELETEME!",
           {
             "a": 192
           },
@@ -2308,13 +1979,13 @@
         ],
         [
           "orange",
-          "red",
+          "JOHNDELETEME!",
           {
             "c": 62,
             "a": 52,
             "b": -45
           },
-          "!Deleted Object!",
+          "!DELETED OBJECT!",
           27,
           {
             "c": 37,
@@ -2326,7 +1997,7 @@
         "yellow",
         [
           "blue",
-          "red",
+          "JOHNDELETEME!",
           143
         ],
         "blue",
@@ -2339,9 +2010,9 @@
               8,
               149,
               141,
-              "red",
+              "JOHNDELETEME!",
               -28,
-              "red"
+              "JOHNDELETEME!"
             ],
             18
           ],
@@ -2366,7 +2037,7 @@
         73
       ],
       "g": [
-        "red",
+        "JOHNDELETEME!",
         {
           "a": {
             "e": 93,
@@ -2386,7 +2057,7 @@
   ],
   "g": [
     [
-      "red",
+      "JOHNDELETEME!",
       "orange",
       "orange",
       172,
@@ -2403,7 +2074,7 @@
         "a": "orange",
         "g": "yellow",
         "b": {
-          "e": "!Deleted Object!",
+          "e": "!DELETED OBJECT!",
           "c": "blue",
           "a": 178,
           "b": 154,
@@ -2413,7 +2084,7 @@
             190,
             "yellow",
             29,
-            "red",
+            "JOHNDELETEME!",
             "orange",
             "yellow",
             79,
@@ -2431,7 +2102,7 @@
           "h": {
             "e": 144,
             "c": [
-              "red",
+              "JOHNDELETEME!",
               "blue",
               "violet",
               15,
@@ -2510,11 +2181,11 @@
   "i": {
     "e": {
       "c": [
-        "!Deleted Object!",
+        "!DELETED OBJECT!",
         42,
         92,
         "violet",
-        "red",
+        "JOHNDELETEME!",
         [
           149,
           "green",
@@ -2541,7 +2212,7 @@
               "b": -16,
               "d": -18
             },
-            "!Deleted Object!",
+            "!DELETED OBJECT!",
             "blue"
           ],
           "f": {
@@ -2566,13 +2237,13 @@
             "yellow"
           ],
           "green",
-          "!Deleted Object!",
+          "!DELETED OBJECT!",
           "orange",
           184
         ],
         4,
         "yellow",
-        "red",
+        "JOHNDELETEME!",
         -24,
         {
           "c": "orange",
@@ -2591,196 +2262,14 @@
         [
           92,
           148,
-          "!Deleted Object!",
+          "!DELETED OBJECT!",
           "blue"
         ],
         -7,
         149
       ]
     },
-    "a": {
-      "e": {
-        "a": {
-          "e": "green",
-          "a": [
-            "violet",
-            172
-          ],
-          "d": -10,
-          "c": 42,
-          "h": "blue",
-          "b": 80,
-          "g": "!Deleted Object!",
-          "f": "violet"
-        },
-        "b": "orange"
-      },
-      "a": 182,
-      "d": {
-        "c": {
-          "a": 154
-        },
-        "a": "blue",
-        "b": {
-          "e": 31,
-          "a": [
-            "yellow",
-            "blue",
-            "red",
-            {
-              "a": "orange"
-            },
-            "red",
-            62,
-            39,
-            "red",
-            [
-              "green",
-              "orange",
-              "yellow",
-              47,
-              "orange",
-              55,
-              "blue"
-            ]
-          ],
-          "d": [
-            72,
-            187,
-            "red",
-            "orange",
-            59,
-            "yellow",
-            "violet",
-            "green"
-          ],
-          "j": "orange",
-          "c": "yellow",
-          "h": 185,
-          "b": {
-            "e": "blue",
-            "c": "violet",
-            "a": [
-              "orange",
-              7,
-              180,
-              150,
-              46,
-              "yellow",
-              176,
-              "orange"
-            ],
-            "b": 148,
-            "d": "blue"
-          },
-          "g": "blue",
-          "f": "yellow",
-          "i": 102
-        }
-      },
-      "c": "red",
-      "h": -9,
-      "b": 14,
-      "g": {
-        "a": "green",
-        "b": {
-          "c": -18,
-          "a": 81,
-          "b": 104
-        }
-      },
-      "f": [
-        [
-          {
-            "e": -33,
-            "c": "green",
-            "a": "orange",
-            "b": "blue",
-            "d": "blue"
-          },
-          "yellow",
-          141,
-          [
-            42,
-            197
-          ],
-          [
-            -12,
-            61,
-            {
-              "e": "violet",
-              "a": "violet",
-              "d": "green",
-              "c": -21,
-              "h": -5,
-              "b": "orange",
-              "g": 39,
-              "f": "green"
-            },
-            "blue"
-          ],
-          31,
-          [
-            [
-              101,
-              "blue",
-              -14,
-              "red",
-              88
-            ],
-            58,
-            [
-              "red",
-              "blue",
-              "violet",
-              34
-            ],
-            -14,
-            "yellow",
-            98,
-            106,
-            91,
-            131
-          ],
-          "yellow",
-          [
-            151,
-            "red",
-            "green",
-            {
-              "e": "violet",
-              "c": "green",
-              "a": 49,
-              "g": 155,
-              "b": 96,
-              "d": "blue",
-              "f": "orange"
-            },
-            -18,
-            184,
-            {
-              "c": "blue",
-              "a": 1,
-              "b": 162
-            },
-            "!Deleted Object!"
-          ],
-          38
-        ],
-        {
-          "c": {
-            "e": "blue",
-            "c": 90,
-            "a": "yellow",
-            "b": 142,
-            "d": "violet"
-          },
-          "a": -38,
-          "b": "violet"
-        }
-      ],
-      "i": 189
-    },
+    "a": "!DELETED OBJECT!",
     "d": "orange",
     "c": [
       [
@@ -2798,7 +2287,7 @@
           "c": 74,
           "a": {
             "e": "violet",
-            "a": "!Deleted Object!",
+            "a": "!DELETED OBJECT!",
             "d": 142,
             "j": "blue",
             "c": 173,
@@ -2841,14 +2330,14 @@
             "f": 63
           }
         },
-        "!Deleted Object!",
+        "!DELETED OBJECT!",
         [
           {
             "e": "violet",
             "a": 150,
             "d": 126,
             "c": 10,
-            "h": "!Deleted Object!",
+            "h": "!DELETED OBJECT!",
             "b": {
               "a": 25,
               "b": 147
@@ -2862,7 +2351,7 @@
             "d": -45,
             "c": 25,
             "h": "green",
-            "b": "!Deleted Object!",
+            "b": "!DELETED OBJECT!",
             "g": "green",
             "f": -24
           },
@@ -2876,9 +2365,9 @@
             "h": [
               "blue",
               "green",
-              "red",
+              "JOHNDELETEME!",
               142,
-              "red"
+              "JOHNDELETEME!"
             ],
             "b": [
               -43,
@@ -2913,326 +2402,7 @@
     "h": {
       "a": -11
     },
-    "b": {
-      "e": "violet",
-      "c": 174,
-      "a": "violet",
-      "g": [
-        "!Deleted Object!",
-        [
-          "green",
-          [
-            108
-          ],
-          {
-            "a": 4
-          },
-          [
-            182,
-            96,
-            29,
-            [
-              181,
-              14,
-              "yellow",
-              "violet"
-            ],
-            13,
-            "!Deleted Object!",
-            "!Deleted Object!",
-            "green",
-            "yellow",
-            57
-          ],
-          -44,
-          {
-            "a": 88,
-            "b": -3
-          },
-          22,
-          "!Deleted Object!"
-        ],
-        [
-          [
-            14,
-            "orange"
-          ]
-        ],
-        -36,
-        128,
-        "yellow",
-        [
-          -47,
-          [
-            -7,
-            36,
-            177
-          ],
-          "blue",
-          "blue",
-          [
-            "yellow",
-            "violet",
-            -23,
-            "violet",
-            -40,
-            "orange",
-            "!Deleted Object!"
-          ],
-          23,
-          [
-            -47,
-            [
-              133,
-              66,
-              "violet"
-            ],
-            177,
-            "violet",
-            "yellow",
-            "green",
-            159,
-            "yellow"
-          ]
-        ],
-        "!Deleted Object!",
-        [
-          [
-            19,
-            176,
-            174,
-            "orange",
-            "violet",
-            "violet",
-            105,
-            128,
-            "red"
-          ],
-          "!Deleted Object!",
-          [
-            "orange",
-            37,
-            187,
-            "green",
-            176
-          ],
-          "blue",
-          "red",
-          [
-            153,
-            "yellow",
-            "violet",
-            137,
-            "orange",
-            "blue",
-            [
-              70,
-              "red",
-              174,
-              "blue",
-              "green",
-              "yellow",
-              99,
-              "red"
-            ],
-            "violet",
-            "violet",
-            "red"
-          ]
-        ]
-      ],
-      "b": [
-        {
-          "c": 133,
-          "a": "orange",
-          "b": 98,
-          "d": "!Deleted Object!"
-        },
-        "blue",
-        [
-          155,
-          "yellow"
-        ],
-        [
-          [
-            "yellow",
-            -8,
-            {
-              "e": "blue",
-              "c": 59,
-              "a": 71,
-              "g": "orange",
-              "b": 88,
-              "d": "orange",
-              "f": 17
-            },
-            "blue",
-            -37
-          ],
-          {
-            "e": 82,
-            "c": "violet",
-            "a": 99,
-            "b": 81,
-            "d": "yellow",
-            "f": 161
-          },
-          "blue",
-          {
-            "c": -7,
-            "a": 154,
-            "b": "violet"
-          },
-          -9,
-          -13,
-          53,
-          "!Deleted Object!"
-        ]
-      ],
-      "d": {
-        "e": [
-          9,
-          [
-            49
-          ],
-          28,
-          "red",
-          {
-            "c": 23,
-            "a": 157,
-            "b": {
-              "c": "violet",
-              "a": "green",
-              "b": -11,
-              "d": "green"
-            },
-            "d": 139
-          },
-          "orange",
-          "green",
-          93,
-          44,
-          [
-            -19
-          ]
-        ],
-        "a": -6,
-        "d": 7,
-        "c": {
-          "e": {
-            "c": "violet",
-            "a": -21,
-            "b": 12
-          },
-          "c": [
-            "green",
-            [
-              -23,
-              -40,
-              157
-            ],
-            "red",
-            [
-              "orange",
-              "blue"
-            ],
-            "violet",
-            "red",
-            85,
-            "violet",
-            "yellow",
-            150
-          ],
-          "a": 162,
-          "g": "yellow",
-          "b": "green",
-          "d": [
-            "green",
-            "yellow",
-            181,
-            "green",
-            -2,
-            "!Deleted Object!",
-            "green",
-            "red",
-            -9,
-            "red"
-          ],
-          "f": 6
-        },
-        "h": {
-          "e": 136,
-          "a": "violet",
-          "d": [
-            "violet",
-            -15,
-            129,
-            "green",
-            5,
-            "green",
-            [
-              -28,
-              156,
-              141,
-              "blue",
-              22,
-              "green",
-              34
-            ],
-            "green"
-          ],
-          "c": 149,
-          "h": [
-            "violet"
-          ],
-          "b": 149,
-          "g": "green",
-          "f": 149
-        },
-        "b": {
-          "e": 123,
-          "a": "red",
-          "d": "!Deleted Object!",
-          "c": {
-            "e": "!Deleted Object!",
-            "a": "yellow",
-            "d": {
-              "e": -39,
-              "a": -11,
-              "d": 63,
-              "c": 179,
-              "h": 4,
-              "b": 44,
-              "g": "orange",
-              "f": "violet",
-              "i": "yellow"
-            },
-            "c": -43,
-            "h": "green",
-            "b": "violet",
-            "g": "blue",
-            "f": "yellow",
-            "i": 124
-          },
-          "h": 48,
-          "b": 129,
-          "g": [
-            "orange",
-            147,
-            174,
-            "blue",
-            "green",
-            115
-          ],
-          "f": 172,
-          "i": -36
-        },
-        "g": "red",
-        "f": 30,
-        "i": "violet"
-      },
-      "f": "red"
-    },
+    "b": "!DELETED OBJECT!",
     "g": {
       "e": {
         "e": [
@@ -3241,7 +2411,7 @@
             "orange",
             196,
             "orange",
-            "red",
+            "JOHNDELETEME!",
             {
               "e": 23,
               "a": "yellow",
@@ -3253,21 +2423,21 @@
               "f": 41,
               "i": 45
             },
-            "red",
+            "JOHNDELETEME!",
             "violet"
           ]
         ],
         "c": [
           [
-            "red",
+            "JOHNDELETEME!",
             103,
-            "!Deleted Object!"
+            "!DELETED OBJECT!"
           ],
           88,
           "green",
-          "red",
+          "JOHNDELETEME!",
           -29,
-          "red"
+          "JOHNDELETEME!"
         ],
         "a": 37,
         "b": "green",
@@ -3302,7 +2472,7 @@
           "orange",
           -36,
           49,
-          "red",
+          "JOHNDELETEME!",
           [
             "yellow",
             136,
@@ -3310,7 +2480,7 @@
             -10,
             11,
             "violet",
-            "red",
+            "JOHNDELETEME!",
             134,
             156,
             "violet"
@@ -3344,7 +2514,7 @@
         "c": {
           "c": [
             181,
-            "!Deleted Object!",
+            "!DELETED OBJECT!",
             4,
             "blue",
             70,
@@ -3367,7 +2537,7 @@
         ],
         "b": 26,
         "d": 11,
-        "f": "!Deleted Object!"
+        "f": "!DELETED OBJECT!"
       },
       "a": 148,
       "g": "yellow",
@@ -3407,7 +2577,7 @@
         },
         [
           "yellow",
-          "!Deleted Object!",
+          "!DELETED OBJECT!",
           70,
           {
             "c": "violet",
@@ -3416,7 +2586,7 @@
             "d": 36
           },
           128,
-          "!Deleted Object!",
+          "!DELETED OBJECT!",
           -10,
           6
         ]

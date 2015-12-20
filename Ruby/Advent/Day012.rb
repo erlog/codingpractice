@@ -1,7 +1,6 @@
 require "json"
 
 input = open("Day012-input.txt").read
-Output = open("Day012-output.txt", "w")
 
 #I hate Ruby so much
 class Integer; def to_bool; !self.zero?; end; end
@@ -17,47 +16,45 @@ end
 
 def prunered(chunk)
 	if chunk.is_a?(Fixnum)
-		return false
+		return chunk 
 
 	elsif chunk.is_a?(String) 
-		return (chunk == "red")
+		if (chunk == "red") 
+			return "JOHNDELETEME!"  
+		else
+			return chunk
+		end
 
 	elsif chunk.is_a?(Hash) 
+		newchunk = Hash.new
 		markfordeletion = false
 		chunk.each do |key, value| 
-			if prunered(value) then markfordeletion = true end
-		end
-		if markfordeletion then Output.write(chunk.to_json); Output.write("\n") end
+			check = prunered(value)	
+			(markfordeletion = true) unless (check != "JOHNDELETEME!" )
+			newchunk[key] = check
+ 		end
+		markfordeletion ? (return "!DELETED OBJECT!") : (return newchunk)
 
 	elsif chunk.is_a?(Array)
+		newchunk = []
 		chunk.each do |item| 
-			prunered(item) 
+			newchunk << prunered(item) 
 		end
-	else 
-		outtoconsole ["WHAT!", chunk.class]
+		return newchunk
 	end
 
-	return false
+	return chunk 
 end
 
 total = input.scan(/-?\d+/).map!(&:to_i).inject(:+)
 outtoconsole ["Part 1 Total", total]
+outtoconsole ["Part 1 Length", input.length]
 
 jsonchunks = JSON.parse(input)
 
-prunered(jsonchunks)
-Output.close
+pruned = prunered(jsonchunks)
 
-redobjectinput = open("Day012-output.txt", "r")
-for line in redobjectinput
-	line = line.strip
-	input = input.gsub(line, '"!Deleted Object!"')
-end
-
-
-output = open("Day012-output.txt", "w")
-output.write(JSON.pretty_generate(JSON.parse(input)))
-output.close
-
-total = input.scan(/-?\d+/).map!(&:to_i).inject(:+)
+total = pruned.to_json.scan(/-?\d+/).map!(&:to_i).inject(:+)
 outtoconsole ["Part 2 Total", total]
+outtoconsole ["Part 2 Length", pruned.to_json.length]
+

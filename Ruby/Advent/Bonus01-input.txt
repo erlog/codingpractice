@@ -1,0 +1,40 @@
+Arthur is Bald
+Arthur is Obese
+Arthur will upset guests who are Female
+Boris is Bald
+Boris is Religious
+Charlie is Obese
+Charlie will upset guests who are Married
+Dana is Female
+Dana is Gay
+Dana is Vegetarian
+Erica is Female
+Erica is Married
+Erica will upset guests who are Religious
+Frank is Noisy
+Frank will upset guests who are Gay
+George is Bald
+George is Noisy
+George will upset guests who are Obese
+Helen is Female
+Helen will upset guests who are Noisy
+Igor is Gay
+Igor will upset guests who are Vegetarian
+James is Religious
+James is Married
+James is Vegetarian
+Kevin will upset guests who are Bald
+Lucas is Married
+Lucas will upset guests who are Over 50
+Arthur age 29
+Boris age 34
+Charlie age 30
+Dana age 22
+Erica age 41
+Frank age 54
+George age 38
+Helen age 37
+Igor age 25
+James age 56
+Kevin age 49
+Lucas age 20
