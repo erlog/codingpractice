@@ -12,27 +12,53 @@ def outtoconsole(things)
 	print things.join(sep).to_s + "\n"
 end
 
-start = 29000000
+goal = 29000000
 
 #PART 1
-guess = 0 
+housenumber = 660000
 #665280
 max = 0
+
 while true
-	total = 0
-	(1..(guess/2)+1).each do |index|
-		if (guess % index == 0)
-			total += (index*10)
+	presents = 0
+	(1..(housenumber/2)+1).each do |elfnumber|
+		if (housenumber % elfnumber == 0) 
+			presents += (elfnumber * 10)
 		end
 	end
-	total += (guess * 10)
-	if total > max
-		max = total
-		outtoconsole [guess, total]
+	presents += (housenumber*10)
+	if presents > max
+		outtoconsole [housenumber, presents]
+		max = presents
 	end
-	if total >= start
-		quit()
+	if presents >= goal 
+		break
 	end
-	guess += 20
+	housenumber += 20
 end
 
+outtoconsole ["Part 1 Finished!", housenumber]
+
+#PART 2
+housenumber = housenumber-1000 
+#705600
+max = 0
+while true
+	presents = 0
+	(1..(housenumber/2)+1).each do |elfnumber|
+		if (housenumber % elfnumber == 0) & (housenumber <= (elfnumber*50))
+			presents += (elfnumber * 11)
+		end
+	end
+	presents += (housenumber*11)
+	if presents > max
+		outtoconsole [housenumber, presents]
+		max = presents
+	end
+	if presents >= goal 
+		break
+	end
+	housenumber += 20
+end
+
+outtoconsole ["Part 2 Finished!", housenumber]
