@@ -50,14 +50,15 @@ def bytearraytobase64(bytearray)
 end
 
 def base64tobytearray(base64string)
-	bytearray = []
+	binarychunks = []
 	base64string.split("").each do |char| 
-		bytearray << Base64Symbols.index(char).to_s(2)
+		binarychunks << Base64Symbols.index(char).to_s(2).rjust(6, "0")
 	end
 
-	bytearray = bytearray.join
+	binarychunks = binarychunks.join.split("").each_slice(8).to_a
+	
 
-	return bytearray
+	return binarychunks.map!{ |chunk| chunk.join.to_i(2) }
 end
 
 def fixedxor(bytearray, xorbytes)

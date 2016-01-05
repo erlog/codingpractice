@@ -8,6 +8,6 @@ inputb = "wokka wokka"
 
 puts hammingdistance(stringtobytearray(inputa), stringtobytearray(inputb))
 
-b64test = "SSdtIGtpbGxpbmcgeW91ciBicmFpbiBsaWtlIGEgcG9pc29ub3VzIG11c2hyb29t"
+b64test = "YW55IGNhcm5hbCBwbGVhc3VyZQ=="
 
 puts bytearraytostring(base64tobytearray(b64test))
