@@ -182,7 +182,7 @@ def findbestxorbyte(bytearray)
 	bestxorbyte = 0 
 	bestscore = 0
 
-	(1..256).each do |xorbyte|
+	(1..255).each do |xorbyte|
 		xorredstring = bytearraytostring(singlebytexor(bytearray, xorbyte))
 
 		score = scorestring(xorredstring)
@@ -240,8 +240,9 @@ def decryptAES128ECB(inputbytes, keybytes)
 		decipherblock = decryptAES128ECBblock(block, keybytes)
 		outputblocks << decipherblock
 	end
-
-	return outputblocks.flatten
+	
+	outputbytes = outputblocks.flatten
+	outputbytes = outputbytes[0..(outputbytes[-1]*-1)-1]
 end
 
 def encryptAES128ECBblock(inputblock, keybytes)
@@ -252,19 +253,19 @@ def encryptAES128ECBblock(inputblock, keybytes)
 	cipher.padding = 0
 	return stringtobytearray(cipher.update(input) + cipher.final)
 end
-	
+
 def encryptAES128ECB(inputbytes, keybytes)
-	blocks = inputbytes.each_slice(16).to_a
+	blocks = padbytearraywithPKCS7(inputbytes, 16).each_slice(16).to_a
 	outputblocks = []
 
 	blocks.each do |block|
 		cipherblock = encryptAES128ECBblock(block, keybytes)
 		outputblocks << cipherblock
 	end
-
-	return outputblocks.flatten
+	
+	return outputblocks.flatten 
 end
-
+	
 def decryptAES128CBC(inputbytes, keybytes, ivbytes)
 	blocks = inputbytes.each_slice(16).to_a
 
@@ -285,7 +286,7 @@ def encryptAES128CBC(inputbytes, keybytes, ivbytes)
 	previouscipherblock = ivbytes
 	outputblocks = []
 
-	inputbytes.each_slice(16) do |block|
+	padbytearraywithPKCS7(inputbytes, 16).each_slice(16) do |block|
 		xorblock = fixedxor(block, previouscipherblock)
 		cipherblock = encryptAES128ECBblock(xorblock, keybytes)
 		previouscipherblock = cipherblock

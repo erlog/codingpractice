@@ -1,14 +1,22 @@
 require_relative 'cryptopals'
 
-input = "A"*256 
+input = "A"*128 
+
+outputs = []
 
 def metrics(bytearray, outputstring)
-	puts outputstring
+	print outputstring
 	blocks = bytearray.each_slice(16).to_a
-	blocks.each do |block| print block; puts end
+	if blocks[2] == blocks[3]
+		puts "ECB!"
+	else
+		puts "CBC!"
+	end
 end
 
 encryptedbytes = encryptionoracle(input.bytes, 1)
-metrics(encryptedbytes, "CBC: ")
+metrics(encryptedbytes, "CBC check: ")
 encryptedbytes = encryptionoracle(input.bytes, 0)
-metrics(encryptedbytes, "ECB: ")
+metrics(encryptedbytes, "ECB check: ")
+
+puts "Success if those match properly."
