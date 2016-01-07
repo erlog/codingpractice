@@ -11,6 +11,13 @@ def padbytearraywithPKCS7(bytearray, blocklength)
 	return bytearray
 end
 
+def checkPKCS7padding(inputbytes)
+	padlength = inputbytes[-1]
+	properpadding = Array.new(padlength){padlength}
+	realpadding = inputbytes[(padlength*-1)..-1]
+	(realpadding == properpadding) ? (return true) : (return false)
+end
+
 def transposebytearray(bytearray, numberofstrips)
 	transposedbytes = Array.new(numberofstrips){ Array.new() }
 	bytearray.each_slice(numberofstrips) do |slice|
@@ -296,7 +303,7 @@ def encryptAES128CBC(inputbytes, keybytes, ivbytes)
 	return outputblocks.flatten
 end
 
-def encryptionoracle(inputbytes, mode)
+def encryptionoracle(inputbytes, mode=rand(2))
 	keybytes = randombytearray(16)
 	ivbytes = randombytearray(16)
 

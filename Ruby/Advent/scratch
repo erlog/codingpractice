@@ -1,0 +1,19 @@
+dagger = 0.5dmg/gold
+short = 0.5dmg/gold
+warhammer = 0.231/gold
+longsword = 0.175/gold
+greataxe = 0.11/gold
+
+leather = 0.077/gold
+chainmail = 0.065/gold
+splintmail = 0.056/gold
+bandedmail = 0.053/gold
+plate = 0.049/gold
+
++1 dmg = 0.04/gold
++2 dmg = 0.04/gold
++3 dmg = 0.03/gold
+
++1 ac = 0.05/gold
++2 ac = 0.05/gold
++3 ac = 0.0375/gold
