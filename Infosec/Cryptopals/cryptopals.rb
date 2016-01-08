@@ -122,6 +122,7 @@ def repeatingkeyxor(bytearray, xorbytes)
 	return output
 end
 
+#These next few are various heuristics for brute-forcing xorred plaintext
 def averagestring(string)
 	bytearray = string.bytes
 	return (bytearray.inject(:+).to_f/bytearray.length)
@@ -156,6 +157,9 @@ def scorestring(string)
 
 		wordlength = (string.length / string.split(" ").length.to_f)
 		score -= (distancefromaveragewordlength(wordlength))
+
+		#punctuation = string.scan(/[[:punct:]]/).length
+		#score -= punctuation
 
 		return score
 	end
@@ -230,6 +234,9 @@ def findrepeatingkeyxorkey(transposedbytes)
 	return key
 end
 
+#actual implementations of encryption functions
+#versions of functions labeled 'block' do no padding
+
 def decryptAES128ECBblock(inputblock, keybytes)
 	input, key = bytearraytostring(inputblock), bytearraytostring(keybytes) 
 	decipher = OpenSSL::Cipher::AES.new(128, 'ECB')
@@ -249,6 +256,7 @@ def decryptAES128ECB(inputbytes, keybytes)
 	end
 	
 	outputbytes = outputblocks.flatten
+	#(outputbytes[-1]*-1)-1 <--removes padding
 	outputbytes = outputbytes[0..(outputbytes[-1]*-1)-1]
 end
 
@@ -303,6 +311,31 @@ def encryptAES128CBC(inputbytes, keybytes, ivbytes)
 	return outputblocks.flatten
 end
 
+def generateAES128CTRkeystream(keybytes, nonce, numberofbytes)
+	numberofblocks = (numberofbytes/16)+1
+	counter = 0
+
+	keystreamblocks = []
+	numberofblocks.times do 
+		inputbytes = [nonce, counter].pack("QQ").bytes
+		keystreamblocks << encryptAES128ECBblock(inputbytes, keybytes)
+		counter += 1
+	end
+
+	return keystreamblocks.flatten[0..numberofbytes-1]
+end
+
+def encryptAES128CTR(inputbytes, keybytes, nonce)
+	keystream = generateAES128CTRkeystream(keybytes, nonce, inputbytes.length)
+	return fixedxor(inputbytes, keystream)
+end
+
+def decryptAES128CTR(inputbytes, keybytes, nonce)
+	#we're just xorring against the keystream so it doesn't 
+	#matter if we're xorring it to encrypt or decrypt
+	return encryptAES128CTR(inputbytes, keybytes, nonce)
+end
+
 def encryptionoracle(inputbytes, mode=rand(2))
 	keybytes = randombytearray(16)
 	ivbytes = randombytearray(16)
@@ -324,5 +357,57 @@ def testoutput(output, validoutput)
 		puts("SUCCESS!")
 	else
 		puts("FAILURE!")
+	end
+end
+
+class MT19937
+	def initialize(seed)
+		#initialize the index to 0
+		@index = 624
+		@mt = Array.new(624){0}
+		@mt[0] = seed
+		(1..@mt.length-1).each do |i|
+			prev = @mt[i - 1]
+			@mt[i] = self.truncate(0x6c078965	* (prev ^ prev >> 30) + i)
+		end
+	end
+	
+	def truncate(number)
+		return 0xFFFFFFFF & number 
+	end
+
+	def extractnumber
+		if @index >= 624 then self.twist end
+		
+		number = @mt[@index]
+
+		# Right shift by 11 bits
+		number = number ^ number >> 11
+		# Shift y left by 7 and take the bitwise and of 2636928640
+		number = number ^ number << 7 & 0x9d2c5680 
+		# Shift y left by 15 and take the bitwise and of y and 4022730752
+		number = number ^ number << 15 & 0xefc60000 
+		# Right shift by 18 bits
+		number = number ^ number >> 18
+		
+		@index += 1
+
+		return self.truncate(number) 
+	end
+
+	def twist
+		(0..@mt.length-1).each do |i|
+			# Get the most significant bit and add it to the less significant
+			# bits of the next number
+			number = (@mt[i] & 0x80000000) + (@mt[(i + 1) % 624] & 0x7fffffff)
+			number = self.truncate(number)
+			@mt[i] = @mt[(i + 397) % 624] ^ number >> 1
+			
+			if number % 2 != 0
+				@mt[i] = @mt[i] ^ 0x9908b0df
+			end
+		end
+		
+		@index = 0
 	end
 end
