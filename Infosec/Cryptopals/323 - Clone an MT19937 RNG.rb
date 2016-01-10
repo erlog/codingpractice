@@ -1,44 +1,53 @@
 require_relative 'cryptopals'
 
-#answer should be 607648109
-def reverseMT19937tempering(number)	
-	puts number & 0xFFFFFFFF
-	# Right shift by 18 bits and xor
-	number = number ^ number >> 18
-	puts number & 0xFFFFFFFF
+def outnumber(number)
+	number = number & 0xFFFFFFFF
+	print number
+	print " - "
+	print number.to_s(2).rjust(32, "0")
+	puts
+end
 
-	# Shift y left by 15 and take the bitwise and of y and 4022730752
-	number = number ^ number << 15 & 0xefc60000 
-	puts number & 0xFFFFFFFF
-
-	# Shift y left by 7 and take the bitwise and of 2636928640
-	number = number ^ number << 7 & 0x9d2c5680 
-	puts number & 0xFFFFFFFF
+def MT19937tempering(number)
+	outnumber(number)
 
 	# Right shift by 11 bits
 	number = number ^ number >> 11
-	puts number & 0xFFFFFFFF
+	outnumber(number)
+
+	# Shift y left by 7 and take the bitwise and of 2636928640
+	number = number ^ number << 7 & 0x9d2c5680 
+	outnumber(number)
+
+	# Shift y left by 15 and take the bitwise and of y and 4022730752
+	number = number ^ number << 15 & 0xefc60000 
+	outnumber(number)
+
+	# Right shift by 18 bits
+	number = number ^ number >> 18
+	outnumber(number)
 
 	return number & 0xFFFFFFFF
 end
 
-def MT19937tempering(number)
-	puts number & 0xFFFFFFFF
-	# Right shift by 11 bits
-	number = number ^ number >> 11
-	puts number & 0xFFFFFFFF
+def reverseMT19937tempering(number)	
+	outnumber(number)
 
-	# Shift y left by 7 and take the bitwise and of 2636928640
-	number = number ^ number << 7 & 0x9d2c5680 
-	puts number & 0xFFFFFFFF
+	# Right shift by 18 bits and xor
+	number = number ^ number >> 18
+	outnumber(number)
 
 	# Shift y left by 15 and take the bitwise and of y and 4022730752
 	number = number ^ number << 15 & 0xefc60000 
-	puts number & 0xFFFFFFFF
+	outnumber(number)
 
-	# Right shift by 18 bits
-	number = number ^ number >> 18
-	puts number & 0xFFFFFFFF
+	# Shift y left by 7 and take the bitwise and of 2636928640
+	number = number ^ number << 7 & 0x9d2c5680 
+	outnumber(number)
+
+	# Right shift by 11 bits
+	number = number ^ number >> 11
+	outnumber(number)
 
 	return number & 0xFFFFFFFF
 end
