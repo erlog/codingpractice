@@ -1,6 +1,14 @@
 require 'openssl'
 require 'securerandom'
 
+def getlowerbits(number, numberofbits)
+	return number & Array.new(numberofbits){1}.join.to_i(2)
+end
+
+def getupperbits(number, numberofbits)
+	return number & Array.new(numberofbits){1}.join.ljust(32, "0").to_i(2)
+end
+
 def padbytearraywithPKCS7(bytearray, blocklength)
 	padamount = blocklength - (bytearray.length % blocklength)
 	finallength = bytearray.length + padamount
@@ -255,9 +263,10 @@ def decryptAES128ECB(inputbytes, keybytes)
 		outputblocks << decipherblock
 	end
 	
-	outputbytes = outputblocks.flatten
 	#(outputbytes[-1]*-1)-1 <--removes padding
-	outputbytes = outputbytes[0..(outputbytes[-1]*-1)-1]
+	outputbytes = outputblocks.flatten
+	outputbytes = outputblocks[0..(outputbytes[-1]*-1)-1]
+	return outputbytes
 end
 
 def encryptAES128ECBblock(inputblock, keybytes)
@@ -280,22 +289,6 @@ def encryptAES128ECB(inputbytes, keybytes)
 	
 	return outputblocks.flatten 
 end
-	
-def decryptAES128CBC(inputbytes, keybytes, ivbytes)
-	blocks = inputbytes.each_slice(16).to_a
-
-	previousdecipherblock = ivbytes
-	outputblocks = []
-
-	blocks.each do |block|
-		decipherblock = decryptAES128ECBblock(block, keybytes)
-		xorblock = fixedxor(decipherblock, previousdecipherblock)
-		previousdecipherblock = block
-		outputblocks << xorblock
-	end
-
-	return outputblocks.flatten
-end
 
 def encryptAES128CBC(inputbytes, keybytes, ivbytes)
 	previouscipherblock = ivbytes
@@ -309,6 +302,25 @@ def encryptAES128CBC(inputbytes, keybytes, ivbytes)
 	end
 
 	return outputblocks.flatten
+end
+
+def decryptAES128CBC(inputbytes, keybytes, ivbytes)
+	blocks = inputbytes.each_slice(16).to_a
+
+	previousdecipherblock = ivbytes
+	outputblocks = []
+
+	blocks.each do |block|
+		decipherblock = decryptAES128ECBblock(block, keybytes)
+		xorblock = fixedxor(decipherblock, previousdecipherblock)
+		previousdecipherblock = block
+		outputblocks << xorblock
+	end
+
+	#(outputbytes[-1]*-1)-1 <--removes padding
+	outputbytes = outputblocks.flatten
+	outputbytes = outputblocks[0..(outputbytes[-1]*-1)-1]
+	return outputbytes
 end
 
 def generateAES128CTRkeystream(keybytes, nonce, numberofbytes)
@@ -326,14 +338,34 @@ def generateAES128CTRkeystream(keybytes, nonce, numberofbytes)
 end
 
 def encryptAES128CTR(inputbytes, keybytes, nonce)
-	keystream = generateAES128CTRkeystream(keybytes, nonce, inputbytes.length)
-	return fixedxor(inputbytes, keystream)
+	keystreambytes = generateAES128CTRkeystream(keybytes, nonce, inputbytes.length)
+	return fixedxor(inputbytes, keystreambytes)
 end
 
 def decryptAES128CTR(inputbytes, keybytes, nonce)
-	#we're just xorring against the keystream so it doesn't 
-	#matter if we're xorring it to encrypt or decrypt
+	#encrypt/decrypt is the same operation for xorred stream ciphers
 	return encryptAES128CTR(inputbytes, keybytes, nonce)
+end
+
+def generateMT19937keystream(seed, numberofbytes)
+	prng = MT19937.new(seed)
+
+	keystreambytes = []
+	numberofbytes.times do
+		keystreambytes << prng.extractnumber
+	end
+	return keystreambytes
+end
+
+def encryptMT19937(inputbytes, seed)
+	seed = seed & 0xFF #limited to 16 bit seeds
+	keystreambytes = generateMT19937keystream(seed, inputbytes.length)
+	return fixedxor(inputbytes, keystreambytes)	
+end
+
+def decryptMT19937(inputbytes, seed)
+	#encrypt/decrypt is the same operation for xorred stream ciphers
+	return encryptMT19937(inputbytes, seed)
 end
 
 def encryptionoracle(inputbytes, mode=rand(2))
@@ -350,6 +382,14 @@ def encryptionoracle(inputbytes, mode=rand(2))
 	else
 		return encryptAES128ECB(inputbytes, keybytes)
 	end
+end
+
+def outnumber(number)
+	number = number & 0xFFFFFFFF
+	print number
+	print " - "
+	print number.to_s(2).rjust(32, "0")
+	puts
 end
 
 def testoutput(output, validoutput)
@@ -370,6 +410,11 @@ class MT19937
 			prev = @mt[i - 1]
 			@mt[i] = self.truncate(0x6c078965	* (prev ^ prev >> 30) + i)
 		end
+	end
+
+	def setstate(newmt)
+		@mt = newmt
+		self.twist
 	end
 	
 	def truncate(number)
@@ -410,4 +455,32 @@ class MT19937
 		
 		@index = 0
 	end
+end
+
+def reverseMT19937tempering(number)	
+	#Reverse right shift by 18 bits and xor
+	number = number ^ number >> 18
+
+	#Reverse shift y left by 15 and take the bitwise and of y and 4022730752
+	number = number ^ number << 15 & 0xefc60000 
+
+	#Reverse shift y left by 7 and take the bitwise and of 2636928640
+	constant = 0x9d2c5680
+	andedlower14bits = (getlowerbits(number, 7) << 7) & constant
+	originallower14bits = getlowerbits(number ^ andedlower14bits, 14)
+	andedlower21bits = (originallower14bits << 7) & constant
+	originallower21bits = getlowerbits(number ^ andedlower21bits, 21)
+	andedlower28bits = (originallower21bits << 7) & constant
+	originallower28bits = getlowerbits(number ^ andedlower28bits, 28)
+	anded32bits = (originallower28bits << 7) & constant
+	number = getlowerbits(number ^ anded32bits, 32)
+
+	#Reverse right shift by 11 bits
+	originaltop11bits = getupperbits(number, 11)
+	rshiftedtop22bits = originaltop11bits >> 11
+	originaltop22bits = getupperbits(number ^ rshiftedtop22bits, 22)
+	rshiftedoriginal32bits = originaltop22bits >> 11
+	number = number ^ rshiftedoriginal32bits
+
+	return number & 0xFFFFFFFF
 end
