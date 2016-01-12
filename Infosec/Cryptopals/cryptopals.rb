@@ -1,5 +1,6 @@
 require 'openssl'
 require 'securerandom'
+require 'stringio'
 
 def getlowerbits(number, numberofbits)
 	return number & Array.new(numberofbits){1}.join.to_i(2)
@@ -48,16 +49,13 @@ def hexstringtobytearray(hexstring)
 end
 
 def bytearraytohexstring(bytearray)
-	bytearray.map!{ |hex| hex.to_s(16).rjust(2, "0")}
-	return bytearray.join
+	hexstring = ""
+	bytearray.each do |byte| hexstring += byte.to_s(16).rjust(2, "0") end
+	return hexstring	
 end
 
 def bytearraytostring(bytearray)
-	begin
-		return bytearray.map(&:chr).join
-	rescue RangeError
-		return ""
-	end
+	return bytearray.pack('C*')
 end
 
 def stringtobytearray(string)
@@ -188,7 +186,7 @@ def computehammingdistance(bytearrayone, bytearraytwo)
 	if bytearrayone.length != bytearraytwo.length
 		maxlength = [bytearrayone.length, bytearraytwo.length].max
 		bytearrayone.fill(0, (bytearrayone.length)..(maxlength))
-		bytearraytwo.fill(0, (bytearraytwo.length)..(maxlength))
+	bytearraytwo.fill(0, (bytearraytwo.length)..(maxlength))
 	end
 
 	#xor returns 1 if bits are different
@@ -263,9 +261,13 @@ def decryptAES128ECB(inputbytes, keybytes)
 		outputblocks << decipherblock
 	end
 	
-	#(outputbytes[-1]*-1)-1 <--removes padding
 	outputbytes = outputblocks.flatten
-	outputbytes = outputblocks[0..(outputbytes[-1]*-1)-1]
+	if checkPKCS7padding(outputbytes)
+		outputbytes = outputbytes[0..(outputbytes[-1]*-1)-1]
+	else
+		raise "Improper PKCS7 padding."
+	end
+
 	return outputbytes
 end
 
@@ -306,7 +308,6 @@ end
 
 def decryptAES128CBC(inputbytes, keybytes, ivbytes)
 	blocks = inputbytes.each_slice(16).to_a
-
 	previousdecipherblock = ivbytes
 	outputblocks = []
 
@@ -317,9 +318,13 @@ def decryptAES128CBC(inputbytes, keybytes, ivbytes)
 		outputblocks << xorblock
 	end
 
-	#(outputbytes[-1]*-1)-1 <--removes padding
 	outputbytes = outputblocks.flatten
-	outputbytes = outputblocks[0..(outputbytes[-1]*-1)-1]
+	if checkPKCS7padding(outputbytes)
+		outputbytes = outputbytes[0..(outputbytes[-1]*-1)-1]
+	else
+		raise "Improper PKCS7 padding."
+	end
+
 	return outputbytes
 end
 
@@ -483,4 +488,139 @@ def reverseMT19937tempering(number)
 	number = number ^ rshiftedoriginal32bits
 
 	return number & 0xFFFFFFFF
+end
+
+# Calculates SHA-1 message digest of _string_. Returns binary digest.
+# From: http://rosettacode.org/wiki/SHA-1#Ruby
+def sha1(string, 
+		pad = true,
+		h = [0x67452301, 0xefcdab89, 0x98badcfe, 0x10325476, 0xc3d2e1f0])
+	# functions and constants
+	mask = 0xffffffff
+
+	s = proc{|n, x| ((x << n) & mask) | (x >> (32 - n))}
+	f = [
+		proc {|b, c, d| (b & c) | (b.^(mask) & d)},
+		proc {|b, c, d| b ^ c ^ d},
+		proc {|b, c, d| (b & c) | (b & d) | (c & d)},
+		proc {|b, c, d| b ^ c ^ d},
+	].freeze
+
+	k = [0x5a827999, 0x6ed9eba1, 0x8f1bbcdc, 0xca62c1d6].freeze
+
+	if addpadding
+		string = sha1padding(string)
+	end
+
+	if string.size % 64 != 0
+		fail "failed to pad to correct length"
+	end
+
+	#hashing
+	io = StringIO.new(string)
+	block = ""
+
+	while io.read(64, block)
+		w = block.unpack("N16")
+
+		# Process block.
+		(16..79).each {|t| w[t] = s[1, w[t-3] ^ w[t-8] ^ w[t-14] ^ w[t-16]]}
+
+		a, b, c, d, e = h
+		t = 0
+		4.times do |i|
+			20.times do
+				temp = (s[5, a] + f[i][b, c, d] + e + w[t] + k[i]) & mask
+				a, b, c, d, e = temp, a, s[30, b], c, d
+				t += 1
+			end
+		end
+
+		[a,b,c,d,e].each_with_index {|x,i| h[i] = (h[i] + x) & mask}
+	end
+	return h.pack("N5").bytes
+end
+
+def sha1padding(string)
+		mask = 0xffffffff
+
+		stringbytes = string.bytes
+		bit_len = stringbytes.length << 3
+
+		stringbytes << 0x80
+
+		while (stringbytes.length % 64) != 56
+			stringbytes << 0x00 
+		end
+
+		string = bytearraytostring(stringbytes)
+		string += [bit_len >> 32, bit_len & mask].pack("N2")
+		return string
+end
+
+# Calculates MD4 message digest of _string_.
+# From: http://rosettacode.org/wiki/MD4#Ruby
+def md4(string, pad = true, registers = [0x67452301, 0xefcdab89, 0x98badcfe, 0x10325476]) 
+	# functions
+	mask = (1 << 32) - 1
+	f = proc {|x, y, z| x & y | x.^(mask) & z}
+	g = proc {|x, y, z| x & y | x & z | y & z}
+	h = proc {|x, y, z| x ^ y ^ z}
+	r = proc {|v, s| (v << s).&(mask) | (v.&(mask) >> (32 - s))}
+
+	# initial hash
+	a, b, c, d = registers 
+
+	bit_len = string.size << 3
+	string += "\x80"
+	while (string.size % 64) != 56
+		string += "\0"
+	end
+
+	if pad
+		string = string.force_encoding('ascii-8bit') 
+		string += [bit_len & mask, bit_len >> 32].pack("V2")
+	end
+
+	if string.size % 64 != 0
+		fail "failed to pad to correct length"
+	end
+
+	io = StringIO.new(string)
+	block = ""
+
+	while io.read(64, block)
+		x = block.unpack("V16")
+
+		# Process this block.
+		aa, bb, cc, dd = a, b, c, d
+
+		[0, 4, 8, 12].each {|i|
+			a = r[a + f[b, c, d] + x[i],  3]; i += 1
+			d = r[d + f[a, b, c] + x[i],  7]; i += 1
+			c = r[c + f[d, a, b] + x[i], 11]; i += 1
+			b = r[b + f[c, d, a] + x[i], 19]
+		}
+
+		[0, 1, 2, 3].each {|i|
+			a = r[a + g[b, c, d] + x[i] + 0x5a827999,  3]; i += 4
+			d = r[d + g[a, b, c] + x[i] + 0x5a827999,  5]; i += 4
+			c = r[c + g[d, a, b] + x[i] + 0x5a827999,  9]; i += 4
+			b = r[b + g[c, d, a] + x[i] + 0x5a827999, 13]
+		}
+
+		[0, 2, 1, 3].each {|i|
+			a = r[a + h[b, c, d] + x[i] + 0x6ed9eba1,  3]; i += 8
+			d = r[d + h[a, b, c] + x[i] + 0x6ed9eba1,  9]; i -= 4
+			c = r[c + h[d, a, b] + x[i] + 0x6ed9eba1, 11]; i += 8
+			b = r[b + h[c, d, a] + x[i] + 0x6ed9eba1, 15]
+		}
+
+		a = (a + aa) & mask
+		b = (b + bb) & mask
+		c = (c + cc) & mask
+		d = (d + dd) & mask
+	end
+
+	[a, b, c, d].pack("V4").bytes
 end
