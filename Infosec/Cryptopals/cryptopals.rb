@@ -2,6 +2,10 @@ require 'openssl'
 require 'securerandom'
 require 'stringio'
 
+def console(object)
+	print object.to_s; puts
+end
+
 def getlowerbits(number, numberofbits)
 	return number & Array.new(numberofbits){1}.join.to_i(2)
 end
@@ -405,6 +409,19 @@ def testoutput(output, validoutput)
 	end
 end
 
+#Adapted from: http://rosettacode.org/wiki/Modular_exponentiation#Ruby
+def modexp(number, exponent, mod)
+	exponent < 0 and raise ArgumentError, "negative exponent"
+	result = 1
+	base = number % mod
+	until exponent.zero?
+		if exponent.odd? then result = (result * base) % mod end
+		exponent >>= 1
+		base = (base * base) % mod
+	end
+	return result
+end
+
 class MT19937
 	def initialize(seed)
 		#initialize the index to 0
@@ -490,6 +507,25 @@ def reverseMT19937tempering(number)
 	return number & 0xFFFFFFFF
 end
 
+DiffieHellman_p = 0xffffffffffffffffc90fdaa22168c234c4c6628b80dc1cd129024e088a67cc74020bbea63b139b22514a08798e3404ddef9519b3cd3a431b302b0a6df25f14374fe1356d6d51c245e485b576625e7ec6f44c42e9a637ed6b0bff5cb6f406b7edee386bfb5a899fa5ae9f24117c4b1fe649286651ece45b3dc2007cb8a163bf0598da48361c55d39a69163fa8fd24cf5f83655d23dca3ad961c62f356208552bb9ed529077096966d670c354e4abc9804f1746c08ca237327ffffffffffffffff
+DiffieHellman_g = 2
+
+def diffiehellman(p, g)
+	privatekey = rand(1..p)
+	publickey = modexp(g, privatekey, p)
+
+	dict = Hash.new()
+	dict["p"], dict["g"] = p, g
+	dict["privatekey"], dict["publickey"] = privatekey, publickey  
+	return dict
+end
+
+def diffiehellmansessionkey(sessiondict, partnerpublickey)
+	key = modexp(partnerpublickey, sessiondict["privatekey"], sessiondict["p"])
+	sessiondict["sessionkey"] = key
+	return sessiondict
+end
+
 # Calculates SHA-1 message digest of _string_. Returns binary digest.
 # From: http://rosettacode.org/wiki/SHA-1#Ruby
 def sha1(string, 
@@ -508,7 +544,7 @@ def sha1(string,
 
 	k = [0x5a827999, 0x6ed9eba1, 0x8f1bbcdc, 0xca62c1d6].freeze
 
-	if addpadding
+	if pad 
 		string = sha1padding(string)
 	end
 
@@ -558,6 +594,23 @@ def sha1padding(string)
 		return string
 end
 
+def generateHMACSHA1(string, keystring)
+	blocksize = 64 #bytes
+
+	keybytes = keystring.bytes
+	while keybytes.length < 64
+		keybytes << 0x00
+	end
+	keystring = bytearraytostring(keybytes)
+
+	innerkeypadding = bytearraytostring(fixedxor(keybytes, Array.new(blocksize){0x36}))
+	innerhash = bytearraytostring(sha1(innerkeypadding + string))
+
+	outerkeypadding = bytearraytostring(fixedxor(keybytes, Array.new(blocksize){0x5c}))
+	hashbytes = sha1(outerkeypadding  + innerhash)
+	return bytearraytohexstring(hashbytes)
+end
+
 # Calculates MD4 message digest of _string_.
 # From: http://rosettacode.org/wiki/MD4#Ruby
 def md4(string, pad = true, registers = [0x67452301, 0xefcdab89, 0x98badcfe, 0x10325476]) 
@@ -571,15 +624,8 @@ def md4(string, pad = true, registers = [0x67452301, 0xefcdab89, 0x98badcfe, 0x1
 	# initial hash
 	a, b, c, d = registers 
 
-	bit_len = string.size << 3
-	string += "\x80"
-	while (string.size % 64) != 56
-		string += "\0"
-	end
-
 	if pad
-		string = string.force_encoding('ascii-8bit') 
-		string += [bit_len & mask, bit_len >> 32].pack("V2")
+		string = md4padding(string)
 	end
 
 	if string.size % 64 != 0
@@ -623,4 +669,20 @@ def md4(string, pad = true, registers = [0x67452301, 0xefcdab89, 0x98badcfe, 0x1
 	end
 
 	[a, b, c, d].pack("V4").bytes
+end
+
+def md4padding(string)
+		mask = (1 << 32) - 1
+		bit_len = string.size << 3
+
+		stringbytes = string.bytes
+		stringbytes << 0x80
+		while (stringbytes.length % 64) != 56
+			stringbytes << 0x00
+		end
+		string = bytearraytostring(stringbytes)
+
+		string = string.force_encoding('ascii-8bit') 
+		string += [bit_len & mask, bit_len >> 32].pack("V2")
+		return string
 end

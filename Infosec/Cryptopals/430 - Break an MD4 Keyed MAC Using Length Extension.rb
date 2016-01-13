@@ -1,7 +1,7 @@
 require_relative 'cryptopals'
 
 input = "comment1=cooking%20MCs;userdata=foo;comment2=%20like%20a%20pound%20of%20bacon"
-Key = bytearraytohexstring(randombytearray(16))
+Key = bytearraytohexstring(randombytearray(rand(32)))
 
 def addMACtomessage(message)
 	return generateMAC(message) + message
@@ -12,8 +12,8 @@ def generateMAC(message)
 end
 
 def validateMAC(message)
-	givenmac, message = message[0..39], message[40..-1]
-	validmac = generateMAC(message)[0..39]
+	givenmac, message = message[0..31], message[32..-1]
+	validmac = generateMAC(message)[0..31]
 	return (givenmac == validmac) 
 end
 
@@ -29,19 +29,43 @@ def generateMD4padding(message)
 	return padding
 end
 
-def deriveSHA1registers(hashhexstring)
+def deriveMD4registers(hashhexstring)
 	hashbytes = hexstringtobytearray(hashhexstring)
 	registers = []
 	hashbytes.each_slice(4).each do |slice|
-		registers << bytearraytohexstring(slice).to_i(16)
+		registers << bytearraytohexstring(slice.reverse).to_i(16)
 	end
 	return registers
 end
+
 def out(object)
 	print object.to_s; puts 
 end
 
-#validmessage = addMACtomessage(input)
+validmessage = addMACtomessage(input)
+validplaintext = validmessage[32..-1]
+validregisters = deriveMD4registers(validmessage[0..31])
+vulnstring = ";admin=true"
 
-out(bytearraytohexstring(md4("abc")))
-out(generateMD4padding("abc"))
+keylength = 0
+while true
+	puts ["Trying key of length: ", keylength].join
+	dummykey = "A"* keylength
+
+	validpaddingbytes = generateMD4padding(dummykey + validplaintext)
+	validpadding = bytearraytostring(validpaddingbytes)
+	
+	fullvulnstring = dummykey + validplaintext + validpadding + vulnstring
+	vulnpaddingbytes = generateMD4padding(fullvulnstring)
+	vulnpadding = bytearraytostring(vulnpaddingbytes) 
+
+	vulnhash = bytearraytohexstring(md4(vulnstring + vulnpadding, false, validregisters))
+	output = vulnhash + validplaintext + validpadding + vulnstring
+
+	validateMAC(output) ? (break) : (keylength += 1)
+end
+
+validoutput = addMACtomessage(input + validpadding + vulnstring)
+testoutput(validoutput, output)
+puts ["Admin access achieved: ", validateMAC(output)].join
+puts ["Key length in bytes: ", keylength].join
