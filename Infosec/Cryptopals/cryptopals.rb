@@ -1,6 +1,7 @@
-require 'openssl'
-require 'securerandom'
-require 'stringio'
+require "openssl"
+require "digest"
+require "securerandom"
+require "stringio"
 
 def console(object)
 	print object.to_s; puts
@@ -609,6 +610,12 @@ def generateHMACSHA1(string, keystring)
 	outerkeypadding = bytearraytostring(fixedxor(keybytes, Array.new(blocksize){0x5c}))
 	hashbytes = sha1(outerkeypadding  + innerhash)
 	return bytearraytohexstring(hashbytes)
+end
+
+def sha256(string)
+	hash = Digest::SHA2.new(256)
+	output = hash.update(string).hexdigest
+	return output
 end
 
 # Calculates MD4 message digest of _string_.

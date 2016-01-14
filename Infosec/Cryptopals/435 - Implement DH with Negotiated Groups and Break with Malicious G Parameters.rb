@@ -56,52 +56,137 @@ testoutput(alicemessage, messagefrombob)
 alicemessage = "Hey there cutie!"
 bobreply = "Hey! How are you?"
 eavesdroppedlines = []
-evealice = Hash.new()
-evebob = Hash.new()
+eve = Hash.new()
 
-#start session
-alice = diffiehellman(DiffieHellman_p, DiffieHellman_g)
+#start session, g was modified by eve to be 1 
+alice = diffiehellman(DiffieHellman_p, 1)
 
-#attempt to send "p", "g", to bob, but caught by eve
-evealice = Hash.new()
-evealice["p"], evealice["g"] = alice["p"], alice["g"] #eve copies alice's p/g 
-evebob["p"], evebob["g"] = alice["p"], 1 #eve switches out "g" for "1"
+#attempt to send "p", "g", to bob, but caught by eve and relayed
+eve["p"], eve["g"] = alice["p"], alice["g"]
 
 #eve sends bogus g to bob 
-bob = diffiehellman(evebob["p"], evebob["g"])
+bob = diffiehellman(eve["p"], eve["g"])
 
 #bob sends ACK, eve relays 
-#alice sends her publickey, eve forges session key and relays 
-evealice["publickey"] = alice["publickey"]
-bob = diffiehellmansessionkey(bob, evealice["publickey"])
+#alice sends her publickey, eve forges session key and relays
+eve["publickey"] = alice["publickey"]
+eve["sessionkey"] = 1 #sessionkey is 1 when g = 1 
+bob = diffiehellmansessionkey(bob, eve["publickey"])
 
-#bob sends his public key, eve forges session key and relays
-evebob["publickey"] = bob["publickey"]
-evealice["sessionkey"] = 1
-alice = diffiehellmansessionkey(alice, evebob["publickey"])
-
-print "evealice: "; console(evealice.keys)
-print "evebob: "; console(evebob.keys)
-console(alice)
-console(bob)
-exit
+#bob sends his public key, eve relays
+eve["publickey"] = bob["publickey"] 
+alice = diffiehellmansessionkey(alice, eve["publickey"])
 
 #send AES-CBC(msg, SHA1(s)[0:16], iv=random(16)) + iv
 cipherfromalice = generatemessage(alice, alicemessage)
 
 #alice attempts to send to bob, but caught by eve
-eavesdroppedlines << decodemessage(evebob, cipherfromalice)
+eavesdroppedlines << decodemessage(eve, cipherfromalice)
 
 #eve relays it to bob who then replies
 messagefromalice = decodemessage(bob, cipherfromalice)
 cipherfrombob = generatemessage(bob, bobreply)
 
 #bob attempts to send to alice, but caught by eve
-eavesdroppedlines << decodemessage(evealice, cipherfrombob)
+eavesdroppedlines << decodemessage(eve, cipherfrombob)
 
 #eve relays it to alice
 messagefrombob = decodemessage(alice, cipherfrombob)
 
-print "Man-in-the-middle test: "
+print "Man-in-the-middle test(g=1): "
+testoutput(eavesdroppedlines, [alicemessage, bobreply])
+puts eavesdroppedlines
+
+#MAN-IN-THE-MIDDLE TEST
+#replace "g" with "p"
+#######################
+alicemessage = "Hey there cutie!"
+bobreply = "Hey! How are you?"
+eavesdroppedlines = []
+eve = Hash.new()
+
+#start session, g was modified by eve to be p  
+alice = diffiehellman(DiffieHellman_p, DiffieHellman_p)
+
+#attempt to send "p", "g", to bob, but caught by eve and relayed
+eve["p"], eve["g"] = alice["p"], alice["g"]
+
+#eve sends bogus g to bob 
+bob = diffiehellman(eve["p"], eve["g"])
+
+#bob sends ACK, eve relays 
+#alice sends her publickey, eve forges session key and relays
+eve["publickey"] = alice["publickey"]
+eve["sessionkey"] = 0 #sessionkey is 0 when g = p 
+bob = diffiehellmansessionkey(bob, eve["publickey"])
+
+#bob sends his public key, eve relays
+eve["publickey"] = bob["publickey"] 
+alice = diffiehellmansessionkey(alice, eve["publickey"])
+
+#send AES-CBC(msg, SHA1(s)[0:16], iv=random(16)) + iv
+cipherfromalice = generatemessage(alice, alicemessage)
+
+#alice attempts to send to bob, but caught by eve
+eavesdroppedlines << decodemessage(eve, cipherfromalice)
+
+#eve relays it to bob who then replies
+messagefromalice = decodemessage(bob, cipherfromalice)
+cipherfrombob = generatemessage(bob, bobreply)
+
+#bob attempts to send to alice, but caught by eve
+eavesdroppedlines << decodemessage(eve, cipherfrombob)
+
+#eve relays it to alice
+messagefrombob = decodemessage(alice, cipherfrombob)
+
+print "Man-in-the-middle test(g=p): "
+testoutput(eavesdroppedlines, [alicemessage, bobreply])
+puts eavesdroppedlines
+
+#MAN-IN-THE-MIDDLE TEST
+#replace "g" with "p - 1"
+#######################
+alicemessage = "Hey there cutie!"
+bobreply = "Hey! How are you?"
+eavesdroppedlines = []
+eve = Hash.new()
+
+#start session, g was modified by eve to be p minus 1 
+alice = diffiehellman(DiffieHellman_p, DiffieHellman_p - 1)
+
+#attempt to send "p", "g", to bob, but caught by eve and relayed
+eve["p"], eve["g"] = alice["p"], alice["g"]
+
+#eve sends bogus g to bob 
+bob = diffiehellman(eve["p"], eve["g"])
+
+#bob sends ACK, eve relays 
+#alice sends her publickey, eve forges session key and relays
+eve["publickey"] = alice["publickey"]
+eve["sessionkey"] = 1 #sessionkey is 1 when g = p - 1 
+bob = diffiehellmansessionkey(bob, eve["publickey"])
+
+#bob sends his public key, eve relays
+eve["publickey"] = bob["publickey"] 
+alice = diffiehellmansessionkey(alice, eve["publickey"])
+
+#send AES-CBC(msg, SHA1(s)[0:16], iv=random(16)) + iv
+cipherfromalice = generatemessage(alice, alicemessage)
+
+#alice attempts to send to bob, but caught by eve
+eavesdroppedlines << decodemessage(eve, cipherfromalice)
+
+#eve relays it to bob who then replies
+messagefromalice = decodemessage(bob, cipherfromalice)
+cipherfrombob = generatemessage(bob, bobreply)
+
+#bob attempts to send to alice, but caught by eve
+eavesdroppedlines << decodemessage(eve, cipherfrombob)
+
+#eve relays it to alice
+messagefrombob = decodemessage(alice, cipherfrombob)
+
+print "Man-in-the-middle test(g=p-1): "
 testoutput(eavesdroppedlines, [alicemessage, bobreply])
 puts eavesdroppedlines
