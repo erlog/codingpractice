@@ -612,6 +612,23 @@ def generateHMACSHA1(string, keystring)
 	return bytearraytohexstring(hashbytes)
 end
 
+def generateHMACSHA256(string, keystring)
+	blocksize = 64 #bytes
+
+	keybytes = keystring.bytes
+	while keybytes.length < 64
+		keybytes << 0x00
+	end
+	keystring = bytearraytostring(keybytes)
+
+	innerkeypadding = bytearraytostring(fixedxor(keybytes, Array.new(blocksize){0x36}))
+	innerhash = bytearraytostring(sha1(innerkeypadding + string))
+
+	outerkeypadding = bytearraytostring(fixedxor(keybytes, Array.new(blocksize){0x5c}))
+	hexstring = sha256(outerkeypadding  + innerhash)
+	return hexstring
+end
+
 def sha256(string)
 	hash = Digest::SHA2.new(256)
 	output = hash.update(string).hexdigest
