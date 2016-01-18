@@ -622,7 +622,7 @@ def generateHMACSHA256(string, keystring)
 	keystring = bytearraytostring(keybytes)
 
 	innerkeypadding = bytearraytostring(fixedxor(keybytes, Array.new(blocksize){0x36}))
-	innerhash = bytearraytostring(sha1(innerkeypadding + string))
+	innerhash = sha256(innerkeypadding + string)
 
 	outerkeypadding = bytearraytostring(fixedxor(keybytes, Array.new(blocksize){0x5c}))
 	hexstring = sha256(outerkeypadding  + innerhash)
@@ -633,6 +633,73 @@ def sha256(string)
 	hash = Digest::SHA2.new(256)
 	output = hash.update(string).hexdigest
 	return output
+end
+
+def startSRPsession(n, g, k, email, password)
+	dict = Hash.new()
+	dict["N"], dict["g"], dict["k"] = n, g, k
+	dict["privatekey"] = rand(2**64)
+	dict["useremail"], dict["userpassword"] = email, password
+	return dict
+end
+
+def initializeSRPserver(server)
+	#generate salt as a random integer
+	server["salt"] = rand(2**64).to_s(16)
+
+	#generate sha256(salt + password) and convert to integer x
+	x = sha256(server["salt"] + server["userpassword"]).to_i(16)
+	#generate v = g**x % N
+	server["userpasswordhash"] = modexp(server["g"], x, server["N"])
+	server.delete("userpassword")
+
+	server["peruserpublickey"] = server["k"] * server["userpasswordhash"] +
+		modexp(server["g"], server["privatekey"], server["N"])
+end
+
+def initializeSRPclient(client)
+	client["publickey"] = modexp(client["g"], client["privatekey"], client["N"])
+end
+
+def generateSRPserversessionkey(server, useremail, clientpublickey)
+	#receive email and public key(a la Diffie Hellman) to server
+	server["useremail"], server["clientpublickey"] = useremail, clientpublickey 
+
+	#generate sha256(clientpublickey + serverpublickey) as integer u
+	uH = sha256(server["peruserpublickey"].to_s(16) +
+		server["clientpublickey"].to_s(16))
+	u = uH.to_i(16)
+
+	#generate S = (A * v**u) ** b % N, K = sha256(S)
+	s = modexp( ( server["clientpublickey"] * 
+				modexp(server["userpasswordhash"],  u, server["N"] ) ), 
+				server["privatekey"],
+				server["N"])
+	sK = sha256(s.to_s(16))
+
+	#HMAC-SHA256(K, salt)
+	server["HMAC"] = generateHMACSHA256(sK, server["salt"])
+end
+
+def generateSRPclientsessionkey(client, salt, serverpublickey)
+	#receive salt and public key(kv + g**b % N)
+	client["salt"], client["serverpublickey"] = salt, serverpublickey 
+
+	#generate sha256(clientpublickey + serverpublickey) as integer u
+	uH = sha256(client["serverpublickey"].to_s(16) + client["publickey"].to_s(16))
+	u = uH.to_i(16)
+
+	#generate sha256(salt + password) and convert to integer x
+	x = sha256(client["salt"] + client["userpassword"]).to_i(16)
+
+	#generate S = (B - k * g**x)**(a + u * x) % N, K = sha256(S)
+	s = modexp( ( client["serverpublickey"] - client["k"] * 
+				modexp(client["g"], x, client["N"]   )      ),
+				( client["privatekey"] + u * x ), client["N"] )
+	sK = sha256(s.to_s(16))
+
+	#HMAC-SHA256(K, salt)
+	client["HMAC"] = generateHMACSHA256(sK, client["salt"])
 end
 
 # Calculates MD4 message digest of _string_.
