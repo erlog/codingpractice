@@ -38,10 +38,12 @@ def generatesimplifiedSRPserversessionkey(server, useremail, clientpublickey)
 end
 
 def generatesimplifiedSRPclientsessionkey(client, serverpublickey, salt, u)
-	client["serverpublickey"], client["salt"], client["u"] = serverpublickey, salt, u
+	client["serverpublickey"], client["salt"], client["u"] = 
+		serverpublickey, salt, u
 
 	#generate x = sha256(salt|password)
 	x = sha256(client["salt"] + client["userpassword"]).to_i(16)
+
 	#generate s = B**(a + ux) % n
 	s = modexp(client["serverpublickey"], 
 			(client["privatekey"] + client["u"] * x),
@@ -50,27 +52,61 @@ def generatesimplifiedSRPclientsessionkey(client, serverpublickey, salt, u)
 	sK = sha256(s.to_s(16))
 	client["sessionkey"] = generateHMACSHA256(sK, client["salt"])
 end
+
+#NORMAL LOGIN
+#set agreed upon values
+client = startSRPsession(DiffieHellman_p, 2, nil, useremail, userpassword)
+server = startSRPsession(DiffieHellman_p, 2, nil, nil, userpassword)
+
+initializesimplifiedSRPserver(server)
+initializesimplifiedSRPclient(client)
+
+generatesimplifiedSRPclientsessionkey(client, 
+									server["publickey"],
+									server["salt"],
+									server["u"])
+generatesimplifiedSRPserversessionkey(server, 
+									client["useremail"], 
+									client["publickey"])
+
+print "Normal login test: "
+testoutput(server["sessionkey"], client["sessionkey"])
 		
 #MITM PASSWORD GRAB
 #set agreed upon values
 client = startSRPsession(DiffieHellman_p, 2, nil, useremail, userpassword)
-eve = Hash.new()
-eve["N"], eveserver["g"] = DiffieHellman_p, 2
 
-#generate public keys, password hashes, etc.
+#generate public key
 initializesimplifiedSRPclient(client)
 
 #pose as the server and use arbitrary values for b, B, u, and salt.
-eve["privatekey"] = 0
-eve["publickey"] = 2 
-eve["u"] = 1
-eve["salt"] = ""
+eve = startSRPsession(DiffieHellman_p, 2, nil, nil, nil)
+eve["userpassword"] = "" #don't know this yet
+initializesimplifiedSRPserver(eve)
 
-#send salt, B = g**b % n, u = 128 bit random number to client
+#send salt, public key, and u to client 
 generatesimplifiedSRPclientsessionkey(client, 
 								eve["publickey"], 
 								eve["salt"], 
 								eve["u"])
 
+#client sends email, public key, and HMAC to eve
+eve["useremail"], eve["clientpublickey"], eve["clientsessionkey"] =
+	client["useremail"], client["publickey"], client["sessionkey"]
 
-clientHMAC = client["sessionkey"]
+#run our dictionary attack against the HMAC posing as the server
+commonpasswords.each do |password|
+	x = sha256(eve["salt"] + password).to_i(16)
+
+	eve["userpasswordhash"] = modexp(eve["g"], x, eve["N"])
+	generatesimplifiedSRPserversessionkey(eve, eve["useremail"], eve["clientpublickey"])
+
+	if eve["sessionkey"] == eve["clientsessionkey"]
+		eve["userpassword"] = password
+		break
+	end  
+end
+
+print "Man in the middle dictionary attack: "
+puts [eve["useremail"], "; ", eve["userpassword"]].join
+testoutput(eve["userpassword"], userpassword)
