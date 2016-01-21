@@ -378,6 +378,54 @@ def decryptMT19937(inputbytes, seed)
 	return encryptMT19937(inputbytes, seed)
 end
 
+def egcd(number, divisor)
+	remainder = nil
+	currents, lasts = 0, 1
+	currentt, lastt = 1, 0
+	while remainder != 0 
+		#grab our quotient and remainder
+		quotient = number / divisor
+		remainder = number % divisor
+		#figure s's and t's
+		news = lasts - quotient * currents
+		newt = lastt - quotient * currentt
+
+		#rotate
+		number, divisor = divisor, remainder 
+		lasts, currents = currents, news
+		lastt, currentt = currentt, newt
+	end
+
+	return [number, lasts, lastt] 
+end
+
+def invmod(number, mod)
+	inverse = egcd(number, mod)[1]
+	if inverse < 0 then inverse = mod + inverse end
+	return inverse
+end
+
+def generateRSAKeys()
+	p = OpenSSL::BN::generate_prime(256).to_i
+	q = OpenSSL::BN::generate_prime(256).to_i 
+	n = p * q
+	et = (p - 1) * (q - 1)
+	e = 3
+	d = invmod(e, et)
+	return [ [e, n], [d, n] ] #publickey, privatekey
+end
+
+def encryptRSAstring(string, publickey)
+	stringinteger = bytearraytohexstring(string.bytes).to_i(16)
+	return modexp(stringinteger, publickey[0], publickey[1]).to_s(16) 
+end
+
+def decryptRSAstring(hexstring, privatekey)
+	stringinteger = hexstring.to_i(16)
+	plaininteger  = modexp(stringinteger, privatekey[0], privatekey[1])
+	return bytearraytostring(hexstringtobytearray(plaininteger.to_s(16)))
+end
+
 def encryptionoracle(inputbytes, mode=rand(2))
 	keybytes = randombytearray(16)
 	ivbytes = randombytearray(16)
