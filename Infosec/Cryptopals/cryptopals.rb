@@ -46,6 +46,9 @@ def randombytearray(length)
 	return SecureRandom.random_bytes(length).bytes
 end
 
+def hexstringtostring(string)
+	return bytearraytostring(hexstringtobytearray(string))
+end
 
 def hexstringtobytearray(hexstring)
 	bytearray = hexstring.scan(/.{2}/)
@@ -405,6 +408,15 @@ def invmod(number, mod)
 	return inverse
 end
 
+def nthrootinteger(n, a, precision = 1e-1024)
+	x = a
+	begin
+		prev = x
+		x = ((n - 1) * prev + a / (prev ** (n - 1))) / n
+	end while (prev - x).abs > precision
+	return x 
+end
+
 def generateRSAKeys()
 	p = OpenSSL::BN::generate_prime(256).to_i
 	q = OpenSSL::BN::generate_prime(256).to_i 
@@ -423,7 +435,7 @@ end
 def decryptRSAstring(hexstring, privatekey)
 	stringinteger = hexstring.to_i(16)
 	plaininteger  = modexp(stringinteger, privatekey[0], privatekey[1])
-	return bytearraytostring(hexstringtobytearray(plaininteger.to_s(16)))
+	return hexstringtostring(plaininteger.to_s(16))
 end
 
 def encryptionoracle(inputbytes, mode=rand(2))
