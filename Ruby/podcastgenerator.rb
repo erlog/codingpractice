@@ -43,10 +43,10 @@ def constructitemforfile(filepath)
 end
 
 FileName = "podcast.xml"
-URL = "https://degeneratestrategy.com/podcastfolder"
-Path = "/home/jroze/podcastfolder"
+URL = "https://degeneratestrategy.com/podcast/media"
+Path = "/var/www/html/podcast/media"
 RSSURL = urljoin(["https://degeneratestrategy.com", FileName]) 
-OutputPath = "/home/jroze"
+OutputPath = "/var/www/html/podcast"
 Title = Path.split(File::SEPARATOR)[-1]
 OutputFile = open(File.join(OutputPath, FileName), "w")
 
