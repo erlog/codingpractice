@@ -157,7 +157,7 @@ AudioPlayer song;
 AudioInput input;
 
 void setup() {
-    size(1280, 720, P2D);
+    size(1280, 720);
     h_center = width/2; v_center = height/2;
 
     //Colors
