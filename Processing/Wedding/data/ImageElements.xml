@@ -2,30 +2,29 @@
 
 <elements>
 
-<element type="text">
+<element type="image">
     <start_time>1</start_time>
-    <string>L O S T</string>
-    <font>GreatVibes-Regular</font> <font_size>128</font_size>
+    <file_path>uni.jpg</file_path>
     <in_state>
-        <duration>3.0</duration>
-        <x_pos>640</x_pos> <y_pos>360</y_pos>
-        <scale>0.01</scale> <rotation>36.0</rotation>
-        <fill_color>BLACK</fill_color> <fill_opacity>0</fill_opacity>
-        <stroke_color>BLACK</stroke_color> <stroke_opacity>0</stroke_opacity>
+        <duration>5</duration>
+        <x_pos>-500</x_pos> <y_pos>-500</y_pos>
+        <scale>1.5</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>255</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
     </in_state>
     <display_state>
-        <duration>3.0</duration>
-        <x_pos>640</x_pos> <y_pos>360</y_pos>
-        <scale>1</scale> <rotation>0</rotation>
+        <duration>0.1</duration>
+        <x_pos>-450</x_pos> <y_pos>-450</y_pos>
+        <scale>1.6</scale> <rotation>0</rotation>
         <fill_color>WHITE</fill_color> <fill_opacity>255</fill_opacity>
-        <stroke_color>WHITE</stroke_color> <stroke_opacity>255</stroke_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
     </display_state>
     <out_state>
-        <duration>3.0</duration>
-        <x_pos>640</x_pos> <y_pos>360</y_pos>
-        <scale>0.01</scale> <rotation>36.0</rotation>
-        <fill_color>BLACK</fill_color> <fill_opacity>0</fill_opacity>
-        <stroke_color>BLACK</stroke_color> <stroke_opacity>0</stroke_opacity>
+        <duration>2</duration>
+        <x_pos>-450</x_pos> <y_pos>-450</y_pos>
+        <scale>1.6</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>0</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
     </out_state>
 </element>
 

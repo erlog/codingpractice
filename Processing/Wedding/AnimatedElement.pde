@@ -23,31 +23,38 @@ public class AnimatedElement {
         this.finish_time = display_end_time + out_state.duration;
     }
 
+    boolean is_active() {
+        float time = managed_time();
+        float end_time = start_time + finish_time;
+        if(time >= end_time) {
+            finished = true;
+            return false;
+        }
+        else {
+            return true;
+        }
+    }
+
+
     AnimationState progress() {
         float current_time = managed_time() - start_time;
         if(current_time < display_start_time) {
             float amt = current_time / in_state.duration;
-            amt = constrain(amt, 0.0, 1.0);
-            amt = smootherstep(amt);
+            amt = smootherstep(constrain(amt, 0.0, 1.0));
             return tween(in_state, display_state, amt);
         }
         else if((current_time > display_start_time) && (current_time < display_end_time)) {
             return display_state;
         }
-        else if(current_time < finish_time) {
+        else {
             float amt = (current_time - display_end_time) / out_state.duration;
             amt = smootherstep(constrain(amt, 0.0, 1.0));
             return tween(display_state, out_state, amt);
         }
-        else {
-            finished = true;
-            return out_state;
-        }
     }
 
     public void draw(PGraphics buffer) {
-        if((managed_time() > start_time) && !finished) {
-            buffer.pushMatrix();
+        if(is_active()) {
             AnimationState state = progress();
             buffer.textAlign(CENTER, CENTER);
             buffer.translate(state.x, state.y);
@@ -56,7 +63,6 @@ public class AnimatedElement {
             buffer.fill(state.fill_color);
             buffer.stroke(state.stroke_color);
             element.draw(buffer);
-            buffer.popMatrix();
         }
     }
 }

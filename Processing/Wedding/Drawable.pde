@@ -27,6 +27,7 @@ public class DrawableImage implements Drawable {
     }
 
     public void draw(PGraphics buffer) {
+        buffer.tint(buffer.fillColor);
         buffer.image(img, 0, 0);
     }
 }

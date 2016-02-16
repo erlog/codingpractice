@@ -36,7 +36,6 @@ AnimatedElement parse_text_element(XML xml_element) {
 AnimatedElement parse_image_element(XML xml_element) {
     String file_path = xml_element.getChildren("file_path")[0].getContent();
     String file_type = file_path.substring(file_path.length()-3, file_path.length());
-    println(file_type);
     float start_time  = xml_element.getChildren("start_time")[0].getFloatContent();
 
     DrawableImage image = new DrawableImage(file_path, file_type);
