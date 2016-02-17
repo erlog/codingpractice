@@ -64,10 +64,9 @@ void draw() {
     render_layer(text_elements, text_layer);
 
     //composite
-    background(128);
     image(background_layer, 0, 0);
     image(image_layer, 0, 0);
-    //image(text_layer, 0, 0);
-    blend(text_layer, 0, 0, width, height, 0, 0, width, height, SOFT_LIGHT);
+    image(text_layer, 0, 0);
+    //blend(text_layer, 0, 0, width, height, 0, 0, width, height, SOFT_LIGHT);
 }
 

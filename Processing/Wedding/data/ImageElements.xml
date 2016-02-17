@@ -3,7 +3,7 @@
 <elements>
 
 <element type="image">
-    <start_time>1000</start_time>
+    <start_time>6</start_time>
     <file_path>uni.jpg</file_path>
     <in_state>
         <duration>0</duration>
