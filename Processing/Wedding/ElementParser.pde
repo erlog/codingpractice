@@ -1,3 +1,4 @@
+//Parser for the XML files that define elements
 AnimationScheduler parse_element_file(String file_path) {
     AnimationScheduler scheduler = new AnimationScheduler();
 
@@ -54,7 +55,8 @@ AnimationState parse_animation_state(XML xml_element) {
     float rotation = xml_element.getChildren("rotation")[0].getFloatContent();
     color fill_color = (color)ColorMap.get(xml_element.getChildren("fill_color")[0].getContent());
     color stroke_color = (color)ColorMap.get(xml_element.getChildren("stroke_color")[0].getContent());
-    fill_color = set_alpha(fill_color, xml_element.getChildren("fill_opacity")[0].getIntContent());
-    stroke_color = set_alpha(stroke_color, xml_element.getChildren("stroke_opacity")[0].getIntContent());
-    return new AnimationState(duration, x, y, scale, rotation, fill_color, stroke_color);
+    int fill_opacity = xml_element.getChildren("fill_opacity")[0].getIntContent();
+    int stroke_opacity = xml_element.getChildren("stroke_opacity")[0].getIntContent();
+    return new AnimationState(duration, x, y, scale, rotation,
+                        fill_color, fill_opacity, stroke_color, stroke_opacity);
 }

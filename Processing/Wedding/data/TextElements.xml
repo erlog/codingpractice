@@ -29,4 +29,31 @@
     </out_state>
 </element>
 
+<element type="text">
+    <start_time>4</start_time>
+    <string>F O U N D</string>
+    <font>GreatVibes-Regular</font> <font_size>128</font_size>
+    <in_state>
+        <duration>1.0</duration>
+        <x_pos>640</x_pos> <y_pos>360</y_pos>
+        <scale>0.01</scale> <rotation>36.0</rotation>
+        <fill_color>BLACK</fill_color> <fill_opacity>0</fill_opacity>
+        <stroke_color>BLACK</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </in_state>
+    <display_state>
+        <duration>1.0</duration>
+        <x_pos>640</x_pos> <y_pos>360</y_pos>
+        <scale>1</scale> <rotation>0</rotation>
+        <fill_color>BLACK</fill_color> <fill_opacity>255</fill_opacity>
+        <stroke_color>BLACK</stroke_color> <stroke_opacity>255</stroke_opacity>
+    </display_state>
+    <out_state>
+        <duration>1.0</duration>
+        <x_pos>640</x_pos> <y_pos>360</y_pos>
+        <scale>2.0</scale> <rotation>-36.0</rotation>
+        <fill_color>BLACK</fill_color> <fill_opacity>0</fill_opacity>
+        <stroke_color>BLACK</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </out_state>
+</element>
+
 </elements>

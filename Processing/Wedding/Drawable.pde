@@ -11,10 +11,6 @@ public class DrawableText implements Drawable {
 
     public void draw(PGraphics buffer) {
         buffer.textFont(font);
-        color old_color = buffer.fillColor;
-        buffer.fill(buffer.strokeColor);
-        buffer.text(display_text, -2, 2);
-        buffer.fill(old_color);
         buffer.text(display_text, 0, 0);
     }
 }

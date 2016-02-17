@@ -1,3 +1,6 @@
+//a package of a drawable element, animation states, and timing information
+//manages tweening and drawing
+
 public class AnimatedElement {
     Drawable element;
     boolean finished = false;
@@ -60,9 +63,21 @@ public class AnimatedElement {
             buffer.translate(state.x, state.y);
             buffer.scale(state.scale);
             buffer.rotate(state.rotation);
-            buffer.fill(state.fill_color);
-            buffer.stroke(state.stroke_color);
+            buffer.fill(state.fill_color, state.fill_opacity);
+            buffer.stroke(state.stroke_color, state.stroke_opacity);
             element.draw(buffer);
         }
     }
+}
+
+AnimationState tween(AnimationState a, AnimationState b, float amt) {
+            float x = lerp(a.x, b.x, amt); float y = lerp(a.y, b.y, amt);
+            float tween_scale = lerp(a.scale, b.scale, amt);
+            float rotation = radians(lerp(a.rotation, b.rotation, amt));
+            color fill_color = lerpColor(a.fill_color, b.fill_color, amt);
+            int fill_opacity = lerpColor(a.fill_opacity, b.fill_opacity, amt);
+            color stroke_color = lerpColor(a.stroke_color, b.stroke_color, amt);
+            int stroke_opacity = lerpColor(a.stroke_opacity, b.stroke_opacity, amt);
+            return new AnimationState(0, x, y, tween_scale, rotation,
+                        fill_color, fill_opacity, stroke_color, stroke_opacity);
 }

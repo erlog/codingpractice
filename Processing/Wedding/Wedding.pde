@@ -54,19 +54,20 @@ void setup() {
     background_elements = parse_element_file("BackgroundElements.xml");
     image_elements = parse_element_file("ImageElements.xml");
     text_elements = parse_element_file("TextElements.xml");
+    TimeOffset -= millis();
 }
 
 void draw() {
     //render
     render_layer(background_elements, background_layer);
-    //render_layer(image_elements, image_layer);
+    render_layer(image_elements, image_layer);
     render_layer(text_elements, text_layer);
 
     //composite
     background(128);
     image(background_layer, 0, 0);
-    //image(image_layer, 0, 0);
-    image(text_layer, 0, 0);
-    //blend(text_layer, 0, 0, width, height, 0, 0, width, height, SOFT_LIGHT);
+    image(image_layer, 0, 0);
+    //image(text_layer, 0, 0);
+    blend(text_layer, 0, 0, width, height, 0, 0, width, height, SOFT_LIGHT);
 }
 
