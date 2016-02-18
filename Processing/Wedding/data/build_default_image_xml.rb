@@ -9,21 +9,21 @@ item_string = '<element type="image">
     <in_state>
         <duration>2</duration>
         <x_pos>0</x_pos> <y_pos>0</y_pos>
-        <scale>0</scale> <rotation>0</rotation>
+        <scale>1</scale> <rotation>0</rotation>
         <fill_color>WHITE</fill_color> <fill_opacity>0</fill_opacity>
         <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
     </in_state>
     <display_state>
         <duration>2</duration>
         <x_pos>0</x_pos> <y_pos>0</y_pos>
-        <scale>0</scale> <rotation>0</rotation>
+        <scale>1</scale> <rotation>0</rotation>
         <fill_color>WHITE</fill_color> <fill_opacity>255</fill_opacity>
         <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
     </display_state>
     <out_state>
         <duration>2</duration>
         <x_pos>0</x_pos> <y_pos>0</y_pos>
-        <scale>0</scale> <rotation>0</rotation>
+        <scale>1</scale> <rotation>0</rotation>
         <fill_color>WHITE</fill_color> <fill_opacity>0</fill_opacity>
         <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
     </out_state>
@@ -32,6 +32,7 @@ item_string = '<element type="image">
 '
 
 output_file = open("default_slideshow.xml", "w")
+output_file.write('<?xml version="1.0" encoding="UTF-8"?><elements>')
 
 Dir.entries(directory_path).each do |file|
     if File.file?(File.join(directory_path, file))
@@ -42,4 +43,5 @@ Dir.entries(directory_path).each do |file|
     end
 end
 
+output_file.write("</elements>")
 output_file.close()

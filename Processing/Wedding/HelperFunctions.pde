@@ -3,5 +3,6 @@ float smootherstep(float t) {
 }
 
 int managed_time() {
-    return millis() + TimeOffset;
+    return (int)(frameCount * 33.33333);
+    //return millis() + TimeOffset;
 }
