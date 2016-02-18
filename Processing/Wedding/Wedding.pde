@@ -57,6 +57,10 @@ void setup() {
     TimeOffset -= millis();
 }
 
+void mousePressed() {
+    println("(" + managed_time() + ")" + " Mouse X: " + mouseX + " Mouse Y: " + mouseY);
+}
+
 void draw() {
     //render
     render_layer(background_elements, background_layer);
