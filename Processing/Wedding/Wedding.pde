@@ -19,6 +19,8 @@ void render_layer(AnimationScheduler scheduler, PGraphics layer) {
 }
 
 int TimeOffset = 0;
+int EndTime = 20*1000;
+PFont debug_font;
 
 PGraphics background_layer;
 AnimationScheduler background_elements;
@@ -37,7 +39,9 @@ AudioInput input;
 HashMap ColorMap = initialize_colors();
 
 void setup() {
+    debug_font = createFont("Arial", 32);
     size(1280, 720);
+
     //printArray(PFont.list());
 
     //Music
@@ -57,6 +61,10 @@ void setup() {
     TimeOffset -= millis();
 }
 
+void mousePressed() {
+    println("(" + managed_time() + ")" + " Mouse X: " + mouseX + " Mouse Y: " + mouseY);
+}
+
 void draw() {
     //render
     render_layer(background_elements, background_layer);
@@ -64,9 +72,20 @@ void draw() {
     render_layer(text_elements, text_layer);
 
     //composite
+    background(128);
     image(background_layer, 0, 0);
     image(image_layer, 0, 0);
-    image(text_layer, 0, 0);
-    //blend(text_layer, 0, 0, width, height, 0, 0, width, height, SOFT_LIGHT);
+    //image(text_layer, 0, 0);
+    blend(text_layer, 0, 0, width, height, 0, 0, width, height, SOFT_LIGHT);
+    blend(text_layer, 0, 0, width, height, 0, 0, width, height, SOFT_LIGHT);
+    blend(text_layer, 0, 0, width, height, 0, 0, width, height, SOFT_LIGHT);
+
+    //draw debug timer
+    textFont(debug_font);
+    text((float)managed_time()/1000, 32, 32);
+
+    if(managed_time() >= EndTime) {
+        exit();
+    }
 }
 
