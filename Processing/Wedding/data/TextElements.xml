@@ -3,57 +3,214 @@
 <elements>
 
 <element type="text">
-    <start_time>1</start_time>
-    <string>L O S T</string>
-    <font>GreatVibes-Regular</font> <font_size>128</font_size>
+    <start_time>2</start_time>
+    <string>John James Rozewicki</string>
+    <font>SavoyeLetPlain</font> <font_size>128</font_size>
+    <smoother>SMOOTHERSTEP</smoother>
     <in_state>
-        <duration>1.0</duration>
-        <x_pos>640</x_pos> <y_pos>360</y_pos>
-        <scale>0.01</scale> <rotation>36.0</rotation>
+        <duration>3</duration>
+        <x_pos>640</x_pos> <y_pos>180</y_pos>
+        <scale>1.0</scale> <rotation>0</rotation>
         <fill_color>BLACK</fill_color> <fill_opacity>0</fill_opacity>
         <stroke_color>BLACK</stroke_color> <stroke_opacity>0</stroke_opacity>
     </in_state>
-    <display_state>
+    <display_state_in>
         <duration>1.0</duration>
-        <x_pos>640</x_pos> <y_pos>360</y_pos>
-        <scale>1</scale> <rotation>0</rotation>
+        <x_pos>640</x_pos> <y_pos>180</y_pos>
+        <scale>1.0</scale> <rotation>0</rotation>
         <fill_color>BLACK</fill_color> <fill_opacity>255</fill_opacity>
         <stroke_color>BLACK</stroke_color> <stroke_opacity>255</stroke_opacity>
-    </display_state>
+    </display_state_in>
+    <display_state_out>
+        <duration>0</duration>
+        <x_pos>640</x_pos> <y_pos>180</y_pos>
+        <scale>1.0</scale> <rotation>0</rotation>
+        <fill_color>BLACK</fill_color> <fill_opacity>255</fill_opacity>
+        <stroke_color>BLACK</stroke_color> <stroke_opacity>255</stroke_opacity>
+    </display_state_out>
     <out_state>
-        <duration>1.0</duration>
-        <x_pos>640</x_pos> <y_pos>360</y_pos>
-        <scale>2.0</scale> <rotation>-36.0</rotation>
+        <duration>3</duration>
+        <x_pos>640</x_pos> <y_pos>180</y_pos>
+        <scale>1.0</scale> <rotation>0</rotation>
         <fill_color>BLACK</fill_color> <fill_opacity>0</fill_opacity>
         <stroke_color>BLACK</stroke_color> <stroke_opacity>0</stroke_opacity>
     </out_state>
 </element>
 
 <element type="text">
-    <start_time>4</start_time>
-    <string>F O U N D</string>
-    <font>GreatVibes-Regular</font> <font_size>128</font_size>
+    <start_time>2</start_time>
+    <string>Born: 06/17/1986</string>
+    <font>SavoyeLetPlain</font> <font_size>128</font_size>
+    <smoother>SMOOTHERSTEP</smoother>
     <in_state>
-        <duration>1.0</duration>
+        <duration>3</duration>
         <x_pos>640</x_pos> <y_pos>360</y_pos>
-        <scale>0.01</scale> <rotation>36.0</rotation>
+        <scale>1.0</scale> <rotation>0</rotation>
         <fill_color>BLACK</fill_color> <fill_opacity>0</fill_opacity>
         <stroke_color>BLACK</stroke_color> <stroke_opacity>0</stroke_opacity>
     </in_state>
-    <display_state>
+    <display_state_in>
         <duration>1.0</duration>
         <x_pos>640</x_pos> <y_pos>360</y_pos>
-        <scale>1</scale> <rotation>0</rotation>
+        <scale>1.0</scale> <rotation>0</rotation>
         <fill_color>BLACK</fill_color> <fill_opacity>255</fill_opacity>
         <stroke_color>BLACK</stroke_color> <stroke_opacity>255</stroke_opacity>
-    </display_state>
-    <out_state>
-        <duration>1.0</duration>
+    </display_state_in>
+    <display_state_out>
+        <duration>0</duration>
         <x_pos>640</x_pos> <y_pos>360</y_pos>
-        <scale>2.0</scale> <rotation>-36.0</rotation>
+        <scale>1.0</scale> <rotation>0</rotation>
+        <fill_color>BLACK</fill_color> <fill_opacity>255</fill_opacity>
+        <stroke_color>BLACK</stroke_color> <stroke_opacity>255</stroke_opacity>
+    </display_state_out>
+    <out_state>
+        <duration>3</duration>
+        <x_pos>640</x_pos> <y_pos>360</y_pos>
+        <scale>1.0</scale> <rotation>0</rotation>
         <fill_color>BLACK</fill_color> <fill_opacity>0</fill_opacity>
         <stroke_color>BLACK</stroke_color> <stroke_opacity>0</stroke_opacity>
     </out_state>
 </element>
+
+<element type="text">
+    <start_time>6</start_time>
+    <string>Likes:</string>
+    <font>SavoyeLetPlain</font> <font_size>128</font_size>
+    <smoother>SMOOTHERSTEP</smoother>
+    <in_state>
+        <duration>3</duration>
+        <x_pos>320</x_pos> <y_pos>180</y_pos>
+        <scale>1.0</scale> <rotation>0</rotation>
+        <fill_color>BLACK</fill_color> <fill_opacity>0</fill_opacity>
+        <stroke_color>BLACK</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </in_state>
+    <display_state_in>
+        <duration>1.0</duration>
+        <x_pos>320</x_pos> <y_pos>180</y_pos>
+        <scale>1.0</scale> <rotation>0</rotation>
+        <fill_color>BLACK</fill_color> <fill_opacity>255</fill_opacity>
+        <stroke_color>BLACK</stroke_color> <stroke_opacity>255</stroke_opacity>
+    </display_state_in>
+    <display_state_out>
+        <duration>0</duration>
+        <x_pos>320</x_pos> <y_pos>180</y_pos>
+        <scale>1.0</scale> <rotation>0</rotation>
+        <fill_color>BLACK</fill_color> <fill_opacity>255</fill_opacity>
+        <stroke_color>BLACK</stroke_color> <stroke_opacity>255</stroke_opacity>
+    </display_state_out>
+    <out_state>
+        <duration>3</duration>
+        <x_pos>320</x_pos> <y_pos>180</y_pos>
+        <scale>1.0</scale> <rotation>0</rotation>
+        <fill_color>BLACK</fill_color> <fill_opacity>0</fill_opacity>
+        <stroke_color>BLACK</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </out_state>
+</element>
+
+<element type="text">
+    <start_time>6</start_time>
+    <string>Beer!</string>
+    <font>SavoyeLetPlain</font> <font_size>128</font_size>
+    <smoother>SMOOTHERSTEP</smoother>
+    <in_state>
+        <duration>3</duration>
+        <x_pos>550</x_pos> <y_pos>180</y_pos>
+        <scale>1.0</scale> <rotation>0</rotation>
+        <fill_color>BLACK</fill_color> <fill_opacity>0</fill_opacity>
+        <stroke_color>BLACK</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </in_state>
+    <display_state_in>
+        <duration>1.0</duration>
+        <x_pos>550</x_pos> <y_pos>180</y_pos>
+        <scale>1.0</scale> <rotation>0</rotation>
+        <fill_color>BLACK</fill_color> <fill_opacity>255</fill_opacity>
+        <stroke_color>BLACK</stroke_color> <stroke_opacity>255</stroke_opacity>
+    </display_state_in>
+    <display_state_out>
+        <duration>0</duration>
+        <x_pos>550</x_pos> <y_pos>180</y_pos>
+        <scale>1.0</scale> <rotation>0</rotation>
+        <fill_color>BLACK</fill_color> <fill_opacity>255</fill_opacity>
+        <stroke_color>BLACK</stroke_color> <stroke_opacity>255</stroke_opacity>
+    </display_state_out>
+    <out_state>
+        <duration>3</duration>
+        <x_pos>550</x_pos> <y_pos>180</y_pos>
+        <scale>1.0</scale> <rotation>0</rotation>
+        <fill_color>BLACK</fill_color> <fill_opacity>0</fill_opacity>
+        <stroke_color>BLACK</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </out_state>
+</element>
+
+<element type="text">
+    <start_time>6</start_time>
+    <string>Popcorn!</string>
+    <font>SavoyeLetPlain</font> <font_size>128</font_size>
+    <smoother>SMOOTHERSTEP</smoother>
+    <in_state>
+        <duration>3</duration>
+        <x_pos>550</x_pos> <y_pos>276</y_pos>
+        <scale>1.0</scale> <rotation>0</rotation>
+        <fill_color>BLACK</fill_color> <fill_opacity>0</fill_opacity>
+        <stroke_color>BLACK</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </in_state>
+    <display_state_in>
+        <duration>1.0</duration>
+        <x_pos>550</x_pos> <y_pos>276</y_pos>
+        <scale>1.0</scale> <rotation>0</rotation>
+        <fill_color>BLACK</fill_color> <fill_opacity>255</fill_opacity>
+        <stroke_color>BLACK</stroke_color> <stroke_opacity>255</stroke_opacity>
+    </display_state_in>
+    <display_state_out>
+        <duration>0</duration>
+        <x_pos>550</x_pos> <y_pos>276</y_pos>
+        <scale>1.0</scale> <rotation>0</rotation>
+        <fill_color>BLACK</fill_color> <fill_opacity>255</fill_opacity>
+        <stroke_color>BLACK</stroke_color> <stroke_opacity>255</stroke_opacity>
+    </display_state_out>
+    <out_state>
+        <duration>3</duration>
+        <x_pos>550</x_pos> <y_pos>276</y_pos>
+        <scale>1.0</scale> <rotation>0</rotation>
+        <fill_color>BLACK</fill_color> <fill_opacity>0</fill_opacity>
+        <stroke_color>BLACK</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </out_state>
+</element>
+
+<element type="text">
+    <start_time>6</start_time>
+    <string>Video Games!</string>
+    <font>SavoyeLetPlain</font> <font_size>128</font_size>
+    <smoother>SMOOTHERSTEP</smoother>
+    <in_state>
+        <duration>3</duration>
+        <x_pos>550</x_pos> <y_pos>372</y_pos>
+        <scale>1.0</scale> <rotation>0</rotation>
+        <fill_color>BLACK</fill_color> <fill_opacity>0</fill_opacity>
+        <stroke_color>BLACK</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </in_state>
+    <display_state_in>
+        <duration>1.0</duration>
+        <x_pos>550</x_pos> <y_pos>372</y_pos>
+        <scale>1.0</scale> <rotation>0</rotation>
+        <fill_color>BLACK</fill_color> <fill_opacity>255</fill_opacity>
+        <stroke_color>BLACK</stroke_color> <stroke_opacity>255</stroke_opacity>
+    </display_state_in>
+    <display_state_out>
+        <duration>0</duration>
+        <x_pos>550</x_pos> <y_pos>372</y_pos>
+        <scale>1.0</scale> <rotation>0</rotation>
+        <fill_color>BLACK</fill_color> <fill_opacity>255</fill_opacity>
+        <stroke_color>BLACK</stroke_color> <stroke_opacity>255</stroke_opacity>
+    </display_state_out>
+    <out_state>
+        <duration>3</duration>
+        <x_pos>550</x_pos> <y_pos>372</y_pos>
+        <scale>1.0</scale> <rotation>0</rotation>
+        <fill_color>BLACK</fill_color> <fill_opacity>0</fill_opacity>
+        <stroke_color>BLACK</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </out_state>
+</element>
+
 
 </elements>

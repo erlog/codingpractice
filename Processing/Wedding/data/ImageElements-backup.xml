@@ -1,0 +1,1123 @@
+<?xml version="1.0" encoding="UTF-8"?><elements><element type="image">
+    <start_time>1</start_time>
+    <file_path>000 - test.png</file_path>
+    <smoother>NONE</smoother>
+    <in_state>
+        <duration>1</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>0</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </in_state>
+    <display_state_in>
+        <duration>3</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>255</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </display_state_in>
+    <display_state_out>
+        <duration>0</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>255</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </display_state_out>
+    <out_state>
+        <duration>1</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>0</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </out_state>
+</element>
+
+<element type="image">
+    <start_time>6</start_time>
+    <file_path>001 - john_angelo.png</file_path>
+    <smoother>NONE</smoother>
+    <in_state>
+        <duration>1</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>0</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </in_state>
+    <display_state_in>
+        <duration>3</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>255</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </display_state_in>
+    <display_state_out>
+        <duration>0</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>255</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </display_state_out>
+    <out_state>
+        <duration>1</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>0</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </out_state>
+</element>
+
+<element type="image">
+    <start_time>11</start_time>
+    <file_path>002 - spell_bowl.png</file_path>
+    <smoother>NONE</smoother>
+    <in_state>
+        <duration>1</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>0</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </in_state>
+    <display_state_in>
+        <duration>3</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>255</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </display_state_in>
+    <display_state_out>
+        <duration>0</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>255</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </display_state_out>
+    <out_state>
+        <duration>1</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>0</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </out_state>
+</element>
+
+<element type="image">
+    <start_time>16</start_time>
+    <file_path>003 - pumpkin_carving.png</file_path>
+    <smoother>NONE</smoother>
+    <in_state>
+        <duration>1</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>0</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </in_state>
+    <display_state_in>
+        <duration>3</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>255</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </display_state_in>
+    <display_state_out>
+        <duration>0</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>255</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </display_state_out>
+    <out_state>
+        <duration>1</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>0</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </out_state>
+</element>
+
+<element type="image">
+    <start_time>21</start_time>
+    <file_path>004 - cubs_trip.png</file_path>
+    <smoother>NONE</smoother>
+    <in_state>
+        <duration>1</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>0</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </in_state>
+    <display_state_in>
+        <duration>3</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>255</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </display_state_in>
+    <display_state_out>
+        <duration>0</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>255</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </display_state_out>
+    <out_state>
+        <duration>1</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>0</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </out_state>
+</element>
+
+<element type="image">
+    <start_time>26</start_time>
+    <file_path>005 - halloween.png</file_path>
+    <smoother>NONE</smoother>
+    <in_state>
+        <duration>1</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>0</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </in_state>
+    <display_state_in>
+        <duration>3</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>255</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </display_state_in>
+    <display_state_out>
+        <duration>0</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>255</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </display_state_out>
+    <out_state>
+        <duration>1</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>0</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </out_state>
+</element>
+
+<element type="image">
+    <start_time>31</start_time>
+    <file_path>006 - john_anne.png</file_path>
+    <smoother>NONE</smoother>
+    <in_state>
+        <duration>1</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>0</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </in_state>
+    <display_state_in>
+        <duration>3</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>255</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </display_state_in>
+    <display_state_out>
+        <duration>0</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>255</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </display_state_out>
+    <out_state>
+        <duration>1</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>0</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </out_state>
+</element>
+
+<element type="image">
+    <start_time>36</start_time>
+    <file_path>007 - halloween.png</file_path>
+    <smoother>NONE</smoother>
+    <in_state>
+        <duration>1</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>0</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </in_state>
+    <display_state_in>
+        <duration>3</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>255</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </display_state_in>
+    <display_state_out>
+        <duration>0</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>255</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </display_state_out>
+    <out_state>
+        <duration>1</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>0</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </out_state>
+</element>
+
+<element type="image">
+    <start_time>41</start_time>
+    <file_path>008 - band.png</file_path>
+    <smoother>NONE</smoother>
+    <in_state>
+        <duration>1</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>0</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </in_state>
+    <display_state_in>
+        <duration>3</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>255</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </display_state_in>
+    <display_state_out>
+        <duration>0</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>255</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </display_state_out>
+    <out_state>
+        <duration>1</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>0</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </out_state>
+</element>
+
+<element type="image">
+    <start_time>46</start_time>
+    <file_path>009 - portrait.png</file_path>
+    <smoother>NONE</smoother>
+    <in_state>
+        <duration>1</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>0</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </in_state>
+    <display_state_in>
+        <duration>3</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>255</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </display_state_in>
+    <display_state_out>
+        <duration>0</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>255</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </display_state_out>
+    <out_state>
+        <duration>1</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>0</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </out_state>
+</element>
+
+<element type="image">
+    <start_time>51</start_time>
+    <file_path>010 - drunk.png</file_path>
+    <smoother>NONE</smoother>
+    <in_state>
+        <duration>1</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>0</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </in_state>
+    <display_state_in>
+        <duration>3</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>255</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </display_state_in>
+    <display_state_out>
+        <duration>0</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>255</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </display_state_out>
+    <out_state>
+        <duration>1</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>0</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </out_state>
+</element>
+
+<element type="image">
+    <start_time>56</start_time>
+    <file_path>011 - beer.png</file_path>
+    <smoother>NONE</smoother>
+    <in_state>
+        <duration>1</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>0</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </in_state>
+    <display_state_in>
+        <duration>3</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>255</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </display_state_in>
+    <display_state_out>
+        <duration>0</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>255</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </display_state_out>
+    <out_state>
+        <duration>1</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>0</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </out_state>
+</element>
+
+<element type="image">
+    <start_time>61</start_time>
+    <file_path>012 - toilet.png</file_path>
+    <smoother>NONE</smoother>
+    <in_state>
+        <duration>1</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>0</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </in_state>
+    <display_state_in>
+        <duration>3</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>255</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </display_state_in>
+    <display_state_out>
+        <duration>0</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>255</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </display_state_out>
+    <out_state>
+        <duration>1</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>0</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </out_state>
+</element>
+
+<element type="image">
+    <start_time>66</start_time>
+    <file_path>013 - swimming.png</file_path>
+    <smoother>NONE</smoother>
+    <in_state>
+        <duration>1</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>0</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </in_state>
+    <display_state_in>
+        <duration>3</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>255</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </display_state_in>
+    <display_state_out>
+        <duration>0</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>255</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </display_state_out>
+    <out_state>
+        <duration>1</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>0</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </out_state>
+</element>
+
+<element type="image">
+    <start_time>71</start_time>
+    <file_path>014 - bath.png</file_path>
+    <smoother>NONE</smoother>
+    <in_state>
+        <duration>1</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>0</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </in_state>
+    <display_state_in>
+        <duration>3</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>255</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </display_state_in>
+    <display_state_out>
+        <duration>0</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>255</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </display_state_out>
+    <out_state>
+        <duration>1</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>0</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </out_state>
+</element>
+
+<element type="image">
+    <start_time>76</start_time>
+    <file_path>015 - coca_cola.png</file_path>
+    <smoother>NONE</smoother>
+    <in_state>
+        <duration>1</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>0</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </in_state>
+    <display_state_in>
+        <duration>3</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>255</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </display_state_in>
+    <display_state_out>
+        <duration>0</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>255</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </display_state_out>
+    <out_state>
+        <duration>1</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>0</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </out_state>
+</element>
+
+<element type="image">
+    <start_time>81</start_time>
+    <file_path>016 - games.png</file_path>
+    <smoother>NONE</smoother>
+    <in_state>
+        <duration>1</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>0</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </in_state>
+    <display_state_in>
+        <duration>3</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>255</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </display_state_in>
+    <display_state_out>
+        <duration>0</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>255</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </display_state_out>
+    <out_state>
+        <duration>1</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>0</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </out_state>
+</element>
+
+<element type="image">
+    <start_time>86</start_time>
+    <file_path>017 - grandparents.png</file_path>
+    <smoother>NONE</smoother>
+    <in_state>
+        <duration>1</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>0</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </in_state>
+    <display_state_in>
+        <duration>3</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>255</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </display_state_in>
+    <display_state_out>
+        <duration>0</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>255</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </display_state_out>
+    <out_state>
+        <duration>1</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>0</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </out_state>
+</element>
+
+<element type="image">
+    <start_time>91</start_time>
+    <file_path>018 - portrait.png</file_path>
+    <smoother>NONE</smoother>
+    <in_state>
+        <duration>1</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>0</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </in_state>
+    <display_state_in>
+        <duration>3</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>255</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </display_state_in>
+    <display_state_out>
+        <duration>0</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>255</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </display_state_out>
+    <out_state>
+        <duration>1</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>0</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </out_state>
+</element>
+
+<element type="image">
+    <start_time>96</start_time>
+    <file_path>019 - cola.png</file_path>
+    <smoother>NONE</smoother>
+    <in_state>
+        <duration>1</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>0</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </in_state>
+    <display_state_in>
+        <duration>3</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>255</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </display_state_in>
+    <display_state_out>
+        <duration>0</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>255</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </display_state_out>
+    <out_state>
+        <duration>1</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>0</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </out_state>
+</element>
+
+<element type="image">
+    <start_time>101</start_time>
+    <file_path>020 - cake.png</file_path>
+    <smoother>NONE</smoother>
+    <in_state>
+        <duration>1</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>0</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </in_state>
+    <display_state_in>
+        <duration>3</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>255</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </display_state_in>
+    <display_state_out>
+        <duration>0</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>255</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </display_state_out>
+    <out_state>
+        <duration>1</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>0</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </out_state>
+</element>
+
+<element type="image">
+    <start_time>106</start_time>
+    <file_path>021 - fishing.png</file_path>
+    <smoother>NONE</smoother>
+    <in_state>
+        <duration>1</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>0</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </in_state>
+    <display_state_in>
+        <duration>3</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>255</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </display_state_in>
+    <display_state_out>
+        <duration>0</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>255</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </display_state_out>
+    <out_state>
+        <duration>1</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>0</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </out_state>
+</element>
+
+<element type="image">
+    <start_time>111</start_time>
+    <file_path>022 - graduation.png</file_path>
+    <smoother>NONE</smoother>
+    <in_state>
+        <duration>1</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>0</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </in_state>
+    <display_state_in>
+        <duration>3</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>255</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </display_state_in>
+    <display_state_out>
+        <duration>0</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>255</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </display_state_out>
+    <out_state>
+        <duration>1</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>0</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </out_state>
+</element>
+
+<element type="image">
+    <start_time>116</start_time>
+    <file_path>023 - cardboard_box.png</file_path>
+    <smoother>NONE</smoother>
+    <in_state>
+        <duration>1</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>0</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </in_state>
+    <display_state_in>
+        <duration>3</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>255</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </display_state_in>
+    <display_state_out>
+        <duration>0</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>255</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </display_state_out>
+    <out_state>
+        <duration>1</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>0</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </out_state>
+</element>
+
+<element type="image">
+    <start_time>121</start_time>
+    <file_path>501 - muddy.png</file_path>
+    <smoother>NONE</smoother>
+    <in_state>
+        <duration>1</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>0</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </in_state>
+    <display_state_in>
+        <duration>3</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>255</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </display_state_in>
+    <display_state_out>
+        <duration>0</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>255</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </display_state_out>
+    <out_state>
+        <duration>1</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>0</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </out_state>
+</element>
+
+<element type="image">
+    <start_time>126</start_time>
+    <file_path>502 - eating.png</file_path>
+    <smoother>NONE</smoother>
+    <in_state>
+        <duration>1</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>0</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </in_state>
+    <display_state_in>
+        <duration>3</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>255</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </display_state_in>
+    <display_state_out>
+        <duration>0</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>255</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </display_state_out>
+    <out_state>
+        <duration>1</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>0</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </out_state>
+</element>
+
+<element type="image">
+    <start_time>131</start_time>
+    <file_path>503 - cardboard_box.png</file_path>
+    <smoother>NONE</smoother>
+    <in_state>
+        <duration>1</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>0</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </in_state>
+    <display_state_in>
+        <duration>3</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>255</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </display_state_in>
+    <display_state_out>
+        <duration>0</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>255</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </display_state_out>
+    <out_state>
+        <duration>1</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>0</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </out_state>
+</element>
+
+<element type="image">
+    <start_time>136</start_time>
+    <file_path>504 - picture.png</file_path>
+    <smoother>NONE</smoother>
+    <in_state>
+        <duration>1</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>0</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </in_state>
+    <display_state_in>
+        <duration>3</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>255</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </display_state_in>
+    <display_state_out>
+        <duration>0</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>255</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </display_state_out>
+    <out_state>
+        <duration>1</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>0</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </out_state>
+</element>
+
+<element type="image">
+    <start_time>141</start_time>
+    <file_path>505 - shichigosan.png</file_path>
+    <smoother>NONE</smoother>
+    <in_state>
+        <duration>1</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>0</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </in_state>
+    <display_state_in>
+        <duration>3</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>255</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </display_state_in>
+    <display_state_out>
+        <duration>0</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>255</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </display_state_out>
+    <out_state>
+        <duration>1</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>0</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </out_state>
+</element>
+
+<element type="image">
+    <start_time>146</start_time>
+    <file_path>998 - denise.png</file_path>
+    <smoother>NONE</smoother>
+    <in_state>
+        <duration>1</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>0</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </in_state>
+    <display_state_in>
+        <duration>3</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>255</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </display_state_in>
+    <display_state_out>
+        <duration>0</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>255</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </display_state_out>
+    <out_state>
+        <duration>1</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>0</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </out_state>
+</element>
+
+<element type="image">
+    <start_time>151</start_time>
+    <file_path>999 - denise.png</file_path>
+    <smoother>NONE</smoother>
+    <in_state>
+        <duration>1</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>0</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </in_state>
+    <display_state_in>
+        <duration>3</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>255</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </display_state_in>
+    <display_state_out>
+        <duration>0</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>255</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </display_state_out>
+    <out_state>
+        <duration>1</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>0</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </out_state>
+</element>
+
+<element type="image">
+    <start_time>156</start_time>
+    <file_path>parchment.png</file_path>
+    <smoother>NONE</smoother>
+    <in_state>
+        <duration>1</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>0</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </in_state>
+    <display_state_in>
+        <duration>3</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>255</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </display_state_in>
+    <display_state_out>
+        <duration>0</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>255</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </display_state_out>
+    <out_state>
+        <duration>1</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>0</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </out_state>
+</element>
+
+<element type="image">
+    <start_time>161</start_time>
+    <file_path>photo.png</file_path>
+    <smoother>NONE</smoother>
+    <in_state>
+        <duration>1</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>0</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </in_state>
+    <display_state_in>
+        <duration>3</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>255</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </display_state_in>
+    <display_state_out>
+        <duration>0</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>255</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </display_state_out>
+    <out_state>
+        <duration>1</duration>
+        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>0</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </out_state>
+</element>
+
+</elements>

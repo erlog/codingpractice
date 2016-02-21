@@ -19,7 +19,7 @@ void render_layer(AnimationScheduler scheduler, PGraphics layer) {
 }
 
 int TimeOffset = 0;
-int EndTime = 20*1000;
+int EndTime = 300*1000;
 PFont debug_font;
 
 PGraphics background_layer;
@@ -40,9 +40,9 @@ HashMap ColorMap = initialize_colors();
 
 void setup() {
     debug_font = createFont("Arial", 32);
-    size(1280, 720);
+    size(1280, 720, P2D);
 
-    //printArray(PFont.list());
+    printArray(PFont.list());
 
     //Music
     minim = new Minim(this);
@@ -65,6 +65,11 @@ void mousePressed() {
     println("(" + managed_time() + ")" + " Mouse X: " + mouseX + " Mouse Y: " + mouseY);
 }
 
+int managed_time() {
+    //return (int)(frameCount * 33.33333);
+    return millis() + TimeOffset;
+}
+
 void draw() {
     //render
     render_layer(background_elements, background_layer);
@@ -74,11 +79,15 @@ void draw() {
     //composite
     background(128);
     image(background_layer, 0, 0);
+    //blend(image_layer, 0, 0, width, height, 0, 0, width, height, SOFT_LIGHT);
+    //blend(image_layer, 0, 0, width, height, 0, 0, width, height, SOFT_LIGHT);
+    //blend(image_layer, 0, 0, width, height, 0, 0, width, height, SOFT_LIGHT);
     image(image_layer, 0, 0);
+    blend(text_layer, 0, 0, width, height, 0, 0, width, height, SOFT_LIGHT);
+    blend(text_layer, 0, 0, width, height, 0, 0, width, height, SOFT_LIGHT);
+    blend(text_layer, 0, 0, width, height, 0, 0, width, height, SOFT_LIGHT);
+    blend(text_layer, -1, 1, width, height, 0, 0, width, height, SOFT_LIGHT);
     //image(text_layer, 0, 0);
-    blend(text_layer, 0, 0, width, height, 0, 0, width, height, SOFT_LIGHT);
-    blend(text_layer, 0, 0, width, height, 0, 0, width, height, SOFT_LIGHT);
-    blend(text_layer, 0, 0, width, height, 0, 0, width, height, SOFT_LIGHT);
 
     //draw debug timer
     textFont(debug_font);

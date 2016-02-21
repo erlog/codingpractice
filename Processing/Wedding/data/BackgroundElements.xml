@@ -3,25 +3,33 @@
 <elements>
 
 <element type="image">
-    <start_time>1</start_time>
+    <start_time>0</start_time>
     <file_path>parchment.png</file_path>
+    <smoother>NONE</smoother>
     <in_state>
         <duration>100</duration>
-        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <x_pos>640</x_pos> <y_pos>360</y_pos>
         <scale>1</scale> <rotation>0</rotation>
         <fill_color>WHITE</fill_color> <fill_opacity>255</fill_opacity>
         <stroke_color>WHITE</stroke_color> <stroke_opacity>255</stroke_opacity>
     </in_state>
-    <display_state>
+    <display_state_in>
         <duration>100</duration>
-        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <x_pos>640</x_pos> <y_pos>360</y_pos>
         <scale>1</scale> <rotation>0</rotation>
         <fill_color>WHITE</fill_color> <fill_opacity>255</fill_opacity>
         <stroke_color>WHITE</stroke_color> <stroke_opacity>255</stroke_opacity>
-    </display_state>
+    </display_state_in>
+    <display_state_out>
+        <duration>0</duration>
+        <x_pos>640</x_pos> <y_pos>360</y_pos>
+        <scale>1</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>255</fill_opacity>
+        <stroke_color>WHITE</stroke_color> <stroke_opacity>255</stroke_opacity>
+    </display_state_out>
     <out_state>
         <duration>100</duration>
-        <x_pos>0</x_pos> <y_pos>0</y_pos>
+        <x_pos>640</x_pos> <y_pos>360</y_pos>
         <scale>1</scale> <rotation>0</rotation>
         <fill_color>WHITE</fill_color> <fill_opacity>255</fill_opacity>
         <stroke_color>WHITE</stroke_color> <stroke_opacity>255</stroke_opacity>

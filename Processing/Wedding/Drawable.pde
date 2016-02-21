@@ -16,14 +16,17 @@ public class DrawableText implements Drawable {
 }
 
 public class DrawableImage implements Drawable {
-    public PImage img;
+    PImage img;
 
     public DrawableImage(String image_path, String file_type) {
-        img = loadImage(image_path, file_type);
+        //img = loadImage(image_path, file_type);
+        img = requestImage(image_path, file_type);
     }
 
     public void draw(PGraphics buffer) {
+        int top_left_x = -1*(img.width/2);
+        int top_left_y = -1*(img.height/2);
         buffer.tint(buffer.fillColor);
-        buffer.image(img, 0, 0);
+        buffer.image(img, top_left_x, top_left_y);
     }
 }
