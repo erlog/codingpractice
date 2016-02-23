@@ -19,8 +19,8 @@ def padbytearraywithPKCS7(bytearray, blocklength)
 	padamount = blocklength - (bytearray.length % blocklength)
 	finallength = bytearray.length + padamount
 
-	while bytearray.length < finallength 
-		bytearray << padamount 
+	while bytearray.length < finallength
+		bytearray << padamount
 	end
 	return bytearray
 end
@@ -35,7 +35,7 @@ end
 def transposebytearray(bytearray, numberofstrips)
 	transposedbytes = Array.new(numberofstrips){ Array.new() }
 	bytearray.each_slice(numberofstrips) do |slice|
-		slice.each_with_index do |byte, index| 
+		slice.each_with_index do |byte, index|
 			transposedbytes[index] << byte
 		end
 	end
@@ -51,6 +51,7 @@ def hexstringtostring(string)
 end
 
 def hexstringtobytearray(hexstring)
+    hexstring = "0" + hexstring unless (hexstring.length % 2 == 0)
 	bytearray = hexstring.scan(/.{2}/)
 	bytearray.map!{ |hex| hex.to_i(16) }
 	return bytearray
@@ -59,7 +60,7 @@ end
 def bytearraytohexstring(bytearray)
 	hexstring = ""
 	bytearray.each do |byte| hexstring += byte.to_s(16).rjust(2, "0") end
-	return hexstring	
+	return hexstring
 end
 
 def bytearraytostring(bytearray)
@@ -102,7 +103,7 @@ def base64tobytearray(base64string)
 	binarychunks = []
 	paddingamount = base64string.count("=")
 
-	base64string.tr("=", "").split("").each do |char| 
+	base64string.tr("=", "").split("").each do |char|
 		binarychunks << Base64Symbols.index(char).to_s(2).rjust(6, "0")
 	end
 
@@ -204,7 +205,7 @@ def computehammingdistance(bytearrayone, bytearraytwo)
 end
 
 def findbestxorbyte(bytearray)
-	bestxorbyte = 0 
+	bestxorbyte = 0
 	bestscore = 0
 
 	(1..255).each do |xorbyte|
@@ -216,7 +217,7 @@ def findbestxorbyte(bytearray)
 		end
 	end
 
-	return bestxorbyte 
+	return bestxorbyte
 end
 
 def findrepeatingkeyxorkeylength(bytearray)
@@ -238,7 +239,7 @@ def findrepeatingkeyxorkeylength(bytearray)
 			bestkeylength, bestaverage = keylength, average
 		end
 	end
-	
+
 	return bestkeylength
 end
 
@@ -252,7 +253,7 @@ end
 #versions of functions labeled 'block' do no padding
 
 def decryptAES128ECBblock(inputblock, keybytes)
-	input, key = bytearraytostring(inputblock), bytearraytostring(keybytes) 
+	input, key = bytearraytostring(inputblock), bytearraytostring(keybytes)
 	decipher = OpenSSL::Cipher::AES.new(128, 'ECB')
 	decipher.decrypt
 	decipher.key = key
@@ -268,7 +269,7 @@ def decryptAES128ECB(inputbytes, keybytes)
 		decipherblock = decryptAES128ECBblock(block, keybytes)
 		outputblocks << decipherblock
 	end
-	
+
 	outputbytes = outputblocks.flatten
 	if checkPKCS7padding(outputbytes)
 		outputbytes = outputbytes[0..(outputbytes[-1]*-1)-1]
@@ -280,7 +281,7 @@ def decryptAES128ECB(inputbytes, keybytes)
 end
 
 def encryptAES128ECBblock(inputblock, keybytes)
-	input, key = bytearraytostring(inputblock), bytearraytostring(keybytes) 
+	input, key = bytearraytostring(inputblock), bytearraytostring(keybytes)
 	cipher = OpenSSL::Cipher::AES.new(128, 'ECB')
 	cipher.encrypt
 	cipher.key = key
@@ -296,8 +297,8 @@ def encryptAES128ECB(inputbytes, keybytes)
 		cipherblock = encryptAES128ECBblock(block, keybytes)
 		outputblocks << cipherblock
 	end
-	
-	return outputblocks.flatten 
+
+	return outputblocks.flatten
 end
 
 def encryptAES128CBC(inputbytes, keybytes, ivbytes)
@@ -341,7 +342,7 @@ def generateAES128CTRkeystream(keybytes, nonce, numberofbytes)
 	counter = 0
 
 	keystreamblocks = []
-	numberofblocks.times do 
+	numberofblocks.times do
 		inputbytes = [nonce, counter].pack("QQ").bytes
 		keystreamblocks << encryptAES128ECBblock(inputbytes, keybytes)
 		counter += 1
@@ -373,7 +374,7 @@ end
 def encryptMT19937(inputbytes, seed)
 	seed = seed & 0xFF #limited to 16 bit seeds
 	keystreambytes = generateMT19937keystream(seed, inputbytes.length)
-	return fixedxor(inputbytes, keystreambytes)	
+	return fixedxor(inputbytes, keystreambytes)
 end
 
 def decryptMT19937(inputbytes, seed)
@@ -385,7 +386,7 @@ def egcd(number, divisor)
 	remainder = nil
 	currents, lasts = 0, 1
 	currentt, lastt = 1, 0
-	while remainder != 0 
+	while remainder != 0
 		#grab our quotient and remainder
 		quotient = number / divisor
 		remainder = number % divisor
@@ -394,12 +395,12 @@ def egcd(number, divisor)
 		newt = lastt - quotient * currentt
 
 		#rotate
-		number, divisor = divisor, remainder 
+		number, divisor = divisor, remainder
 		lasts, currents = currents, news
 		lastt, currentt = currentt, newt
 	end
 
-	return [number, lasts, lastt] 
+	return [number, lasts, lastt]
 end
 
 def invmod(number, mod)
@@ -408,18 +409,18 @@ def invmod(number, mod)
 	return inverse
 end
 
-def nthrootinteger(n, a, precision = 1e-1024)
+def nthrootinteger(n, a, precision = 1e-5)
 	x = a
 	begin
 		prev = x
 		x = ((n - 1) * prev + a / (prev ** (n - 1))) / n
 	end while (prev - x).abs > precision
-	return x 
+	return x
 end
 
 def generateRSAKeys()
-	p = OpenSSL::BN::generate_prime(256).to_i
-	q = OpenSSL::BN::generate_prime(256).to_i 
+	p = OpenSSL::BN::generate_prime(512).to_i
+	q = OpenSSL::BN::generate_prime(512).to_i
 	n = p * q
 	et = (p - 1) * (q - 1)
 	e = 3
@@ -427,15 +428,14 @@ def generateRSAKeys()
 	return [ [e, n], [d, n] ] #publickey, privatekey
 end
 
-def encryptRSAstring(string, publickey)
-	stringinteger = bytearraytohexstring(string.bytes).to_i(16)
-	return modexp(stringinteger, publickey[0], publickey[1]).to_s(16) 
+def cryptRSAraw(integer, key)
+	return modexp(integer, key[0], key[1])
 end
 
-def decryptRSAstring(hexstring, privatekey)
+def cryptRSAstring(string, privatekey)
+    hexstring = bytearraytohexstring(string.bytes)
 	stringinteger = hexstring.to_i(16)
-	plaininteger  = modexp(stringinteger, privatekey[0], privatekey[1])
-	return hexstringtostring(plaininteger.to_s(16))
+	return cryptRSAraw(stringinteger, privatekey).to_s(16)
 end
 
 def encryptionoracle(inputbytes, mode=rand(2))
@@ -443,15 +443,61 @@ def encryptionoracle(inputbytes, mode=rand(2))
 	ivbytes = randombytearray(16)
 
 	padbyte = Base64Symbols.sample.bytes[0]
-	pad = Array.new(rand(5..10)){ padbyte } 
-	inputbytes = pad + inputbytes + pad 
+	pad = Array.new(rand(5..10)){ padbyte }
+	inputbytes = pad + inputbytes + pad
 	inputbytes = padbytearraywithPKCS7(inputbytes, 16)
 
-	if mode == 1 
+	if mode == 1
 		return encryptAES128CBC(inputbytes, keybytes, ivbytes)
 	else
 		return encryptAES128ECB(inputbytes, keybytes)
 	end
+end
+
+def generateDSAkeys()
+    x = rand(DSAq)
+    y = generateDSApublickey(x)
+    return [y, x] #public key, private key
+end
+
+def generateDSApublickey(privatekey)
+    return modexp(DSAg, privatekey, DSAp)
+end
+
+def signDSA(message, privatekey)
+    r, s = 0, 0
+    hash = bytearraytohexstring(sha1(message)).to_i(16)
+    while (r == 0) or (s == 0)
+        k = rand(DSAq)
+        r = computeDSAr(DSAg, k, DSAp, DSAq)
+        i = invmod(k, DSAq)
+        s = (i * (hash + r * privatekey)) % DSAq
+    end
+    return [r, s]
+end
+
+def computeDSAr(g, k, p, q)
+    return modexp(g, k, p) % q
+end
+
+def convertDSAktox(message, k, signature)
+    r, s = signature
+    hash = bytearraytohexstring(sha1(message)).to_i(16)
+    return (((s * k) - hash) * invmod(r, DSAq)) % DSAq
+end
+
+def verifyDSAsignature(message, publickey, signature)
+    hash = bytearraytohexstring(sha1(message)).to_i(16)
+    r, s = signature
+    return false unless ( (r > 0) and (r < DSAq) )
+    return false unless ( (s > 0) and (s < DSAq) )
+    w = invmod(s, DSAq)
+    u_one = (hash * w) % DSAq
+    u_two = (r * w) % DSAq
+    #Compute v = (((g**u1)*(y**u2)) mod p) mod q.
+    v = ((modexp(DSAg, u_one, DSAp) * modexp(publickey, u_two, DSAp)) % DSAp) % DSAq
+    return true if v == r
+    return false
 end
 
 def outnumber(number)
@@ -499,28 +545,28 @@ class MT19937
 		@mt = newmt
 		self.twist
 	end
-	
+
 	def truncate(number)
-		return 0xFFFFFFFF & number 
+		return 0xFFFFFFFF & number
 	end
 
 	def extractnumber
 		if @index >= 624 then self.twist end
-		
+
 		number = @mt[@index]
 
 		# Right shift by 11 bits
 		number = number ^ number >> 11
 		# Shift y left by 7 and take the bitwise and of 2636928640
-		number = number ^ number << 7 & 0x9d2c5680 
+		number = number ^ number << 7 & 0x9d2c5680
 		# Shift y left by 15 and take the bitwise and of y and 4022730752
-		number = number ^ number << 15 & 0xefc60000 
+		number = number ^ number << 15 & 0xefc60000
 		# Right shift by 18 bits
 		number = number ^ number >> 18
-		
+
 		@index += 1
 
-		return self.truncate(number) 
+		return self.truncate(number)
 	end
 
 	def twist
@@ -530,22 +576,22 @@ class MT19937
 			number = (@mt[i] & 0x80000000) + (@mt[(i + 1) % 624] & 0x7fffffff)
 			number = self.truncate(number)
 			@mt[i] = @mt[(i + 397) % 624] ^ number >> 1
-			
+
 			if number % 2 != 0
 				@mt[i] = @mt[i] ^ 0x9908b0df
 			end
 		end
-		
+
 		@index = 0
 	end
 end
 
-def reverseMT19937tempering(number)	
+def reverseMT19937tempering(number)
 	#Reverse right shift by 18 bits and xor
 	number = number ^ number >> 18
 
 	#Reverse shift y left by 15 and take the bitwise and of y and 4022730752
-	number = number ^ number << 15 & 0xefc60000 
+	number = number ^ number << 15 & 0xefc60000
 
 	#Reverse shift y left by 7 and take the bitwise and of 2636928640
 	constant = 0x9d2c5680
@@ -577,7 +623,7 @@ def diffiehellman(p, g)
 
 	dict = Hash.new()
 	dict["p"], dict["g"] = p, g
-	dict["privatekey"], dict["publickey"] = privatekey, publickey  
+	dict["privatekey"], dict["publickey"] = privatekey, publickey
 	return dict
 end
 
@@ -589,7 +635,7 @@ end
 
 # Calculates SHA-1 message digest of _string_. Returns binary digest.
 # From: http://rosettacode.org/wiki/SHA-1#Ruby
-def sha1(string, 
+def sha1(string,
 		pad = true,
 		h = [0x67452301, 0xefcdab89, 0x98badcfe, 0x10325476, 0xc3d2e1f0])
 	# functions and constants
@@ -605,7 +651,7 @@ def sha1(string,
 
 	k = [0x5a827999, 0x6ed9eba1, 0x8f1bbcdc, 0xca62c1d6].freeze
 
-	if pad 
+	if pad
 		string = sha1padding(string)
 	end
 
@@ -638,6 +684,10 @@ def sha1(string,
 	return h.pack("N5").bytes
 end
 
+def sha1string(string)
+    return bytearraytohexstring(sha1(string))
+end
+
 def sha1padding(string)
 		mask = 0xffffffff
 
@@ -647,7 +697,7 @@ def sha1padding(string)
 		stringbytes << 0x80
 
 		while (stringbytes.length % 64) != 56
-			stringbytes << 0x00 
+			stringbytes << 0x00
 		end
 
 		string = bytearraytostring(stringbytes)
@@ -723,7 +773,7 @@ end
 
 def generateSRPserversessionkey(server, useremail, clientpublickey)
 	#receive email and public key(a la Diffie Hellman) to server
-	server["useremail"], server["clientpublickey"] = useremail, clientpublickey 
+	server["useremail"], server["clientpublickey"] = useremail, clientpublickey
 
 	#generate sha256(clientpublickey + serverpublickey) as integer u
 	uH = sha256(server["peruserpublickey"].to_s(16) +
@@ -731,8 +781,8 @@ def generateSRPserversessionkey(server, useremail, clientpublickey)
 	u = uH.to_i(16)
 
 	#generate S = (A * v**u) ** b % N, K = sha256(S)
-	s = modexp( ( server["clientpublickey"] * 
-				modexp(server["userpasswordhash"],  u, server["N"] ) ), 
+	s = modexp( ( server["clientpublickey"] *
+				modexp(server["userpasswordhash"],  u, server["N"] ) ),
 				server["privatekey"],
 				server["N"])
 	sK = sha256(s.to_s(16))
@@ -743,7 +793,7 @@ end
 
 def generateSRPclientsessionkey(client, salt, serverpublickey)
 	#receive salt and public key(kv + g**b % N)
-	client["salt"], client["serverpublickey"] = salt, serverpublickey 
+	client["salt"], client["serverpublickey"] = salt, serverpublickey
 
 	#generate sha256(clientpublickey + serverpublickey) as integer u
 	uH = sha256(client["serverpublickey"].to_s(16) + client["publickey"].to_s(16))
@@ -753,7 +803,7 @@ def generateSRPclientsessionkey(client, salt, serverpublickey)
 	x = sha256(client["salt"] + client["userpassword"]).to_i(16)
 
 	#generate S = (B - k * g**x)**(a + u * x) % N, K = sha256(S)
-	s = modexp( ( client["serverpublickey"] - client["k"] * 
+	s = modexp( ( client["serverpublickey"] - client["k"] *
 				modexp(client["g"], x, client["N"]   )      ),
 				( client["privatekey"] + u * x ), client["N"] )
 	sK = sha256(s.to_s(16))
@@ -764,7 +814,7 @@ end
 
 # Calculates MD4 message digest of _string_.
 # From: http://rosettacode.org/wiki/MD4#Ruby
-def md4(string, pad = true, registers = [0x67452301, 0xefcdab89, 0x98badcfe, 0x10325476]) 
+def md4(string, pad = true, registers = [0x67452301, 0xefcdab89, 0x98badcfe, 0x10325476])
 	# functions
 	mask = (1 << 32) - 1
 	f = proc {|x, y, z| x & y | x.^(mask) & z}
@@ -773,7 +823,7 @@ def md4(string, pad = true, registers = [0x67452301, 0xefcdab89, 0x98badcfe, 0x1
 	r = proc {|v, s| (v << s).&(mask) | (v.&(mask) >> (32 - s))}
 
 	# initial hash
-	a, b, c, d = registers 
+	a, b, c, d = registers
 
 	if pad
 		string = md4padding(string)
@@ -833,7 +883,7 @@ def md4padding(string)
 		end
 		string = bytearraytostring(stringbytes)
 
-		string = string.force_encoding('ascii-8bit') 
+		string = string.force_encoding('ascii-8bit')
 		string += [bit_len & mask, bit_len >> 32].pack("V2")
 		return string
 end
