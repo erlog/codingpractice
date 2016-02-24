@@ -418,9 +418,9 @@ def nthrootinteger(n, a, precision = 1e-5)
 	return x
 end
 
-def generateRSAKeys()
-	p = OpenSSL::BN::generate_prime(512).to_i
-	q = OpenSSL::BN::generate_prime(512).to_i
+def generateRSAKeys(bitlength = 1024)
+	p = OpenSSL::BN::generate_prime(bitlength/2).to_i
+	q = OpenSSL::BN::generate_prime(bitlength/2).to_i
 	n = p * q
 	et = (p - 1) * (q - 1)
 	e = 3
@@ -430,6 +430,21 @@ end
 
 def cryptRSAraw(integer, key)
 	return modexp(integer, key[0], key[1])
+end
+
+def encryptRSAstring(string, key)
+    plaininteger = bytearraytohexstring(string.bytes).to_i(16)
+    cipherinteger = cryptRSAraw(plaininteger, key)
+    return cipherinteger.to_s(16)
+end
+
+def decryptRSAstring(hexstring, key)
+    bytelength = key[1].to_s(2).length/8
+    cipherinteger = hexstring.to_i(16)
+    plaininteger = cryptRSAraw(cipherinteger, key)
+    plainbytes = hexstringtobytearray(plaininteger.to_s(16))
+    plainbytes = Array.new(bytelength - plainbytes.length, 0) + plainbytes
+    return plainbytes
 end
 
 def cryptRSAstring(string, privatekey)

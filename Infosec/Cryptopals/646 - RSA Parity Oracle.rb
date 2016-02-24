@@ -1,34 +1,36 @@
 require_relative 'cryptopals'
 
 Input = "VGhhdCdzIHdoeSBJIGZvdW5kIHlvdSBkb24ndCBwbGF5IGFyb3VuZCB3aXRoIHRoZSBGdW5reSBDb2xkIE1lZGluYQ=="
-
 PublicKey, PrivateKey = generateRSAKeys()
 plaintext = bytearraytostring(base64tobytearray(Input))
-puts plaintext
-CipherText = cryptRSAstring(plaintext, PublicKey)
+CipherText = encryptRSAstring(plaintext, PublicKey)
 plaintext = ""
 
 def parityoracle(ciphertext)
-    plaintext = cryptRSAstring(CipherText, PrivateKey)
+    plaintext = decryptRSAstring(ciphertext, PrivateKey)
     return (plaintext.bytes[-1] % 2 == 0)
 end
 
-def halfciphertext(ciphertext)
-    return ciphertext * modexp(0.5, PublicKey[0], PublicKey[1])
+def multiplyciphertext(cipherinteger)
+    return cipherinteger * modexp(2, PublicKey[0], PublicKey[1])
 end
 
-iseven = parityoracle(CipherText)
-ciphertext = bytearraytohexstring(CipherText.bytes).to_i(16)
-puts ciphertext
-bitstring = ""
-while ciphertext > 100
-    if iseven
-        bitstring = "0" + bitstring
+cipherinteger = CipherText.to_i(16)
+lowerbound, upperbound = 0, PublicKey[1]
+
+while (upperbound - lowerbound) > 1
+    cipherinteger = multiplyciphertext(cipherinteger)
+
+    if parityoracle(cipherinteger.to_s(16))
+        upperbound -= ((upperbound - lowerbound) / 2)
     else
-        bitstring = "1" + bitstring
+        lowerbound += ((upperbound - lowerbound) / 2)
     end
-    puts hexstringtostring(bitstring.to_i(2).to_s(16))
 
-    ciphertext = halfciphertext(ciphertext)
-    iseven = parityoracle(
+    puts hexstringtostring(upperbound.to_s(16))
 end
+
+puts "--------------"
+puts "Decrypted Text:"
+puts hexstringtostring(lowerbound.to_s(16))
+puts hexstringtostring(upperbound.to_s(16))
