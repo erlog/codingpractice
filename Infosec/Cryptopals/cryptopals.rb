@@ -32,6 +32,25 @@ def checkPKCS7padding(inputbytes)
 	(realpadding == properpadding) ? (return true) : (return false)
 end
 
+def padbytearraywithPKCS1type2(bytearray, length)
+    header = [0, 2]
+    bytearray = [0] + bytearray
+    paddinglength = length - bytearray.length - header.length
+    padding = randombytearray(paddinglength)
+    return header + padding + bytearray
+end
+
+def removePKCS1type2padding(plainbytes)
+    outbytes = []
+    byte = plainbytes.pop
+    while byte and (byte != 0)
+        outbytes << byte
+        byte = plainbytes.pop
+    end
+    outbytes.reverse!
+    return outbytes
+end
+
 def transposebytearray(bytearray, numberofstrips)
 	transposedbytes = Array.new(numberofstrips){ Array.new() }
 	bytearray.each_slice(numberofstrips) do |slice|
