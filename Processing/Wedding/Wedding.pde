@@ -35,14 +35,19 @@ Minim minim;
 AudioPlayer song;
 AudioInput input;
 
-//Colors
-HashMap ColorMap = initialize_colors();
+HashMap SmootherMap;
+HashMap ColorMap;
+HashMap FontMap;
 
 void setup() {
-    debug_font = createFont("Arial", 32);
-    size(1280, 720, P2D);
+    SmootherMap = initialize_smoothers();
+    ColorMap = initialize_colors();
+    FontMap = initialize_fonts();
 
     printArray(PFont.list());
+
+    debug_font = createFont("Arial", 32);
+    size(1280, 720, P2D);
 
     //Music
     minim = new Minim(this);
@@ -83,11 +88,11 @@ void draw() {
     //blend(image_layer, 0, 0, width, height, 0, 0, width, height, SOFT_LIGHT);
     //blend(image_layer, 0, 0, width, height, 0, 0, width, height, SOFT_LIGHT);
     image(image_layer, 0, 0);
-    blend(text_layer, 0, 0, width, height, 0, 0, width, height, SOFT_LIGHT);
-    blend(text_layer, 0, 0, width, height, 0, 0, width, height, SOFT_LIGHT);
-    blend(text_layer, 0, 0, width, height, 0, 0, width, height, SOFT_LIGHT);
-    blend(text_layer, -1, 1, width, height, 0, 0, width, height, SOFT_LIGHT);
-    //image(text_layer, 0, 0);
+    //blend(text_layer, 0, 0, width, height, 0, 0, width, height, SOFT_LIGHT);
+    //blend(text_layer, 0, 0, width, height, 0, 0, width, height, SOFT_LIGHT);
+    //blend(text_layer, 0, 0, width, height, 0, 0, width, height, SOFT_LIGHT);
+    //blend(text_layer, -1, 1, width, height, 0, 0, width, height, SOFT_LIGHT);
+    image(text_layer, 0, 0);
 
     //draw debug timer
     textFont(debug_font);

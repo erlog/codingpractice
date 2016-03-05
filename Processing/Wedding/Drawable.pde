@@ -3,14 +3,17 @@ interface Drawable {
 }
 
 public class DrawableText implements Drawable {
-    PFont font; String display_text;
+    PFont font; String display_text; int font_size;
 
-    public DrawableText(PFont font, String display_text) {
-        this.font = font; this.display_text = display_text;
+    public DrawableText(PFont font, String display_text, int font_size) {
+        this.font = font;
+        this.display_text = display_text;
+        this.font_size = font_size;
     }
 
     public void draw(PGraphics buffer) {
         buffer.textFont(font);
+        buffer.textSize(font_size);
         buffer.text(display_text, 0, 0);
     }
 }
