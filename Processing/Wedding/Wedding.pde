@@ -60,9 +60,9 @@ void setup() {
     image_layer = createGraphics(width, height);
 
     //Layer animation schedulers
-    background_elements = parse_element_file("BackgroundElements.xml");
-    image_elements = parse_element_file("ImageElements.xml");
-    text_elements = parse_element_file("TextElements.xml");
+    background_elements = parse_element_file("BackgroundElements.xml", 0);
+    image_elements = parse_element_file("ImageElements.xml", 0);
+    text_elements = parse_element_file("TextElements.xml", 5);
     TimeOffset -= millis();
 }
 

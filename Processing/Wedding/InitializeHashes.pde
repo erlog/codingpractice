@@ -9,6 +9,7 @@ HashMap initialize_colors() {
 }
 
 HashMap initialize_fonts() {
+    //fonts are dynamically allocated in ElementParser
     HashMap font_map = new HashMap();
     return font_map;
 }
