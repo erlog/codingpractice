@@ -10,26 +10,21 @@ import ddf.minim.spi.*;
 import ddf.minim.ugens.*;
 
 void render_layer(AnimationScheduler scheduler, PGraphics layer) {
-    layer.beginDraw();
-    layer.background(0, 0);
     for(AnimatedElement anim : scheduler.get_current_elements()) {
         anim.draw(layer);
     }
-    layer.endDraw();
 }
 
 int TimeOffset = 0;
 int EndTime = 300*1000;
 PFont debug_font;
 
-PGraphics background_layer;
+PGraphics buffer;
 AnimationScheduler background_elements;
-
-PGraphics text_layer;
 AnimationScheduler text_elements;
-
-PGraphics image_layer;
 AnimationScheduler image_elements;
+AnimationScheduler john_elements;
+AnimationScheduler intro_elements;
 
 Minim minim;
 AudioPlayer song;
@@ -38,11 +33,13 @@ AudioInput input;
 HashMap SmootherMap;
 HashMap ColorMap;
 HashMap FontMap;
+HashMap TextAlignMap;
 
 void setup() {
     SmootherMap = initialize_smoothers();
     ColorMap = initialize_colors();
     FontMap = initialize_fonts();
+    TextAlignMap = initialize_text_alignment();
 
     printArray(PFont.list());
 
@@ -55,14 +52,13 @@ void setup() {
         //song.play();
 
     //Rendering Layers
-    background_layer = createGraphics(width, height);
-    text_layer = createGraphics(width, height);
-    image_layer = createGraphics(width, height);
+    buffer = createGraphics(width, height);
 
     //Layer animation schedulers
     background_elements = parse_element_file("BackgroundElements.xml", 0);
-    image_elements = parse_element_file("ImageElements.xml", 0);
-    text_elements = parse_element_file("TextElements.xml", 5);
+
+    john_elements = parse_element_file("JohnElements.xml", 0);
+    intro_elements = parse_element_file("Intro.xml", 0);
     TimeOffset -= millis();
 }
 
@@ -77,24 +73,18 @@ int managed_time() {
 
 void draw() {
     //render
-    render_layer(background_elements, background_layer);
-    render_layer(image_elements, image_layer);
-    render_layer(text_elements, text_layer);
+    buffer.beginDraw();
+    buffer.background(0, 0);
+        render_layer(background_elements, buffer);
+        render_layer(john_elements, buffer);
+        //render_layer(intro_elements, buffer);
+    buffer.endDraw();
 
-    //composite
-    background(128);
-    image(background_layer, 0, 0);
+    image(buffer, 0, 0);
     //blend(image_layer, 0, 0, width, height, 0, 0, width, height, SOFT_LIGHT);
     //blend(image_layer, 0, 0, width, height, 0, 0, width, height, SOFT_LIGHT);
     //blend(image_layer, 0, 0, width, height, 0, 0, width, height, SOFT_LIGHT);
-    image(image_layer, 0, 0);
-    //blend(text_layer, 0, 0, width, height, 0, 0, width, height, SOFT_LIGHT);
-    //blend(text_layer, 0, 0, width, height, 0, 0, width, height, SOFT_LIGHT);
-    //blend(text_layer, 0, 0, width, height, 0, 0, width, height, SOFT_LIGHT);
-    //blend(text_layer, -1, 1, width, height, 0, 0, width, height, SOFT_LIGHT);
-    image(text_layer, 0, 0);
 
-    //draw debug timer
     textFont(debug_font);
     text((float)managed_time()/1000, 32, 32);
 

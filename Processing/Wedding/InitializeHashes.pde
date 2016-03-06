@@ -13,3 +13,13 @@ HashMap initialize_fonts() {
     HashMap font_map = new HashMap();
     return font_map;
 }
+
+HashMap initialize_text_alignment() {
+    HashMap map = new HashMap();
+    map.put("CENTER", CENTER);
+    map.put("LEFT", LEFT);
+    map.put("RIGHT", RIGHT);
+    map.put("TOP", TOP);
+    map.put("BOTTOM", BOTTOM);
+    return map;
+}

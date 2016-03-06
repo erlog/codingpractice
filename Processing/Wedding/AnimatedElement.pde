@@ -67,14 +67,9 @@ public class AnimatedElement {
     public void draw(PGraphics buffer) {
         if(is_active()) {
             AnimationState state = progress();
-            buffer.textAlign(CENTER, CENTER);
-            buffer.translate(state.x, state.y);
-            buffer.scale(state.scale);
-            buffer.rotate(state.rotation);
-            buffer.fill(state.fill_color, state.fill_opacity);
-            buffer.stroke(state.stroke_color, state.stroke_opacity);
-            element.draw(buffer);
-            buffer.translate(-1*state.x, -1*state.y);
+            buffer.pushMatrix();
+            element.draw(buffer, state);
+            buffer.popMatrix();
         }
     }
 }

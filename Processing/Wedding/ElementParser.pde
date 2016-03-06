@@ -22,7 +22,10 @@ AnimationScheduler parse_element_file(String file_path, float time_offset) {
 
 AnimatedElement parse_text_element(XML xml_element, float time_offset) {
     String text_string = xml_element.getChildren("string")[0].getContent();
+    text_string = text_string.replace("\\n", "\n");
     println("Parsing Text: " + text_string);
+    int horizontal_alignment = (int)TextAlignMap.get(xml_element.getChildren("align_horizontal")[0].getContent());
+    int vertical_alignment = (int)TextAlignMap.get(xml_element.getChildren("align_vertical")[0].getContent());
     String font_name = xml_element.getChildren("font")[0].getContent();
     PFont font = (PFont)FontMap.get(font_name);
     if(font == null) {
@@ -34,7 +37,7 @@ AnimatedElement parse_text_element(XML xml_element, float time_offset) {
     float start_time  = xml_element.getChildren("start_time")[0].getFloatContent();
     start_time += time_offset;
 
-    DrawableText text = new DrawableText(font, text_string, font_size);
+    DrawableText text = new DrawableText(font, text_string, font_size, horizontal_alignment, vertical_alignment);
     Smoother smoother  = (Smoother)SmootherMap.get(xml_element.getChildren("smoother")[0].getContent());
     AnimationState in_state = parse_animation_state(xml_element.getChildren("in_state")[0]);
     AnimationState display_state_in = parse_animation_state(xml_element.getChildren("display_state_in")[0]);
