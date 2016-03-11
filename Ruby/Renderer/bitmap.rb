@@ -1,18 +1,23 @@
-def Point(x, y)
-    return PointObject.new(x, y)
+def Point(x, y, z = 0)
+    return PointObject.new(x, y, z)
+end
+
+def RandomPoint(max)
+    return PointObject.new(rand(max), rand(max), rand(max))
 end
 
 class PointObject
     attr_reader :id
     attr_accessor :x
     attr_accessor :y
+    attr_accessor :z
 
-    def initialize(x, y)
-        @x = x; @y = y
+    def initialize(x, y, z)
+        @x = x; @y = y; @z = z
     end
 
     def to_s
-        return [@x, @y].to_s
+        return [@x, @y, @z].to_s
     end
 
     def hash
@@ -27,6 +32,25 @@ class PointObject
         return false if @x != other_point.x
         return false if @y != other_point.y
         return true
+    end
+
+    def multiply(amt)
+        return PointObject.new(@x*amt, @y*amt, @z*amt)
+    end
+
+    def add(x, y, z)
+        return PointObject.new(@x+x, @y+y, @z+z)
+    end
+
+    def normalize(x, y, z)
+        return PointObject.new(x-@x, y-@y, z-@z)
+    end
+
+    def to_i
+        @x = @x.to_i
+        @y = @y.to_i
+        @z = @z.to_i
+        return self
     end
 end
 
@@ -91,6 +115,10 @@ class Bitmap
 	def setpixel(point, rgbvalue)
 		@pixelarray[point.y][point.x].rgb = rgbvalue
 	end
+
+    def setpixels(points, rgbvalue)
+        points.each do |point| self.setpixel(point, rgbvalue) end
+    end
 
 	def pixels
 		@pixelarray.each do |row|
