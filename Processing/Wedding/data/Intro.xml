@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?><elements>
+
+<element type="text">
+    <start_time>0</start_time>
+    <string>Now for a brief history of the bride &amp; groom...</string>
+    <font>SavoyeLetPlain</font> <font_size>96</font_size>
+    <align_horizontal>CENTER</align_horizontal>
+    <align_vertical>CENTER</align_vertical>
+    <smoother>SMOOTHERSTEP</smoother>
+    <in_state>
+        <duration>3</duration>
+        <x_pos>640</x_pos> <y_pos>240</y_pos>
+        <scale>1.0</scale> <rotation>0</rotation>
+        <fill_color>BLACK</fill_color> <fill_opacity>0</fill_opacity>
+        <stroke_color>BLACK</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </in_state>
+    <display_state_in>
+        <duration>1.5</duration>
+        <x_pos>640</x_pos> <y_pos>240</y_pos>
+        <scale>1.0</scale> <rotation>0</rotation>
+        <fill_color>BLACK</fill_color> <fill_opacity>255</fill_opacity>
+        <stroke_color>BLACK</stroke_color> <stroke_opacity>255</stroke_opacity>
+    </display_state_in>
+    <display_state_out>
+        <duration>1.5</duration>
+        <x_pos>640</x_pos> <y_pos>240</y_pos>
+        <scale>1.0</scale> <rotation>0</rotation>
+        <fill_color>BLACK</fill_color> <fill_opacity>255</fill_opacity>
+        <stroke_color>BLACK</stroke_color> <stroke_opacity>255</stroke_opacity>
+    </display_state_out>
+    <out_state>
+        <duration>3</duration>
+        <x_pos>640</x_pos> <y_pos>240</y_pos>
+        <scale>1.0</scale> <rotation>0</rotation>
+        <fill_color>BLACK</fill_color> <fill_opacity>0</fill_opacity>
+        <stroke_color>BLACK</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </out_state>
+    
+</element>
+
+<element type="text">
+    <start_time>10</start_time>
+    <string>Welcome</string>
+    <font>SavoyeLetPlain</font> <font_size>256</font_size>
+    <align_horizontal>CENTER</align_horizontal>
+    <align_vertical>CENTER</align_vertical>
+    <smoother>SMOOTHERSTEP</smoother>
+    <in_state>
+        <duration>3</duration>
+        <x_pos>640</x_pos> <y_pos>240</y_pos>
+        <scale>1.0</scale> <rotation>0</rotation>
+        <fill_color>BLACK</fill_color> <fill_opacity>0</fill_opacity>
+        <stroke_color>BLACK</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </in_state>
+    <display_state_in>
+        <duration>1.5</duration>
+        <x_pos>640</x_pos> <y_pos>240</y_pos>
+        <scale>1.0</scale> <rotation>0</rotation>
+        <fill_color>BLACK</fill_color> <fill_opacity>255</fill_opacity>
+        <stroke_color>BLACK</stroke_color> <stroke_opacity>255</stroke_opacity>
+    </display_state_in>
+    <display_state_out>
+        <duration>1.5</duration>
+        <x_pos>640</x_pos> <y_pos>240</y_pos>
+        <scale>1.0</scale> <rotation>0</rotation>
+        <fill_color>BLACK</fill_color> <fill_opacity>255</fill_opacity>
+        <stroke_color>BLACK</stroke_color> <stroke_opacity>255</stroke_opacity>
+    </display_state_out>
+    <out_state>
+        <duration>3</duration>
+        <x_pos>640</x_pos> <y_pos>240</y_pos>
+        <scale>1.0</scale> <rotation>0</rotation>
+        <fill_color>BLACK</fill_color> <fill_opacity>0</fill_opacity>
+        <stroke_color>BLACK</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </out_state>
+</element>
+
+<element type="text">
+    <start_time>17</start_time>
+    <string>Thank You</string>
+    <font>SavoyeLetPlain</font> <font_size>256</font_size>
+    <align_horizontal>LEFT</align_horizontal>
+    <align_vertical>CENTER</align_vertical>
+    <smoother>SMOOTHERSTEP</smoother>
+    <in_state>
+        <duration>3</duration>
+        <x_pos>128</x_pos> <y_pos>240</y_pos>
+        <scale>1.0</scale> <rotation>0</rotation>
+        <fill_color>BLACK</fill_color> <fill_opacity>0</fill_opacity>
+        <stroke_color>BLACK</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </in_state>
+    <display_state_in>
+        <duration>1.5</duration>
+        <x_pos>128</x_pos> <y_pos>240</y_pos>
+        <scale>1.0</scale> <rotation>0</rotation>
+        <fill_color>BLACK</fill_color> <fill_opacity>255</fill_opacity>
+        <stroke_color>BLACK</stroke_color> <stroke_opacity>255</stroke_opacity>
+    </display_state_in>
+    <display_state_out>
+        <duration>1.5</duration>
+        <x_pos>128</x_pos> <y_pos>240</y_pos>
+        <scale>1.0</scale> <rotation>0</rotation>
+        <fill_color>BLACK</fill_color> <fill_opacity>255</fill_opacity>
+        <stroke_color>BLACK</stroke_color> <stroke_opacity>255</stroke_opacity>
+    </display_state_out>
+    <out_state>
+        <duration>3</duration>
+        <x_pos>128</x_pos> <y_pos>240</y_pos>
+        <scale>1.0</scale> <rotation>0</rotation>
+        <fill_color>BLACK</fill_color> <fill_opacity>0</fill_opacity>
+        <stroke_color>BLACK</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </out_state>
+</element>
+
+<element type="text">
+    <start_time>17</start_time>
+    <string>For Coming</string>
+    <font>SavoyeLetPlain</font> <font_size>256</font_size>
+    <align_horizontal>RIGHT</align_horizontal>
+    <align_vertical>CENTER</align_vertical>
+    <smoother>SMOOTHERSTEP</smoother>
+    <in_state>
+        <duration>3</duration>
+        <x_pos>1152</x_pos> <y_pos>480</y_pos>
+        <scale>1.0</scale> <rotation>0</rotation>
+        <fill_color>BLACK</fill_color> <fill_opacity>0</fill_opacity>
+        <stroke_color>BLACK</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </in_state>
+    <display_state_in>
+        <duration>1.5</duration>
+        <x_pos>1152</x_pos> <y_pos>480</y_pos>
+        <scale>1.0</scale> <rotation>0</rotation>
+        <fill_color>BLACK</fill_color> <fill_opacity>255</fill_opacity>
+        <stroke_color>BLACK</stroke_color> <stroke_opacity>255</stroke_opacity>
+    </display_state_in>
+    <display_state_out>
+        <duration>1.5</duration>
+        <x_pos>1152</x_pos> <y_pos>480</y_pos>
+        <scale>1.0</scale> <rotation>0</rotation>
+        <fill_color>BLACK</fill_color> <fill_opacity>255</fill_opacity>
+        <stroke_color>BLACK</stroke_color> <stroke_opacity>255</stroke_opacity>
+    </display_state_out>
+    <out_state>
+        <duration>3</duration>
+        <x_pos>1152</x_pos> <y_pos>480</y_pos>
+        <scale>1.0</scale> <rotation>0</rotation>
+        <fill_color>BLACK</fill_color> <fill_opacity>0</fill_opacity>
+        <stroke_color>BLACK</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </out_state>
+</element>
+
+
+
+</elements>

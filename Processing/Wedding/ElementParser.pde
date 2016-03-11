@@ -1,8 +1,6 @@
 //Parser for the XML files that define elements
 
-HashMap SmootherMap = initialize_smoothers();
-
-AnimationScheduler parse_element_file(String file_path) {
+AnimationScheduler parse_element_file(String file_path, float time_offset) {
     AnimationScheduler scheduler = new AnimationScheduler();
 
     XML xml = loadXML(file_path);
@@ -12,25 +10,34 @@ AnimationScheduler parse_element_file(String file_path) {
 
         String type = elements[i].getString("type");
         if(type.equals("text")) {
-            scheduler.add(parse_text_element(elements[i]));
+            scheduler.add(parse_text_element(elements[i], time_offset));
         }
         else if(type.equals("image")) {
-            scheduler.add(parse_image_element(elements[i]));
+            scheduler.add(parse_image_element(elements[i], time_offset));
         }
     }
 
     return scheduler;
 }
 
-AnimatedElement parse_text_element(XML xml_element) {
+AnimatedElement parse_text_element(XML xml_element, float time_offset) {
     String text_string = xml_element.getChildren("string")[0].getContent();
+    text_string = text_string.replace("\\n", "\n");
     println("Parsing Text: " + text_string);
+    int horizontal_alignment = (int)TextAlignMap.get(xml_element.getChildren("align_horizontal")[0].getContent());
+    int vertical_alignment = (int)TextAlignMap.get(xml_element.getChildren("align_vertical")[0].getContent());
     String font_name = xml_element.getChildren("font")[0].getContent();
+    PFont font = (PFont)FontMap.get(font_name);
+    if(font == null) {
+        FontMap.put(font_name, createFont(font_name, 32));
+        font = (PFont)FontMap.get(font_name);
+    }
+
     int font_size = xml_element.getChildren("font_size")[0].getIntContent();
     float start_time  = xml_element.getChildren("start_time")[0].getFloatContent();
+    start_time += time_offset;
 
-    PFont font = createFont(font_name, font_size);
-    DrawableText text = new DrawableText(font, text_string);
+    DrawableText text = new DrawableText(font, text_string, font_size, horizontal_alignment, vertical_alignment);
     Smoother smoother  = (Smoother)SmootherMap.get(xml_element.getChildren("smoother")[0].getContent());
     AnimationState in_state = parse_animation_state(xml_element.getChildren("in_state")[0]);
     AnimationState display_state_in = parse_animation_state(xml_element.getChildren("display_state_in")[0]);
@@ -40,11 +47,12 @@ AnimatedElement parse_text_element(XML xml_element) {
     return new AnimatedElement(text, smoother, in_state, display_state_in, display_state_out, out_state, start_time);
 }
 
-AnimatedElement parse_image_element(XML xml_element) {
+AnimatedElement parse_image_element(XML xml_element, float time_offset) {
     String file_path = xml_element.getChildren("file_path")[0].getContent();
     println("Parsing Image: " + file_path);
     String file_type = file_path.substring(file_path.length()-3, file_path.length());
     float start_time  = xml_element.getChildren("start_time")[0].getFloatContent();
+    start_time += time_offset;
 
     DrawableImage image = new DrawableImage(file_path, file_type);
     Smoother smoother  = (Smoother)SmootherMap.get(xml_element.getChildren("smoother")[0].getContent());

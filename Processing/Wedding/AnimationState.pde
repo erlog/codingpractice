@@ -19,4 +19,5 @@ public class AnimationState {
                     this.stroke_color = stroke_color;
                     this.stroke_opacity = stroke_opacity;
     }
+
 }

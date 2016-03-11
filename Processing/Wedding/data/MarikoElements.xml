@@ -1,0 +1,361 @@
+<?xml version="1.0" encoding="UTF-8"?><elements>
+
+<!--???? - Mariko -->
+
+<element type="image">
+    <start_time>30</start_time>
+    <file_path>501 - muddy.png</file_path>
+    <smoother>NONE</smoother>
+    <in_state>
+        <duration>3</duration>
+        <x_pos>400</x_pos> <y_pos>360</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>0</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </in_state>
+    <display_state_in>
+        <duration>6</duration>
+        <x_pos>400</x_pos> <y_pos>360</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>255</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </display_state_in>
+    <display_state_out>
+        <duration>0</duration>
+        <x_pos>400</x_pos> <y_pos>360</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>255</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </display_state_out>
+    <out_state>
+        <duration>3</duration>
+        <x_pos>400</x_pos> <y_pos>360</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>0</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </out_state>
+</element>
+
+<!--???? - Mariko -->
+
+<element type="image">
+    <start_time>39</start_time>
+    <file_path>502 - eating.png</file_path>
+    <smoother>NONE</smoother>
+    <in_state>
+        <duration>3</duration>
+        <x_pos>640</x_pos> <y_pos>360</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>0</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </in_state>
+    <display_state_in>
+        <duration>6</duration>
+        <x_pos>670</x_pos> <y_pos>360</y_pos>
+        <scale>0.95</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>255</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </display_state_in>
+    <display_state_out>
+        <duration>0</duration>
+        <x_pos>700</x_pos> <y_pos>360</y_pos>
+        <scale>1.05</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>255</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </display_state_out>
+    <out_state>
+        <duration>3</duration>
+        <x_pos>730</x_pos> <y_pos>360</y_pos>
+        <scale>1.1</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>0</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </out_state>
+</element>
+
+<!--???? - Mariko -->
+
+<element type="image">
+    <start_time>57</start_time>
+    <file_path>504 - picture.png</file_path>
+    <smoother>NONE</smoother>
+    <in_state>
+        <duration>3</duration>
+        <x_pos>400</x_pos> <y_pos>360</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>0</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </in_state>
+    <display_state_in>
+        <duration>6</duration>
+        <x_pos>400</x_pos> <y_pos>360</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>255</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </display_state_in>
+    <display_state_out>
+        <duration>0</duration>
+        <x_pos>400</x_pos> <y_pos>360</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>255</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </display_state_out>
+    <out_state>
+        <duration>3</duration>
+        <x_pos>400</x_pos> <y_pos>360</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>0</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </out_state>
+</element>
+
+<!--???? - Mariko -->
+
+<element type="image">
+    <start_time>75</start_time>
+    <file_path>506 - ahhh.png</file_path>
+    <smoother>NONE</smoother>
+    <in_state>
+        <duration>3</duration>
+        <x_pos>640</x_pos> <y_pos>360</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>0</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </in_state>
+    <display_state_in>
+        <duration>6</duration>
+        <x_pos>670</x_pos> <y_pos>360</y_pos>
+        <scale>0.95</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>255</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </display_state_in>
+    <display_state_out>
+        <duration>0</duration>
+        <x_pos>700</x_pos> <y_pos>360</y_pos>
+        <scale>1.05</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>255</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </display_state_out>
+    <out_state>
+        <duration>3</duration>
+        <x_pos>730</x_pos> <y_pos>360</y_pos>
+        <scale>1.1</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>0</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </out_state>
+</element>
+
+<!--???? - Mariko -->
+
+<element type="image">
+    <start_time>84</start_time>
+    <file_path>507 - portrait.png</file_path>
+    <smoother>NONE</smoother>
+    <in_state>
+        <duration>3</duration>
+        <x_pos>400</x_pos> <y_pos>360</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>0</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </in_state>
+    <display_state_in>
+        <duration>6</duration>
+        <x_pos>400</x_pos> <y_pos>360</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>255</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </display_state_in>
+    <display_state_out>
+        <duration>0</duration>
+        <x_pos>400</x_pos> <y_pos>360</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>255</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </display_state_out>
+    <out_state>
+        <duration>3</duration>
+        <x_pos>400</x_pos> <y_pos>360</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>0</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </out_state>
+</element>
+
+<!--???? - Mariko -->
+
+<element type="image">
+    <start_time>129</start_time>
+    <file_path>512 - mariko and ken.png</file_path>
+    <smoother>NONE</smoother>
+    <in_state>
+        <duration>3</duration>
+        <x_pos>640</x_pos> <y_pos>360</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>0</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </in_state>
+    <display_state_in>
+        <duration>6</duration>
+        <x_pos>640</x_pos> <y_pos>360</y_pos>
+        <scale>0.95</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>255</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </display_state_in>
+    <display_state_out>
+        <duration>0</duration>
+        <x_pos>640</x_pos> <y_pos>360</y_pos>
+        <scale>1.05</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>255</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </display_state_out>
+    <out_state>
+        <duration>3</duration>
+        <x_pos>640</x_pos> <y_pos>360</y_pos>
+        <scale>1.1</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>0</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </out_state>
+</element>
+
+<!--???? - Mariko -->
+
+<element type="image">
+    <start_time>138</start_time>
+    <file_path>513 - mariko and ken.png</file_path>
+    <smoother>NONE</smoother>
+    <in_state>
+        <duration>3</duration>
+        <x_pos>640</x_pos> <y_pos>360</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>0</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </in_state>
+    <display_state_in>
+        <duration>6</duration>
+        <x_pos>670</x_pos> <y_pos>360</y_pos>
+        <scale>0.95</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>255</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </display_state_in>
+    <display_state_out>
+        <duration>0</duration>
+        <x_pos>700</x_pos> <y_pos>360</y_pos>
+        <scale>1.05</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>255</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </display_state_out>
+    <out_state>
+        <duration>3</duration>
+        <x_pos>730</x_pos> <y_pos>360</y_pos>
+        <scale>1.1</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>0</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </out_state>
+</element>
+
+<!--???? - Mariko -->
+
+<element type="image">
+    <start_time>147</start_time>
+    <file_path>514 - present.png</file_path>
+    <smoother>NONE</smoother>
+    <in_state>
+        <duration>3</duration>
+        <x_pos>640</x_pos> <y_pos>360</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>0</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </in_state>
+    <display_state_in>
+        <duration>6</duration>
+        <x_pos>640</x_pos> <y_pos>360</y_pos>
+        <scale>0.95</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>255</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </display_state_in>
+    <display_state_out>
+        <duration>0</duration>
+        <x_pos>640</x_pos> <y_pos>360</y_pos>
+        <scale>1.05</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>255</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </display_state_out>
+    <out_state>
+        <duration>3</duration>
+        <x_pos>640</x_pos> <y_pos>360</y_pos>
+        <scale>1.1</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>0</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </out_state>
+</element>
+
+<!--???? - Mariko -->
+
+<element type="image">
+    <start_time>156</start_time>
+    <file_path>515 - sakura.png</file_path>
+    <smoother>NONE</smoother>
+    <in_state>
+        <duration>3</duration>
+        <x_pos>640</x_pos> <y_pos>360</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>0</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </in_state>
+    <display_state_in>
+        <duration>6</duration>
+        <x_pos>640</x_pos> <y_pos>360</y_pos>
+        <scale>0.95</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>255</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </display_state_in>
+    <display_state_out>
+        <duration>0</duration>
+        <x_pos>640</x_pos> <y_pos>360</y_pos>
+        <scale>1.05</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>255</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </display_state_out>
+    <out_state>
+        <duration>3</duration>
+        <x_pos>640</x_pos> <y_pos>360</y_pos>
+        <scale>1.1</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>0</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </out_state>
+</element>
+
+<!--???? - Mariko -->
+
+<element type="image">
+    <start_time>165</start_time>
+    <file_path>516 - go kart.png</file_path>
+    <smoother>NONE</smoother>
+    <in_state>
+        <duration>3</duration>
+        <x_pos>640</x_pos> <y_pos>360</y_pos>
+        <scale>0.9</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>0</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </in_state>
+    <display_state_in>
+        <duration>6</duration>
+        <x_pos>640</x_pos> <y_pos>360</y_pos>
+        <scale>0.95</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>255</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </display_state_in>
+    <display_state_out>
+        <duration>0</duration>
+        <x_pos>640</x_pos> <y_pos>360</y_pos>
+        <scale>1.05</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>255</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </display_state_out>
+    <out_state>
+        <duration>3</duration>
+        <x_pos>640</x_pos> <y_pos>360</y_pos>
+        <scale>1.1</scale> <rotation>0</rotation>
+        <fill_color>WHITE</fill_color> <fill_opacity>0</fill_opacity>
+        <stroke_color>NONE</stroke_color> <stroke_opacity>0</stroke_opacity>
+    </out_state>
+</element>
