@@ -1,5 +1,9 @@
 require_relative 'bitmap'
+require_relative 'point'
 require_relative 'wavefront'
+
+Width = 512
+Height = 512
 
 def lerp(src, dest, amt)
     return src + ( (dest - src) * amt )
@@ -35,13 +39,18 @@ def line(src, dest)
     return points
 end
 
-mybmp = Bitmap.new(500, 500)
-mybmp.setpixels(triangle(RandomPoint(500),RandomPoint(500), RandomPoint(500)), "FFFFFF")
+def render_model(filename, width = Width, height = Height)
+    center = Point((Width/2) - 1, (Height/2) - 1)
+    object = Wavefront.new(filename)
+    bitmap = Bitmap.new(width, height)
 
-object = Wavefront.new("wt_teapot.obj")
-object.triangles.each do |points|
-    a, b, c = points.map!{ |point| object.vertices[point].multiply(200) }
-    mybmp.setpixels(triangle(a, b, c), rand(1<<24).to_s(16))
+    object.triangles.each do |vertex_ids|
+        a, b, c = vertex_ids.map!{ |id| center - (object.vertices[id] * center) }
+        bitmap.setpixels(triangle(a, b, c), rand(1<<24).to_s(16))
+    end
+    bitmap.writetofile("renderer - " + filename + " - " + Time.now.to_s[0..-7] + ".bmp")
 end
 
-mybmp.writetofile("renderer - " + Time.now.to_s[0..-7] + ".bmp")
+render_model("wt_teapot.obj")
+render_model("african_head.obj")
+
