@@ -1,8 +1,8 @@
 class Pixel
     attr_reader :rgb
 
-	def initialize
-		@rgb = ["FF0000"].pack("H6")
+	def initialize(colorhexstring)
+		@rgb = [colorhexstring].pack("H6")
 	end
 
 	def rgb=(hexstring)
@@ -10,10 +10,14 @@ class Pixel
         hexstring = hexstring.chars.each_slice(2).to_a.reverse.join
 		@rgb = [hexstring].pack("H6")
 	end
+
+    def int=(value)
+        @rgb = value
+    end
 end
 
 class Bitmap
-	def initialize(width, height)
+	def initialize(width, height, color = "FF0000")
 		@bitsperpixel = 24
 		@headersize = 14
 		@dibheadersize = 40
@@ -23,7 +27,7 @@ class Bitmap
 		@pixeldatasize = (@width*@height*@bitsperpixel/8)
 		@filesize = @pixeldatasize + @headersize + @dibheadersize
 		@padding = generatepad()
-		@pixelarray = initializepixelarray()
+		@pixelarray = initializepixelarray(color)
 	end
 
 	def generateheader()
@@ -41,8 +45,8 @@ class Bitmap
 		return (padlength == 4) ?  "" : "\x0" * padlength
 	end
 
-	def initializepixelarray
-		return Array.new(@height){ Array.new(@width){Pixel.new()} }
+	def initializepixelarray(color)
+		return Array.new(@height){ Array.new(@width){Pixel.new(color)} }
 	end
 
 	def writetofile(path)
@@ -58,20 +62,61 @@ class Bitmap
 		output.close()
 	end
 
+    def bounds_check(point)
+        if (point.x < 0) or (point.x >= @width) or (point.y < 0) or (point.y >= @height)
+            raise IndexError, "Invalid Coordinate: #{point.to_s}"
+        end
+    end
+
+    def getpixel(point)
+        bounds_check(point)
+		return @pixelarray[point.y][point.x]
+    end
+
+    def setpixelraw(point, integer)
+        bounds_check(point)
+        @pixelarray[point.y][point.x].int = integer
+    end
+
 	def setpixel(point, rgbvalue)
+        bounds_check(point)
+		@pixelarray[point.y][point.x].rgb = rgbvalue
+	end
+
+	def pixels
+		@pixelarray.each do |row|
+			row.each do |pixel|
+				yield pixel
+			end
+		end
+	end
+end
+
+class Z_Buffer
+	def initialize(width, height)
+		@width = width
+		@height = height
+		@array = initializearray()
+	end
+
+	def initializearray
+		return Array.new(@height){ Array.new(@width){nil} }
+	end
+
+    def getpixel(point)
+		return @array[point.y][point.x]
+    end
+
+	def setpixel(point)
         if (point.x < 0) or (point.x >= @width) or (point.y < 0) or (point.y >= @height)
             return
             #raise IndexError, "Invalid Coordinate: #{point.to_s}"
         end
-		@pixelarray[point.y][point.x].rgb = rgbvalue
+		@array[point.y][point.x] = point.z
 	end
 
-    def setpixels(points, rgbvalue)
-        points.each do |point| self.setpixel(point, rgbvalue) end
-    end
-
 	def pixels
-		@pixelarray.each do |row|
+		@array.each do |row|
 			row.each do |pixel|
 				yield pixel
 			end

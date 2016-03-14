@@ -1,5 +1,6 @@
 def lerp(src, dest, amt)
-    return src + ( (dest - src) * amt )
+    return src if amt == 0
+    return src + ( (dest - src) * Point(amt, amt, amt) )
 end
 
 def triangle(a, b, c)
@@ -22,12 +23,14 @@ end
 def line(src, dest)
     #this line algo is pretty lol
     points = [src.to_i, dest.to_i]
+
     length = Math.sqrt((dest.x - src.x)**2 + (dest.y - src.y)**2).to_i
-    return points if length == 0
+    return [] if length == 0
+
     (0..length).each do |n|
         amt = n.to_f/length
-        x, y = lerp(src.x, dest.x, amt).to_i, lerp(src.y, dest.y, amt).to_i
-        points << Point(x, y)
+        point = lerp(src, dest, amt)
+        points << point
     end
     return points
 end
