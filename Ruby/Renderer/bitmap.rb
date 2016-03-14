@@ -2,11 +2,13 @@ class Pixel
     attr_reader :rgb
 
 	def initialize
-		@rgb = ["000000"].pack("H6")
+		@rgb = ["FF0000"].pack("H6")
 	end
 
 	def rgb=(hexstring)
-		@rgb = [hexstring.reverse].pack("H6")
+        #this is pretty lol and was the source of a dumb bug
+        hexstring = hexstring.chars.each_slice(2).to_a.reverse.join
+		@rgb = [hexstring].pack("H6")
 	end
 end
 

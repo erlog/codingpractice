@@ -20,26 +20,38 @@ class PointObject
         return [@x, @y, @z].to_s
     end
 
+    def to_i
+        return PointObject.new(@x.to_i, @y.to_i, @z.to_i)
+    end
+
     def hash
         id.hash
     end
 
-    def eql?(other_point)
-        return self == other_point
+    def eql?(other)
+        return self == other
     end
 
-    def ==(other_point)
-        return false if @x != other_point.x
-        return false if @y != other_point.y
+    def ==(other)
+        return false if @x != other.x
+        return false if @y != other.y
         return true
     end
 
-    def multiply(amt)
-        return PointObject.new(@x*amt, @y*amt, @z*amt)
+    def cross_product(other)
+        x = (@y*other.z) - (@z*other.y)
+        y = (@z*other.x) - (@x*other.z)
+        z = (@x*other.y) - (@y*other.x)
+        return PointObject.new(x, y, z)
     end
 
-    def normalize(x, y, z)
-        return PointObject.new(x-@x, y-@y, z-@z)
+    def scalar_product(other)
+        return (@x*other.x) + (@y*other.y) + (@z*other.z)
+    end
+
+    def normalize
+        factor = Math.sqrt( (@x**2).abs + (@y**2).abs + (@z**2).abs )
+        return self / PointObject.new(factor, factor, factor)
     end
 
     def +(other)
@@ -56,9 +68,5 @@ class PointObject
 
     def *(other)
         return PointObject.new(@x*other.x, @y*other.y, @z*other.z)
-    end
-
-    def to_i
-        return PointObject.new(@x.to_i, @y.to_i, @z.to_i)
     end
 end

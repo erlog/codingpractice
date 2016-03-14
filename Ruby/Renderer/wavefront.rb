@@ -1,8 +1,3 @@
-def find_normalizing_offset(numbers)
-    min, max = numbers.min, numbers.max
-    return (max - (max - min)/ 2)*-1
-end
-
 class Wavefront
     attr_reader :vertices
     attr_reader :triangles
@@ -28,16 +23,24 @@ class Wavefront
         end
 
         #normalize vertices
-
-        x_offset = find_normalizing_offset(@vertices.map(&:x))
-        y_offset = find_normalizing_offset(@vertices.map(&:y))
-        z_offset = find_normalizing_offset(@vertices.map(&:z))
-        offset = Point(x_offset, y_offset, z_offset)
-        @vertices.map!{ |vertex| vertex + offset }
-
-        max = (@vertices.map(&:x) + @vertices.map(&:y) + @vertices.map(&:z)).max
-        @vertices.map!{ |vertex| vertex/Point(max, max, max)}
+        @vertices = normalize_vectors(@vertices)
 
     end
 end
+
+def find_normalizing_offset(numbers)
+    return (numbers.max - (numbers.max - numbers.min)/ 2)*-1
+end
+
+def normalize_vectors(vectors)
+        x_offset = find_normalizing_offset(vectors.map(&:x))
+        y_offset = find_normalizing_offset(vectors.map(&:y))
+        z_offset = find_normalizing_offset(vectors.map(&:z))
+        offset = Point(x_offset, y_offset, z_offset)
+        vectors.map!{ |vertex| vertex + offset }
+
+        max = (vectors.map(&:x) + vectors.map(&:y) + vectors.map(&:z)).max
+        return vectors.map!{ |vertex| vertex/Point(max, max, max)}
+end
+
 
