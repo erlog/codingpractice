@@ -103,12 +103,12 @@ class Bitmap
         end
     end
 
-    def setpixel(point, pixel)
+    def set_pixel(point, pixel)
         bounds_check(point)
         @pixelarray[point.y][point.x] = pixel
     end
 
-    def getpixel(point)
+    def get_pixel(point)
         bounds_check(point)
 		return @pixelarray[point.y][point.x]
     end
@@ -133,11 +133,11 @@ class Z_Buffer
 		return Array.new(@height){ Array.new(@width){nil} }
 	end
 
-    def getpixel(point)
+    def get_pixel(point)
 		return @array[point.y][point.x]
     end
 
-	def setpixel(point)
+	def set_pixel(point)
         if (point.x < 0) or (point.x >= @width) or (point.y < 0) or (point.y >= @height)
             return
             #raise IndexError, "Invalid Coordinate: #{point.to_s}"

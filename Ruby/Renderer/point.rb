@@ -49,6 +49,10 @@ class PointObject
         return (@x*other.x) + (@y*other.y) + (@z*other.z)
     end
 
+    def to_screen(center)
+        return (center - (self * center)).to_i
+    end
+
     def normalize
         factor = Math.sqrt( (@x**2).abs + (@y**2).abs + (@z**2).abs )
         return self / PointObject.new(factor, factor, factor)

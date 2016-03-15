@@ -60,7 +60,7 @@ class Face
     end
 
     def to_screen(center)
-        return @v.map{ |vertex| center - (vertex * center) }
+        return @v.map{ |vertex| vertex.to_screen(center) }
     end
 end
 
