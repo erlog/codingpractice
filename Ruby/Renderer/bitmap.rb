@@ -3,7 +3,7 @@ class Pixel
 
     def initialize(r = 0, g = 0, b = 0, int24 = nil)
         if int24
-            @color = int32
+            @color = int24
         else
             @color = (b << 16) + (g << 8) + r
         end
@@ -22,6 +22,10 @@ class Pixel
         end
     end
 
+    def self.from_gray(int8)
+        return Pixel.new(int8, int8, int8)
+    end
+
     def to_int24
         return @color
     end
@@ -33,8 +37,12 @@ class Pixel
         return [r, g, b]
     end
 
+    def to_s
+        return self.to_rgb.to_s
+    end
+
     def multiply(factor)
-        r, g, b = self.to_rgb.map{ |x| x * factor }
+        r, g, b = self.to_rgb.map{ |x| (x * factor).to_i & 0xFF }
         return Pixel.new(r, g, b)
     end
 
@@ -44,7 +52,7 @@ class Pixel
 end
 
 class Bitmap
-	def initialize(width, height, color = Pixel.new(255, 0, 0))
+	def initialize(width, height, pixel = Pixel.new(0, 0, 255))
 		@bitsperpixel = 24
 		@headersize = 14
 		@dibheadersize = 40
@@ -54,7 +62,7 @@ class Bitmap
 		@pixeldatasize = (@width*@height*@bitsperpixel/8)
 		@filesize = @pixeldatasize + @headersize + @dibheadersize
 		@padding = generatepad()
-		@pixelarray = initializepixelarray(color)
+		@pixelarray = initializepixelarray(pixel)
 	end
 
 	def generateheader()
@@ -72,8 +80,8 @@ class Bitmap
 		return (padlength == 4) ?  "" : "\x0" * padlength
 	end
 
-	def initializepixelarray(color)
-		return Array.new(@height){ Array.new(@width){color} }
+	def initializepixelarray(pixel)
+		return Array.new(@height){ Array.new(@width){pixel} }
 	end
 
 	def writetofile(path)
@@ -82,7 +90,7 @@ class Bitmap
 		output << generatedibheader()
 		for row in @pixelarray.reverse
 			for pixel in row
-				output << pixel.to_int24
+				output << pixel.to_rgb.reverse.pack("CCC")
 			end
 			output << @padding
 		end
