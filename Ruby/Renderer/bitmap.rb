@@ -1,23 +1,50 @@
 class Pixel
-    attr_reader :rgb
+    attr_accessor :color
 
-	def initialize(colorhexstring)
-		@rgb = [colorhexstring].pack("H6")
-	end
+    def initialize(r = 0, g = 0, b = 0, int24 = nil)
+        if int24
+            @color = int32
+        else
+            @color = (b << 16) + (g << 8) + r
+        end
+    end
 
-	def rgb=(hexstring)
-        #this is pretty lol and was the source of a dumb bug
-        hexstring = hexstring.chars.each_slice(2).to_a.reverse.join
-		@rgb = [hexstring].pack("H6")
-	end
+    def to_h
+        return color.to_s(16).rjust(6, "0")
+    end
 
-    def int=(value)
-        @rgb = value
+    def self.from_int32(int32)
+        #TODO: fix texture mapping code so it never returns nil
+        if int32
+            return Pixel.new(int24 = (int32 >> 8) )
+        else
+            return Pixel.new(255, 0, 255)
+        end
+    end
+
+    def to_int24
+        return @color
+    end
+
+    def to_rgb
+        r = @color & 0xFF
+        g = (@color >> 8) & 0xFF
+        b = (@color >> 16) & 0xFF
+        return [r, g, b]
+    end
+
+    def multiply(factor)
+        r, g, b = self.to_rgb.map{ |x| x * factor }
+        return Pixel.new(r, g, b)
+    end
+
+    def from_int32(int32)
+        @color = (int32 >> 8)
     end
 end
 
 class Bitmap
-	def initialize(width, height, color = "FF0000")
+	def initialize(width, height, color = Pixel.new(255, 0, 0))
 		@bitsperpixel = 24
 		@headersize = 14
 		@dibheadersize = 40
@@ -46,7 +73,7 @@ class Bitmap
 	end
 
 	def initializepixelarray(color)
-		return Array.new(@height){ Array.new(@width){Pixel.new(color)} }
+		return Array.new(@height){ Array.new(@width){color} }
 	end
 
 	def writetofile(path)
@@ -55,7 +82,7 @@ class Bitmap
 		output << generatedibheader()
 		for row in @pixelarray.reverse
 			for pixel in row
-				output << pixel.rgb
+				output << pixel.to_int24
 			end
 			output << @padding
 		end
@@ -68,20 +95,15 @@ class Bitmap
         end
     end
 
+    def setpixel(point, pixel)
+        bounds_check(point)
+        @pixelarray[point.y][point.x] = pixel
+    end
+
     def getpixel(point)
         bounds_check(point)
 		return @pixelarray[point.y][point.x]
     end
-
-    def setpixelraw(point, integer)
-        bounds_check(point)
-        @pixelarray[point.y][point.x].int = integer
-    end
-
-	def setpixel(point, rgbvalue)
-        bounds_check(point)
-		@pixelarray[point.y][point.x].rgb = rgbvalue
-	end
 
 	def pixels
 		@pixelarray.each do |row|

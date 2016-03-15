@@ -7,11 +7,6 @@ require 'chunky_png'
 Width = 512
 Height = 512
 
-def convertpngcolor(integer)
-    return "FF0000" if !integer
-    return integer.to_s(16).rjust(8, "0")[0..5]
-end
-
 def gray(value)
     value = value.to_i & 255
     return value.to_s(16).rjust(2, "0")*3
@@ -26,19 +21,19 @@ def render_model(filename, width = Width, height = Height)
     light_direction = Point(0, 0, -1)
 
     object.faces.each do |face|
-        light_level = face.compute_normal.scalar_product(light_direction)*255
+        light_level = (face.compute_normal.scalar_product(light_direction)*255).to_i
         if light_level > 0
             a, b, c = face.to_screen(center)
-            triangle(a, b, c).each do |pixel|
-                relative = (a - pixel) / Point(width, height, 1)
+            triangle(a, b, c).each do |coord|
+                relative = (a - coord) / Point(width, height, 1)
                 texture_coord = (face.vt[0] + relative) * Point(1023, 1023)
                 texture_coord = texture_coord.to_i
-                color_int = texture.get_pixel(texture_coord.x, texture_coord.y)
-                color = convertpngcolor(color_int)
-                z_depth = z_buffer.getpixel(pixel)
-                if !z_depth or (pixel.z >= z_depth)
-                    bitmap.setpixel(pixel, color)
-                    z_buffer.setpixel(pixel)
+                color_int32 = texture.get_pixel(texture_coord.x, texture_coord.y)
+                color = Pixel.from_int32(color_int32)
+                z_depth = z_buffer.getpixel(coord)
+                if !z_depth or (coord.z >= z_depth)
+                    bitmap.setpixel(coord, Pixel.new(light_level, light_level, light_level))
+                    z_buffer.setpixel(coord)
                 end
             end
         end
