@@ -1,6 +1,7 @@
 
 class Wavefront
     attr_reader :faces
+    attr_accessor :vertices
 
 	def initialize(file_path)
         @vertices = []
@@ -46,6 +47,23 @@ class Wavefront
     def project(distance)
         @vertices.map!{ |vertex| vertex.project(distance) }
     end
+
+    def rotate(x = nil, y = nil, z = nil)
+        model = self.dup
+        if x
+            cos, sin = cos_sin(degrees(x))
+            model.vertices.map!{ |vertex| vertex.rotate_x(cos, sin) }
+        end
+        if y
+            cos, sin = cos_sin(degrees(y))
+            model.vertices.map!{ |vertex| vertex.rotate_y(cos, sin) }
+        end
+        if z
+            cos, sin = cos_sin(degrees(z))
+            model.vertices.map!{ |vertex| vertex.rotate_z(cos, sin) }
+        end
+        return model
+    end
 end
 
 class Face
@@ -81,4 +99,10 @@ def normalize_vectors(vectors)
         return vectors.map!{ |vertex| vertex/Point(max, max, max)}
 end
 
+def cos_sin(radians)
+    return [Math.cos(radians), Math.sin(radians)]
+end
 
+def degrees(radians)
+    return radians * Math::PI / 180
+end

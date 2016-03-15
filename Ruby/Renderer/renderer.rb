@@ -56,10 +56,12 @@ def render_model(filename, texture_filename, width = ScreenWidth, height = Scree
 
     texture_size = Point(texture.width - 1, texture.height - 1, 0)
     object = Wavefront.new(filename)
+    log("Loaded model")
     bitmap = Bitmap.new(width, height)
     z_buffer = Z_Buffer.new(width, height)
 
     light_direction = Point(0, 0, -1)
+    object = object.rotate(30, 30)
     object.project(5)
 
     begin
@@ -68,6 +70,7 @@ def render_model(filename, texture_filename, width = ScreenWidth, height = Scree
         light_level = face.compute_normal.scalar_product(light_direction)
         if light_level > 0
             drawn_faces += 1
+            log("#{drawn_faces} faces drawn") if drawn_faces % 100 == 0
             level_of_detail = compute_triangle_resolution(face.to_screen(screen_center))
 
             geometric_points = triangle(face.v, level_of_detail)

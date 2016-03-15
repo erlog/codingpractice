@@ -1,3 +1,5 @@
+require 'matrix'
+
 def Point(x, y, z = 1)
     return PointObject.new(x, y, z)
 end
@@ -22,6 +24,39 @@ class PointObject
 
     def to_i
         return PointObject.new(@x.to_i, @y.to_i, @z.to_i)
+    end
+
+    def rotate_x(cos, sin)
+        matrix = Matrix[    [1, 0, 0, 0],
+                            [0, cos, sin*-1, 0],
+                            [0, sin, cos, 0],
+                            [0, 0, 0, 1] ]
+
+        position = Matrix.column_vector([@x, @y, @z, 1])
+        array = (matrix * position).column(0).to_a
+        return Point(array[0], array[1], array[2])
+    end
+
+    def rotate_y(cos, sin)
+        matrix = Matrix[    [cos, 0, sin, 0],
+                            [0, 1, 0, 0],
+                            [sin*-1, 0, cos, 0],
+                            [0, 0, 0, 1] ]
+
+        position = Matrix.column_vector([@x, @y, @z, 1])
+        array = (matrix * position).column(0).to_a
+        return Point(array[0], array[1], array[2])
+    end
+
+    def rotate_z(cos, sin)
+        matrix = Matrix[    [cos, sin*-1, 0, 0],
+                            [sin, cos, 0, 0],
+                            [0, 0, 1, 0],
+                            [0, 0, 0, 1] ]
+
+        position = Matrix.column_vector([@x, @y, @z, 1])
+        array = (matrix * position).column(0).to_a
+        return Point(array[0], array[1], array[2])
     end
 
     def hash
@@ -60,6 +95,7 @@ class PointObject
     end
 
     def normalize
+        #I'm not sure I trust this
         factor = Math.sqrt( (@x**2).abs + (@y**2).abs + (@z**2).abs )
         return self / PointObject.new(factor, factor, factor)
     end
