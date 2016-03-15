@@ -1,4 +1,4 @@
-def Point(x, y, z = 0)
+def Point(x, y, z = 1)
     return PointObject.new(x, y, z)
 end
 
@@ -53,6 +53,12 @@ class PointObject
         return (center - (self * center)).to_i
     end
 
+    def project(distance)
+        @x = @x / (1 - @z/distance)
+        @y = @y / (1 - @z/distance)
+        @z = @z / (1 - @z/distance)
+    end
+
     def normalize
         factor = Math.sqrt( (@x**2).abs + (@y**2).abs + (@z**2).abs )
         return self / PointObject.new(factor, factor, factor)
@@ -73,4 +79,5 @@ class PointObject
     def *(other)
         return PointObject.new(@x*other.x, @y*other.y, @z*other.z)
     end
+
 end

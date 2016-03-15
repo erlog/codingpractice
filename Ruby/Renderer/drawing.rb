@@ -20,7 +20,6 @@ def triangle(vertices, resolution)
         filler += line(b, point, resolution)
     end
     return left + right + bottom + filler
-
 end
 
 def line_length(src, dest)
@@ -36,9 +35,9 @@ def compute_triangle_resolution(vertices)
 end
 
 def line(src, dest, length)
-    points = []
+    points = [src, dest]
 
-    (0..length).each do |n|
+    (1..length-1).each do |n|
         amt = n.to_f/length
         point = lerp(src, dest, amt)
         points << point

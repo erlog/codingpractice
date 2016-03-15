@@ -14,12 +14,7 @@ class Pixel
     end
 
     def self.from_int32(int32)
-        #TODO: fix texture mapping code so it never returns nil
-        if int32
-            return Pixel.new(int24 = (int32 >> 8) )
-        else
-            return Pixel.new(255, 0, 255)
-        end
+        return Pixel.new(int24 = (int32 >> 8) )
     end
 
     def self.from_gray(int8)
@@ -52,7 +47,10 @@ class Pixel
 end
 
 class Bitmap
-	def initialize(width, height, pixel = Pixel.new(0, 0, 255))
+    attr_accessor :width
+    attr_accessor :height
+
+	def initialize(width, height, pixel = Pixel.new(255, 0, 255))
 		@bitsperpixel = 24
 		@headersize = 14
 		@dibheadersize = 40
@@ -139,8 +137,7 @@ class Z_Buffer
 
 	def set_pixel(point)
         if (point.x < 0) or (point.x >= @width) or (point.y < 0) or (point.y >= @height)
-            return
-            #raise IndexError, "Invalid Coordinate: #{point.to_s}"
+            raise IndexError, "Invalid Coordinate: #{point.to_s}"
         end
 		@array[point.y][point.x] = point.z
 	end

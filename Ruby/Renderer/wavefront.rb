@@ -34,7 +34,6 @@ class Wavefront
             end
         end
 
-        #normalize vertices
         @vertices = normalize_vectors(@vertices)
 
         @faces.each do |face|
@@ -42,7 +41,10 @@ class Wavefront
             face.vt.map!{ |index| @texture_vertices[index] }
             face.vn.map!{ |index| @normal_vertices[index] }
         end
+    end
 
+    def project(distance)
+        @vertices.map!{ |vertex| vertex.project(distance) }
     end
 end
 
