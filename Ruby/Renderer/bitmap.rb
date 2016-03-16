@@ -1,48 +1,62 @@
+require 'oily_png'
+
 class Pixel
-    attr_accessor :color
+    attr_reader :r; attr_reader :g; attr_reader :b
 
-    def initialize(r = 0, g = 0, b = 0, int24 = nil)
-        if int24
-            @color = int24
-        else
-            @color = (b << 16) + (g << 8) + r
-        end
+    def initialize(r = nil, g = nil, b = nil)
+        @r = r; @g = g; @b = b
     end
 
-    def to_h
-        return color.to_s(16).rjust(6, "0")
-    end
-
-    def self.from_int32(int32)
-        return Pixel.new(int24 = (int32 >> 8) )
+    def self.from_int24(int24)
+        b = int24 & 0xFF
+        g = (int24 >> 8) & 0xFF
+        r = (int24 >> 16) & 0xFF
+        return Pixel.new(r, g, b)
     end
 
     def self.from_gray(int8)
         return Pixel.new(int8, int8, int8)
     end
 
-    def to_int24
-        return @color
-    end
-
-    def to_rgb
-        r = @color & 0xFF
-        g = (@color >> 8) & 0xFF
-        b = (@color >> 16) & 0xFF
-        return [r, g, b]
+    def rgb
+        return [@r, @g, @b]
     end
 
     def to_s
-        return self.to_rgb.to_s
+        return self.rgb.to_s
     end
 
-    def multiply(factor)
-        r, g, b = self.to_rgb.map{ |x| (x * factor).to_i & 0xFF }
+    def to_normal
+        x = @r/128.0 - 1.0
+        y = @g/128.0 - 1.0
+        z = @b/128.0 - 1.0
+        return Point(x, y, z).normalize
+    end
+
+    def average(other)
+        r = (@r + other.r)/2
+        g = (@g + other.g)/2
+        b = (@b + other.b)/2
         return Pixel.new(r, g, b)
     end
 
-    def from_int32(int32)
-        @color = (int32 >> 8)
+    def multiply(factor)
+        r, g, b = self.rgb.map{ |x| (x*factor).to_i }
+        return Pixel.new(r, g, b)
+    end
+
+    def -(other)
+        r = @r - other.r
+        g = @g - other.g
+        b = @g - other.b
+        return Pixel.new(r, g, b)
+    end
+
+    def +(other)
+        r = @r + other.r
+        g = @g + other.g
+        b = @g + other.b
+        return Pixel.new(r, g, b)
     end
 end
 
@@ -50,7 +64,7 @@ class Bitmap
     attr_accessor :width
     attr_accessor :height
 
-	def initialize(width, height, pixel = Pixel.new(255, 0, 255))
+	def initialize(width, height, pixel = Pixel.new(0, 0, 0))
 		@bitsperpixel = 24
 		@headersize = 14
 		@dibheadersize = 40
@@ -88,7 +102,7 @@ class Bitmap
 		output << generatedibheader()
 		for row in @pixelarray.reverse
 			for pixel in row
-				output << pixel.to_rgb.reverse.pack("CCC")
+				output << pixel.rgb.reverse.pack("CCC")
 			end
 			output << @padding
 		end
@@ -124,11 +138,7 @@ class Z_Buffer
 	def initialize(width, height)
 		@width = width
 		@height = height
-		@array = initializearray()
-	end
-
-	def initializearray
-		return Array.new(@height){ Array.new(@width){nil} }
+		@array = Array.new(@height){ Array.new(@width){nil} }
 	end
 
     def get_pixel(point)
@@ -141,12 +151,20 @@ class Z_Buffer
         end
 		@array[point.y][point.x] = point.z
 	end
+end
 
-	def pixels
-		@array.each do |row|
-			row.each do |pixel|
-				yield pixel
-			end
-		end
-	end
+def load_texture(filename)
+    png = ChunkyPNG::Image.from_file(filename)
+    bitmap = Bitmap.new(png.width, png.height)
+    coord = Point(png.width - 1, png.height - 1)
+    png.pixels.each do |pixel|
+        pixel = Pixel.from_int24(pixel >> 8)
+        bitmap.set_pixel(coord, pixel)
+        coord.x -= 1
+        if coord.x < 0
+            coord.x = png.height - 1
+            coord.y -= 1
+        end
+    end
+    return bitmap
 end

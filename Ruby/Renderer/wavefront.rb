@@ -1,27 +1,34 @@
 
 class Wavefront
-    attr_reader :faces
     attr_accessor :vertices
+    attr_reader :faces
 
-	def initialize(file_path)
-        @vertices = []
-        @texture_vertices = []
-        @normal_vertices = []
-        @faces = []
+    def initialize(vertices, texture_vertices, normal_vertices, faces)
+        @vertices = vertices
+        @texture_vertices = texture_vertices
+        @normal_vertices = normal_vertices
+        @faces = faces
+    end
+
+	def self.from_file(file_path)
+        vertices = []
+        texture_vertices = []
+        normal_vertices = []
+        faces = []
         lines = open(file_path).readlines.map!(&:strip)
         lines.each do |line|
             parts = line.split(" ")
             if parts[0] == "v"
                 x, y, z = parts[1..-1].map(&:to_f)
-                @vertices << Point(x, y, z)
+                vertices << Point(x, y, z)
 
             elsif parts[0] == "vt"
                 x, y, z = parts[1..-1].map(&:to_f)
-                @texture_vertices << Point(x, y, z)
+                texture_vertices << Point(x, y, z)
 
             elsif parts[0] == "vn"
                 x, y, z = parts[1..-1].map(&:to_f)
-                @normal_vertices << Point(x, y, z)
+                normal_vertices << Point(x, y, z)
 
             elsif parts[0] == "f"
                 x, y, z = parts[1..-1].map{ |x| x.split("/")[0].to_i - 1 }
@@ -35,17 +42,8 @@ class Wavefront
             end
         end
 
-        @vertices = normalize_vectors(@vertices)
-
-        @faces.each do |face|
-            face.v.map!{ |index| @vertices[index] }
-            face.vt.map!{ |index| @texture_vertices[index] }
-            face.vn.map!{ |index| @normal_vertices[index] }
-        end
-    end
-
-    def project(distance)
-        @vertices.map!{ |vertex| vertex.project(distance) }
+        vertices = normalize_vectors(vertices)
+        return Wavefront.new(vertices, texture_vertices, normal_vertices, faces)
     end
 
     def rotate(x = nil, y = nil, z = nil)
@@ -64,12 +62,21 @@ class Wavefront
         end
         return model
     end
+
+    def each_face
+        @faces.each do |face|
+            face.v = face.v.map{ |index| @vertices[index] }
+            face.vt = face.vt.map{ |index| @texture_vertices[index] }
+            face.vn = face.vn.map{ |index| @normal_vertices[index] }
+            yield face
+        end
+    end
 end
 
 class Face
-    attr_reader :v
-    attr_reader :vt
-    attr_reader :vn
+    attr_accessor :v
+    attr_accessor :vt
+    attr_accessor :vn
     def initialize(v, vt, vn)
         @v = v; @vt = vt; @vn = vn
     end
@@ -81,6 +88,13 @@ class Face
 
     def to_screen(center)
         return @v.map{ |vertex| vertex.to_screen(center) }
+    end
+
+    def project(distance)
+        v = @v.map{ |vertex| vertex.project(distance) }
+        vt = @vt.map{ |vertex| vertex.project(distance) }
+        vn = @vn.map{ |vertex| vertex.project(distance) }
+        return Face.new(v, vt, vn)
     end
 end
 

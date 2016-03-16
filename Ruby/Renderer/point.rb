@@ -89,9 +89,10 @@ class PointObject
     end
 
     def project(distance)
-        @x = @x / (1 - @z/distance)
-        @y = @y / (1 - @z/distance)
-        @z = @z / (1 - @z/distance)
+        x = @x / (1 - @z/distance)
+        y = @y / (1 - @z/distance)
+        z = @z / (1 - @z/distance)
+        return PointObject.new(x, y, z)
     end
 
     def normalize
@@ -116,4 +117,18 @@ class PointObject
         return PointObject.new(@x*other.x, @y*other.y, @z*other.z)
     end
 
+end
+
+def bounds_check(point, maximum_point)
+    if (point.x < 0)
+        return false
+    elsif (point.x >= maximum_point.x)
+        return false
+    elsif (point.y < 0)
+        return false
+    elsif (point.y >= maximum_point.y)
+        return false
+    end
+
+    return true
 end
