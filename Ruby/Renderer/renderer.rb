@@ -2,6 +2,7 @@ require_relative 'bitmap'
 require_relative 'point'
 require_relative 'drawing'
 require_relative 'wavefront'
+require_relative 'matrix_math'
 
 ScreenWidth = 512
 ScreenHeight = 512
@@ -39,23 +40,23 @@ def render_model(filename, texture_filename = nil, bumpmap_filename = nil)
     bitmap = Bitmap.new(width, height)
     z_buffer = Z_Buffer.new(width, height)
 
-    #object = object.rotate(20, 20, 5)
+    view_matrix = compute_view_matrix(20, 20, 5, 5)
+    normal_matrix = view_matrix.inverse.transpose
     light_direction = Point(0, 0, -1)
 
     begin
     drawn_faces = 0
     drawn_pixels = 0
     object.each_face do |face|
-        face = face.project(5)
+        face = face.apply_matrix(view_matrix, normal_matrix)
         estimated_normal = face.compute_normal.scalar_product(light_direction)
-        next if estimated_normal < 0 #bail if the polygon isn't facing us and isn't lit
+        next if estimated_normal < 0 #bail if the polygon isn't facing us
 
         drawn_faces += 1
         log("#{drawn_faces} faces drawn") if drawn_faces % 100 == 0
         level_of_detail = compute_triangle_resolution(face.to_screen(screen_center))
 
         geometric_points = triangle(face.v, level_of_detail)
-        #normal_points = triangle(face.vn, level_of_detail)
         texture_points = triangle(face.vt, level_of_detail)
 
         (0..geometric_points.length - 1).each do |i|
@@ -68,6 +69,7 @@ def render_model(filename, texture_filename = nil, bumpmap_filename = nil)
                 normal = normalmap.get_pixel(texture_coord).to_normal
                 intensity = normal.scalar_product(light_direction) * -1
                 next if intensity < 0
+                intensity = [(intensity**5) + 0.2, 1].min
                 color = texture.get_pixel(texture_coord).multiply(intensity)
                 #finally draw a pixel
                 bitmap.set_pixel(screen_coord, color)

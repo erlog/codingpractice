@@ -1,4 +1,3 @@
-require 'matrix'
 
 def Point(x, y, z = 1)
     return PointObject.new(x, y, z)
@@ -15,6 +14,9 @@ class PointObject
     attr_accessor :z
 
     def initialize(x, y, z)
+        if x == Float::NAN
+            raise ArgumentError
+        end
         @x = x; @y = y; @z = z
     end
 
@@ -26,37 +28,11 @@ class PointObject
         return PointObject.new(@x.to_i, @y.to_i, @z.to_i)
     end
 
-    def rotate_x(cos, sin)
-        matrix = Matrix[    [1, 0, 0, 0],
-                            [0, cos, sin*-1, 0],
-                            [0, sin, cos, 0],
-                            [0, 0, 0, 1] ]
 
+    def apply_matrix(matrix)
         position = Matrix.column_vector([@x, @y, @z, 1])
         array = (matrix * position).column(0).to_a
-        return Point(array[0], array[1], array[2])
-    end
-
-    def rotate_y(cos, sin)
-        matrix = Matrix[    [cos, 0, sin, 0],
-                            [0, 1, 0, 0],
-                            [sin*-1, 0, cos, 0],
-                            [0, 0, 0, 1] ]
-
-        position = Matrix.column_vector([@x, @y, @z, 1])
-        array = (matrix * position).column(0).to_a
-        return Point(array[0], array[1], array[2])
-    end
-
-    def rotate_z(cos, sin)
-        matrix = Matrix[    [cos, sin*-1, 0, 0],
-                            [sin, cos, 0, 0],
-                            [0, 0, 1, 0],
-                            [0, 0, 0, 1] ]
-
-        position = Matrix.column_vector([@x, @y, @z, 1])
-        array = (matrix * position).column(0).to_a
-        return Point(array[0], array[1], array[2])
+        return Point(array[0]/array[3], array[1]/array[3], array[2]/array[3])
     end
 
     def hash
@@ -88,17 +64,18 @@ class PointObject
         return (center - (self * center)).to_i
     end
 
-    def project(distance)
-        x = @x / (1 - @z/distance)
-        y = @y / (1 - @z/distance)
-        z = @z / (1 - @z/distance)
-        return PointObject.new(x, y, z)
-    end
-
     def normalize
         #I'm not sure I trust this
-        factor = Math.sqrt( (@x**2).abs + (@y**2).abs + (@z**2).abs )
+        factor = Math.sqrt( (@x**2) + (@y**2) + (@z**2) )
         return self / PointObject.new(factor, factor, factor)
+    end
+
+    def to_rgb
+        point = self
+        r = (point.x*127) + 128
+        g = (point.y*127) + 128
+        b = (point.z*127) + 128
+        return Pixel.new(r, g, b)
     end
 
     def +(other)

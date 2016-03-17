@@ -1,4 +1,3 @@
-
 class Wavefront
     attr_accessor :vertices
     attr_reader :faces
@@ -42,25 +41,8 @@ class Wavefront
             end
         end
 
-        vertices = normalize_vectors(vertices)
+        #vertices = normalize_vectors(vertices)
         return Wavefront.new(vertices, texture_vertices, normal_vertices, faces)
-    end
-
-    def rotate(x = nil, y = nil, z = nil)
-        model = self.dup
-        if x
-            cos, sin = cos_sin(degrees(x))
-            model.vertices.map!{ |vertex| vertex.rotate_x(cos, sin) }
-        end
-        if y
-            cos, sin = cos_sin(degrees(y))
-            model.vertices.map!{ |vertex| vertex.rotate_y(cos, sin) }
-        end
-        if z
-            cos, sin = cos_sin(degrees(z))
-            model.vertices.map!{ |vertex| vertex.rotate_z(cos, sin) }
-        end
-        return model
     end
 
     def each_face
@@ -86,15 +68,14 @@ class Face
         return (c - a).cross_product(b - a).normalize
     end
 
-    def to_screen(center)
-        return @v.map{ |vertex| vertex.to_screen(center) }
+    def apply_matrix(geom_matrix, normal_matrix)
+        v = @v.map{ |vertex| vertex.apply_matrix(geom_matrix) }
+        vn = @vn.map { |normal| normal.apply_matrix(normal_matrix) }
+        return Face.new(v, @vt, vn)
     end
 
-    def project(distance)
-        v = @v.map{ |vertex| vertex.project(distance) }
-        vt = @vt.map{ |vertex| vertex.project(distance) }
-        vn = @vn.map{ |vertex| vertex.project(distance) }
-        return Face.new(v, vt, vn)
+    def to_screen(center)
+        return @v.map{ |vertex| vertex.to_screen(center) }
     end
 end
 
@@ -113,10 +94,3 @@ def normalize_vectors(vectors)
         return vectors.map!{ |vertex| vertex/Point(max, max, max)}
 end
 
-def cos_sin(radians)
-    return [Math.cos(radians), Math.sin(radians)]
-end
-
-def degrees(radians)
-    return radians * Math::PI / 180
-end

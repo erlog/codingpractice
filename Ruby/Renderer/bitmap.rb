@@ -3,8 +3,8 @@ require 'oily_png'
 class Pixel
     attr_reader :r; attr_reader :g; attr_reader :b
 
-    def initialize(r = nil, g = nil, b = nil)
-        @r = r; @g = g; @b = b
+    def initialize(r, g, b)
+        @r, @g, @b = [r, g, b].map{ |x| [[0, x.to_i].max, 255].min }
     end
 
     def self.from_int24(int24)
@@ -27,9 +27,9 @@ class Pixel
     end
 
     def to_normal
-        x = @r/128.0 - 1.0
-        y = @g/128.0 - 1.0
-        z = @b/128.0 - 1.0
+        x = (@r/255.0) - 0.5
+        y = (@g/255.0) - 0.5
+        z = (@b/255.0) - 0.5
         return Point(x, y, z).normalize
     end
 
