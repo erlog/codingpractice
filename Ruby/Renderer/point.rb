@@ -14,10 +14,15 @@ class PointObject
     attr_accessor :z
 
     def initialize(x, y, z)
-        if x == Float::NAN
+        @x = x.to_f; @y = y.to_f; @z = z.to_f
+        if @x == Float::NAN
             raise ArgumentError
         end
-        @x = x; @y = y; @z = z
+    end
+
+    def self.from_array(xyz)
+        @x, @y, @z = xyz.to_a
+        return PointObject.new(@x, @y, @z)
     end
 
     def to_s
@@ -28,11 +33,28 @@ class PointObject
         return PointObject.new(@x.to_i, @y.to_i, @z.to_i)
     end
 
+    def u
+        return @x
+    end
+
+    def v
+        return @y
+    end
+
+    def xyz
+        return [@x, @y, @z]
+    end
 
     def apply_matrix(matrix)
         position = Matrix.column_vector([@x, @y, @z, 1])
         array = (matrix * position).column(0).to_a
         return Point(array[0]/array[3], array[1]/array[3], array[2]/array[3])
+    end
+
+    def apply_tangent_matrix(matrix)
+        position = Matrix.column_vector([@x, @y, @z])
+        array = (matrix * position).column(0).to_a
+        return Point(array[0], array[1], array[2])
     end
 
     def hash
@@ -70,12 +92,12 @@ class PointObject
         return self / PointObject.new(factor, factor, factor)
     end
 
-    def to_rgb
-        point = self
+    def rgb
+        point = self.normalize
         r = (point.x*127) + 128
         g = (point.y*127) + 128
         b = (point.z*127) + 128
-        return Pixel.new(r, g, b)
+        return Pixel.new(r, g, b).rgb
     end
 
     def +(other)

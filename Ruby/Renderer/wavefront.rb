@@ -65,12 +65,18 @@ class Face
 
     def compute_normal
         a, b, c = @v
-        return (c - a).cross_product(b - a).normalize
+        return ((@v[1] - @v[0]).cross_product(@v[2] - @v[0])).normalize
     end
 
-    def apply_matrix(geom_matrix, normal_matrix)
+    def compute_tb #tangent/bitangent
+        q1 = @v[1] - @v[0]; q2 = @v[2] - @v[0]
+        s1t1 = @vt[1] - @vt[0]; s2t2 = @vt[2] - @vt[0]
+        t,b = get_tb(q1, q2, s1t1, s2t2)
+        return [t, b]
+    end
+
+    def apply_matrix(geom_matrix)
         v = @v.map{ |vertex| vertex.apply_matrix(geom_matrix) }
-        vn = @vn.map { |normal| normal.apply_matrix(normal_matrix) }
         return Face.new(v, @vt, vn)
     end
 

@@ -27,9 +27,7 @@ class Pixel
     end
 
     def to_normal
-        x = (@r/255.0) - 0.5
-        y = (@g/255.0) - 0.5
-        z = (@b/255.0) - 0.5
+        x, y, z = self.rgb.map{ |channel| (channel*2)-1 }
         return Point(x, y, z).normalize
     end
 
@@ -156,13 +154,13 @@ end
 def load_texture(filename)
     png = ChunkyPNG::Image.from_file(filename)
     bitmap = Bitmap.new(png.width, png.height)
-    coord = Point(png.width - 1, png.height - 1)
+    coord = Point(0, png.height - 1)
     png.pixels.each do |pixel|
         pixel = Pixel.from_int24(pixel >> 8)
         bitmap.set_pixel(coord, pixel)
-        coord.x -= 1
-        if coord.x < 0
-            coord.x = png.height - 1
+        coord.x += 1
+        if coord.x >= png.width
+            coord.x = 0
             coord.y -= 1
         end
     end
