@@ -33,9 +33,9 @@ def render_model(filename, texture_filename = nil, normalmap_filename = nil)
     screen_size = Point(width - 1, height - 1)
 
     texture = load_texture(texture_filename) if texture_filename
-    log("Loaded normal map")
     normalmap = load_texture(normalmap_filename) if normalmap_filename
-    log("Loaded texture")
+    worldnormalmap = load_texture("african_head_nm.png")
+    log("Loaded textures")
     start_time = Time.now
 
     texture_size = Point(texture.width - 1, texture.height - 1)
@@ -53,7 +53,7 @@ def render_model(filename, texture_filename = nil, normalmap_filename = nil)
     begin
     drawn_faces = 0
     drawn_pixels = 0
-    object.each_face do |face|
+    object.faces.each do |face|
         #face = face.apply_matrix(view_matrix)
         #normal = face.compute_normal.scalar_product(camera_direction) * -1
         #next if normal < 0 #bail if the polygon isn't facing us
@@ -63,33 +63,37 @@ def render_model(filename, texture_filename = nil, normalmap_filename = nil)
         bitmap.writetofile("converted.bmp") if drawn_faces % 300 == 0
         level_of_detail = compute_triangle_resolution(face.to_screen(screen_center))
 
-        #geometric_points = triangle(face.v, level_of_detail)
+        geometric_points = triangle(face.v, level_of_detail)
         normal_points = triangle(face.vn, level_of_detail)
         texture_points = triangle(face.vt, level_of_detail)
 
         tangent, bitangent = face.compute_tb
         surface_normal = face.compute_normal
-        tbn_matrix = get_tbn_matrix(tangent, bitangent, surface_normal)
 
-        (0..texture_points.length - 1).each do |i|
+        (0..geometric_points.length - 1).each do |i|
             #screen_coord = geometric_points[i].to_screen(screen_center)
             texture_coord = (texture_points[i] * texture_size).to_i
             screen_coord = (texture_points[i] * screen_size).to_i
             next if !bounds_check(screen_coord, screen_size)
             z_depth = z_buffer.get_pixel(screen_coord)
-            #if !z_depth# or (screen_coord.z < z_depth)
+            if !z_depth or (screen_coord.z < z_depth)
+                world_normal = worldnormalmap.get_pixel(texture_coord).to_world_normal
                 tangent_normal = normalmap.get_pixel(texture_coord).to_normal
+                tbn_matrix = get_tbn_matrix(tangent, bitangent, normal_points[i])
                 mapped_normal = tangent_normal.apply_tangent_matrix(tbn_matrix)
+                if world_normal.x.to_s[0..3] == normal_points[i].x.to_s[0..3]
+                    #puts texture_coord; puts normal_points[i]; puts world_normal; puts mapped_normal; puts "-----"
+                end
                 #normal = mapped_normal
-                next if mapped_normal.x.nan?
+                #next if mapped_normal.x.nan?
                 #intensity = normal.scalar_product(light_direction) * -1
                 #next if intensity < 0 #bail if this pixel isn't lit
                 #color = texture.get_pixel(texture_coord)
                 bitmap.set_pixel(screen_coord, mapped_normal)
                 #use the z_buffer to avoid overdraw
-                #z_buffer.set_pixel(screen_coord)
+                z_buffer.set_pixel(screen_coord)
                 drawn_pixels += 1
-            #end
+            end
         end
     end
     rescue Exception => e

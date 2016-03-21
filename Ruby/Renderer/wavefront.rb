@@ -1,19 +1,34 @@
 class Wavefront
-    attr_accessor :vertices
     attr_reader :faces
 
-    def initialize(vertices, texture_vertices, normal_vertices, faces)
-        @vertices = vertices
-        @texture_vertices = texture_vertices
-        @normal_vertices = normal_vertices
+    def initialize(faces, vertices)
         @faces = faces
+        @vertices = vertices
+
+        @faces.each do |indexed_face|
+            face = build_face(indexed_face)
+            tangent, bitangent = face.compute_tb
+
+    end
+
+    def build_face(face)
+        a, b, c = face.abc.map{ |vertex| self.build_vertex(vertex) }
+        return Face.new(a, b, c)
+    end
+
+    def build_vertex(vertex)
+        vertex = vertex.dup
+        vertex.v = @vertices[vertex.v]
+        vertex.vt = @texture_vertices[vertex.vt]
+        vertex.n = @normals[vertex.n]
+        return vertex
     end
 
 	def self.from_file(file_path)
+        faces = []
         vertices = []
         texture_vertices = []
-        normal_vertices = []
-        faces = []
+        normals = []
         lines = open(file_path).readlines.map!(&:strip)
         lines.each do |line|
             parts = line.split(" ")
@@ -27,66 +42,100 @@ class Wavefront
 
             elsif parts[0] == "vn"
                 x, y, z = parts[1..-1].map(&:to_f)
-                normal_vertices << Point(x, y, z)
+                normals << Point(x, y, z)
 
             elsif parts[0] == "f"
-                x, y, z = parts[1..-1].map{ |x| x.split("/")[0].to_i - 1 }
-                triangle = [x, y, z]
-                x, y, z = parts[1..-1].map{ |x| x.split("/")[1].to_i - 1 }
-                texture_triangle = [x, y, z]
-                x, y, z = parts[1..-1].map{ |x| x.split("/")[2].to_i - 1 }
-                normal_triangle = [x, y, z]
-
-                faces << Face.new(triangle, texture_triangle, normal_triangle)
+                v, vt, vn = parts[1].split("/").map{ |index| index.to_i - 1}
+                a = Vertex.new(v, vt, vn)
+                v, vt, vn = parts[2].split("/").map{ |index| index.to_i - 1}
+                b = Vertex.new(v, vt, vn)
+                v, vt, vn = parts[3].split("/").map{ |index| index.to_i - 1}
+                c = Vertex.new(v, vt, vn)
+                faces << Face.new(a, b, c)
             end
         end
 
-        #vertices = normalize_vectors(vertices)
-        return Wavefront.new(vertices, texture_vertices, normal_vertices, faces)
-    end
-
-    def each_face
-        @faces.each do |face|
-            face.v = face.v.map{ |index| @vertices[index] }
-            face.vt = face.vt.map{ |index| @texture_vertices[index] }
-            face.vn = face.vn.map{ |index| @normal_vertices[index] }
-            yield face
+        (0..vertices.length - 1).each do |index|
+            v, vt, n = vertices[i], texture_vertices[i], normals[i]
+            vertices[i] = Vertex(u, vt, n)
         end
+
+        return Wavefront.new(faces, vertices)
+    end
+end
+
+class Vertex
+    attr_accessor :v
+    attr_accessor :uv
+    attr_accessor :normal
+    attr_accessor :tangents
+    attr_accessor :bitangents
+
+    def initialize(geometric_vertex, texture_coordinate, normal)
+        @v = geometric_vertex
+        @uv = texture_coordinate
+        @normal = normal
+        @tangent = nil
+        @tangents = []
+        @bitangent = nil
+        @bitangents = []
     end
 end
 
 class Face
-    attr_accessor :v
-    attr_accessor :vt
-    attr_accessor :vn
-    def initialize(v, vt, vn)
-        @v = v; @vt = vt; @vn = vn
+    attr_reader :a
+    attr_reader :b
+    attr_reader :c
+
+    def initialize(a, b, c)
+        a, b, c = [a, b, c].sort_by{ |vertex| vertex.v.x }
+        @a = a; @b = b; @c = c
     end
 
     def compute_normal
-        a, b, c = @v
-        return ((@v[1] - @v[0]).cross_product(@v[2] - @v[0])).normalize
+        return ((@b.v - @a.v).cross_product(@c.v - @a.v)).normalize
+    end
+
+    def abc
+        return [@a, @b, @c]
+    end
+
+    def v
+        return [@a, @b, @c].map(&:v)
+    end
+
+    def vt
+        return [@a, @b, @c].map(&:uv)
+    end
+
+    def uv
+        return self.vt
+    end
+
+    def vn
+        return [@a, @b, @c].map(&:normal)
+    end
+
+    def to_s
+        return [self.v.to_s].join("\n") + "-------\n"
+    end
+
+    def to_screen(screen_center)
+        return self.v.map{ |vertex| vertex.to_screen(screen_center) }
     end
 
     def compute_tb #tangent/bitangent
-        q1 = @v[1] - @v[0]; q2 = @v[2] - @v[0]
-        s1t1 = @vt[1] - @vt[0]; s2t2 = @vt[2] - @vt[0]
+        q1 = @b.v - @a.v; q2 = @c.v - @a.v
+        s1t1 = @b.uv - @a.uv; s2t2 = @c.uv - @a.uv
         t,b = get_tb(q1, q2, s1t1, s2t2)
         return [t, b]
     end
-
-    def apply_matrix(geom_matrix)
-        v = @v.map{ |vertex| vertex.apply_matrix(geom_matrix) }
-        return Face.new(v, @vt, vn)
-    end
-
-    def to_screen(center)
-        return @v.map{ |vertex| vertex.to_screen(center) }
-    end
 end
 
+
+#There be dragons below, it was written to transform model scale to world scale
 def find_normalizing_offset(numbers)
-    return (numbers.max - (numbers.max - numbers.min)/ 2)*-1
+    return (numbers.max - (numbers.max - numbers.min)/2)*-1
 end
 
 def normalize_vectors(vectors)

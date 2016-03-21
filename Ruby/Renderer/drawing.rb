@@ -1,14 +1,14 @@
 def lerp(src, dest, amt)
-    return src if amt == 0
     return src + ( (dest - src) * Point(amt, amt, amt) )
 end
 
 def triangle(vertices, resolution)
     a, b, c = vertices
+    #return [a, b, c]                            #for vertex cloud
     left = line(a, b, resolution)
     right = line(a, c, resolution)
     bottom = line(b, c, resolution)
-
+    #return left + right + bottom                #for wireframe
     filler = []
     bottom.each do |point|
         filler += line(a, point, resolution)

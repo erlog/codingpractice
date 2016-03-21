@@ -31,6 +31,11 @@ class Pixel
         return Point(x, y, z).normalize
     end
 
+    def to_world_normal
+        x, y, z = self.rgb.map { |channel| ((channel/255.0) - 0.5)*2 }
+        return Point(x, y, z).normalize
+    end
+
     def average(other)
         r = (@r + other.r)/2
         g = (@g + other.g)/2
@@ -152,14 +157,17 @@ class Z_Buffer
 end
 
 def load_texture(filename)
+    log("Loading texture: #{filename}")
     png = ChunkyPNG::Image.from_file(filename)
+    width, height = png.width, png.height
+    log("Copying to bitmap.")
     bitmap = Bitmap.new(png.width, png.height)
     coord = Point(0, png.height - 1)
     png.pixels.each do |pixel|
         pixel = Pixel.from_int24(pixel >> 8)
         bitmap.set_pixel(coord, pixel)
         coord.x += 1
-        if coord.x >= png.width
+        if coord.x >= width
             coord.x = 0
             coord.y -= 1
         end
