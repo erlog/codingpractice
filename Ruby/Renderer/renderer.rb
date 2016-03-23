@@ -21,7 +21,9 @@ def write_bitmap(bitmap)
 end
 
 def clamp(value, min, max)
-    return [[max, value].min, max].min
+    return min if value < min
+    return max if value > max
+    return value
 end
 
 def render_model(filename, texture_filename, normalmap_filename, specmap_filename)

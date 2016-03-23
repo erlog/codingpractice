@@ -20,8 +20,8 @@ class Wavefront
             end
         end
         #average face tangent to get tangents of individual vertices
-        @tangents.map!{|group| group.inject(&:+) / Point(group.length, group.length, group.length) }
-        @bitangents.map!{|group| group.inject(&:+) / Point(group.length, group.length, group.length) }
+        @tangents.map!{|group| group.inject(&:+).scale_by_factor(1.0/group.length) }
+        @bitangents.map!{|group| group.inject(&:+).scale_by_factor(1.0/group.length) }
     end
 
     def each_face

@@ -3,12 +3,7 @@ def Point(x, y, z = 1)
     return PointObject.new(x, y, z)
 end
 
-def RandomPoint(max)
-    return PointObject.new(rand(max), rand(max), rand(max))
-end
-
 class PointObject
-    attr_reader :id
     attr_accessor :x
     attr_accessor :y
     attr_accessor :z
@@ -50,15 +45,14 @@ class PointObject
     end
 
     def apply_matrix(matrix)
-        position = Matrix.column_vector([@x, @y, @z, 1])
-        array = (matrix * position).column(0).to_a
-        return Point(array[0]/array[3], array[1]/array[3], array[2]/array[3])
+        result = matrix * Matrix.column_vector([@x, @y, @z, 1.0])
+        divisor = result[3,0]
+        return Point(result[0,0]/divisor, result[1,0]/divisor, result[2,0]/divisor)
     end
 
     def apply_tangent_matrix(matrix)
-        position = Matrix.column_vector([@x, @y, @z])
-        array = (matrix * position).column(0).to_a
-        return Point(array[0], array[1], array[2])
+        result = matrix * Matrix.column_vector([@x, @y, @z])
+        return Point(result[0,0], result[1,0], result[2,0])
     end
 
     def hash
@@ -103,7 +97,7 @@ class PointObject
 
     def normalize
         factor = Math.sqrt( (@x**2) + (@y**2) + (@z**2) )
-        return self / PointObject.new(factor, factor, factor)
+        return self.scale_by_factor(1.0/factor)
     end
 
     def rgb
@@ -135,11 +129,11 @@ end
 def bounds_check(point, maximum_point)
     if (point.x < 0)
         return false
-    elsif (point.x >= maximum_point.x)
+    elsif (point.x > maximum_point.x)
         return false
     elsif (point.y < 0)
         return false
-    elsif (point.y >= maximum_point.y)
+    elsif (point.y > maximum_point.y)
         return false
     end
 

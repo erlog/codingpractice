@@ -4,7 +4,7 @@ class Pixel
     attr_reader :r; attr_reader :g; attr_reader :b
 
     def initialize(r, g, b)
-        @r, @g, @b = [r, g, b].map{ |x| [[0, x.to_i].max, 255].min }
+        @r, @g, @b = [r, g, b]
     end
 
     def self.from_int24(int24)
@@ -119,12 +119,10 @@ class Bitmap
     end
 
     def set_pixel(point, pixel)
-        bounds_check(point)
         @pixelarray[point.y][point.x] = pixel
     end
 
     def get_pixel(point)
-        bounds_check(point)
 		return @pixelarray[point.y][point.x]
     end
 
