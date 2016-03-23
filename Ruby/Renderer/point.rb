@@ -95,6 +95,12 @@ class PointObject
         return (center + (self * center)).xy_to_i
     end
 
+    def compute_reflection(light_direction)
+        reflection = self.scale_by_factor(-2*self.scalar_product(light_direction))
+        reflection += light_direction
+        return reflection.normalize
+    end
+
     def normalize
         factor = Math.sqrt( (@x**2) + (@y**2) + (@z**2) )
         return self / PointObject.new(factor, factor, factor)

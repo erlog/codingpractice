@@ -4,8 +4,8 @@ require_relative 'drawing'
 require_relative 'wavefront'
 require_relative 'matrix_math'
 
-ScreenWidth = 512
-ScreenHeight = 512
+ScreenWidth = 384
+ScreenHeight = 384
 White = Pixel.new(255, 255, 255)
 
 Start_Time = Time.now
@@ -45,7 +45,7 @@ def render_model(filename, texture_filename, normalmap_filename, specmap_filenam
     view_matrix = compute_view_matrix(20, -20, -5, 5)
     normal_matrix = view_matrix.inverse.transpose
     camera_direction = Point(0, 0, -1)
-    light_direction = Point(0, -1, -1).normalize
+    light_direction = Point(0, 0, -1).normalize
     ambient_light = Pixel.from_gray(5)
 
     begin
@@ -78,13 +78,17 @@ def render_model(filename, texture_filename, normalmap_filename, specmap_filenam
                 uv = convert_barycentric(uvs, barycentric)
                 texture_coord = (uv * texture_size).to_i
                 color = texture.get_pixel(texture_coord)
-                #compute light intensity from tangent normal
+                #compute diffuse light intensity from tangent normal
                 tbn_matrix = get_tbn_matrix(tangents, bitangents, normals, barycentric)
                 tangent_normal = normalmap.get_pixel(texture_coord).to_normal
                 normal = tangent_normal.apply_tangent_matrix(tbn_matrix).apply_matrix(normal_matrix).normalize
-                intensity = clamp((normal.scalar_product(light_direction) * -1), 0, 1)
-                #apply shading
-                shaded_color = color.multiply(intensity + 0.05)
+                diffuse_intensity = clamp((normal.scalar_product(light_direction) * -1), 0, 1)
+                #compute specular highlight intensity
+                specular_power = clamp((1-specmap.get_pixel(texture_coord).r/255)*100, 1, 24)
+                reflection = normal.compute_reflection(light_direction).scalar_product(camera_direction)*-1
+                reflection_intensity = clamp(reflection, 0, 1)**specular_power
+                #combine lighting information for shading
+                shaded_color = color.multiply(0.05 + 0.6*reflection_intensity + 0.75*diffuse_intensity)
                 #finally write our pixel
                 bitmap.set_pixel(screen_coord, shaded_color)
                 drawn_pixels += 1
