@@ -6,12 +6,10 @@ require_relative 'matrix_math'
 
 ScreenWidth = 512
 ScreenHeight = 512
-TextureWidth = 1024
-TextureHeight = 1024
 White = Pixel.new(255, 255, 255)
-Grey = Pixel.new(128, 128, 128)
 
 Start_Time = Time.now
+ReferenceTriangle = [Point(1, 0, 0), Point(0, 1, 0), Point(0, 0, 1)]
 
 def log(string)
     elapsed = (Time.now - Start_Time).round(3)
@@ -30,7 +28,7 @@ def render_model(filename, texture_filename, normalmap_filename, specmap_filenam
     log("Rendering model: #{filename}")
     object = Wavefront.from_file(filename)
     width = ScreenWidth; height = ScreenHeight
-    screen_center = Point((width/2), (height/2), 2048)
+    screen_center = Point((width/2), (height/2), 127)
     screen_size = Point(width - 1, height - 1)
 
     texture = load_texture(texture_filename)
@@ -62,23 +60,32 @@ def render_model(filename, texture_filename, normalmap_filename, specmap_filenam
         bitmap.writetofile("#{drawn_faces}.bmp") if drawn_faces % 300 == 0
         level_of_detail = compute_triangle_resolution(face, screen_center)
 
-        geometric_points = triangle(face.map(&:v), level_of_detail)
-        texture_points = triangle(face.map(&:uv), level_of_detail)
-        normal_points = triangle(face.map(&:normal), level_of_detail)
-        tangent_points = triangle(face.map(&:tangent), level_of_detail)
-        bitangent_points = triangle(face.map(&:bitangent), level_of_detail)
+        barycentric_points = triangle(ReferenceTriangle, level_of_detail)
 
-        (0..geometric_points.length - 1).each do |i|
-            screen_coord = geometric_points[i].apply_matrix(view_matrix).to_screen(screen_center).xy_to_i
-            next if !bounds_check(screen_coord, screen_size) #bail if we're out of bounds
+        verts = face.map(&:v)
+        uvs = face.map(&:uv)
+        normals = face.map(&:normal)
+        tangents = face.map(&:tangent)
+        bitangents = face.map(&:bitangent)
+
+        barycentric_points.each do |barycentric|
+            #get the screen coordinate
+            vertex = convert_barycentric(verts, barycentric)
+            screen_coord = vertex.apply_matrix(view_matrix).to_screen(screen_center).xy_to_i
+            next if !bounds_check(screen_coord, screen_size)
             if z_buffer.should_draw?(screen_coord)
-                texture_coord = (texture_points[i] * texture_size).to_i
+                #get the color from the texture
+                uv = convert_barycentric(uvs, barycentric)
+                texture_coord = (uv * texture_size).to_i
+                color = texture.get_pixel(texture_coord)
+                #compute light intensity from tangent normal
+                tbn_matrix = get_tbn_matrix(tangents, bitangents, normals, barycentric)
                 tangent_normal = normalmap.get_pixel(texture_coord).to_normal
-                tbn_matrix = get_tbn_matrix(tangent_points[i], bitangent_points[i], normal_points[i])
                 normal = tangent_normal.apply_tangent_matrix(tbn_matrix).apply_matrix(normal_matrix).normalize
                 intensity = clamp((normal.scalar_product(light_direction) * -1), 0, 1)
-                color = texture.get_pixel(texture_coord)
-                shaded_color = color.multiply(intensity) + ambient_light
+                #apply shading
+                shaded_color = color.multiply(intensity + 0.05)
+                #finally write our pixel
                 bitmap.set_pixel(screen_coord, shaded_color)
                 drawn_pixels += 1
             end

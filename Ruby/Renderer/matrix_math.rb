@@ -58,7 +58,10 @@ def compute_face_tb(face) #tangent/bitangent
     return [t, b]
 end
 
-def get_tbn_matrix(t, b, n)
+def get_tbn_matrix(tangents, bitangents, normals, barycentric)
+    t = convert_barycentric(tangents, barycentric)
+    b = convert_barycentric(bitangents, barycentric)
+    n = convert_barycentric(normals, barycentric)
     return Matrix.columns([t.xyz, b.xyz, n.xyz])
 end
 

@@ -83,6 +83,10 @@ class PointObject
         return PointObject.new(x, y, z)
     end
 
+    def scale_by_factor(factor)
+        return PointObject.new(@x*factor, @y*factor, @z*factor)
+    end
+
     def scalar_product(other)
         return (@x*other.x) + (@y*other.y) + (@z*other.z)
     end
