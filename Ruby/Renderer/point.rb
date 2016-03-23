@@ -29,6 +29,10 @@ class PointObject
         return [@x, @y, @z].to_s
     end
 
+    def xy_to_i
+        return PointObject.new(@x.to_i, @y.to_i, @z)
+    end
+
     def to_i
         return PointObject.new(@x.to_i, @y.to_i, @z.to_i)
     end
@@ -68,6 +72,7 @@ class PointObject
     def ==(other)
         return false if @x != other.x
         return false if @y != other.y
+        return false if @z != other.z
         return true
     end
 
@@ -83,11 +88,10 @@ class PointObject
     end
 
     def to_screen(center)
-        return (center - (self * center)).to_i
+        return (center + (self * center)).xy_to_i
     end
 
     def normalize
-        #I'm not sure I trust this
         factor = Math.sqrt( (@x**2) + (@y**2) + (@z**2) )
         return self / PointObject.new(factor, factor, factor)
     end
@@ -97,7 +101,7 @@ class PointObject
         r = (point.x*127) + 128
         g = (point.y*127) + 128
         b = (point.z*127) + 128
-        return Pixel.new(r, g, b).rgb
+        return Pixel.new(r, g, b)
     end
 
     def +(other)

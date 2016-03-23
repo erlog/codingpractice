@@ -27,7 +27,7 @@ class Pixel
     end
 
     def to_normal
-        x, y, z = self.rgb.map{ |channel| (channel*2)-1 }
+        x, y, z = self.rgb.map{ |channel| ( (channel*2)/255.0 ) - 1 }
         return Point(x, y, z).normalize
     end
 
@@ -103,7 +103,7 @@ class Bitmap
 		output = File.open(path, "w")
 		output << generateheader()
 		output << generatedibheader()
-		for row in @pixelarray.reverse
+		for row in @pixelarray
 			for pixel in row
 				output << pixel.rgb.reverse.pack("CCC")
 			end
@@ -154,7 +154,17 @@ class Z_Buffer
         end
 		@array[point.y][point.x] = point.z
 	end
+
+    def should_draw?(point)
+        z_depth = self.get_pixel(point)
+        if !z_depth or (point.z > z_depth)
+            self.set_pixel(point)
+            return true
+        end
+        return false
+    end
 end
+
 
 def load_texture(filename)
     log("Loading texture: #{filename}")
@@ -167,7 +177,7 @@ def load_texture(filename)
         pixel = Pixel.from_int24(pixel >> 8)
         bitmap.set_pixel(coord, pixel)
         coord.x += 1
-        if coord.x >= width
+        if coord.x == width
             coord.x = 0
             coord.y -= 1
         end

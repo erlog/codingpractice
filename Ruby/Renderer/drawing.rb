@@ -19,15 +19,16 @@ def triangle(vertices, resolution)
     right.each do |point|
         filler += line(b, point, resolution)
     end
-    return left + right + bottom + filler
+    points = left + right + bottom + filler
+    return points
 end
 
 def line_length(src, dest)
     return Math.sqrt((dest.x - src.x)**2 + (dest.y - src.y)**2)
 end
 
-def compute_triangle_resolution(vertices)
-    a, b, c = vertices
+def compute_triangle_resolution(face, screen_center)
+    a, b, c = face.map(&:v).map{ |point| point.to_screen(screen_center) }
     one = line_length(a, b).to_i
     two = line_length(b, c).to_i
     three = line_length(a, c).to_i

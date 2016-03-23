@@ -39,12 +39,20 @@ def get_projection_matrix(c)
                     [0, 0, -1.0/c, 1] ]
 end
 
-def get_tb(q1, q2, s1t1, s2t2)
+def compute_face_tb(face) #tangent/bitangent
+    a, b, c = face
+    q1 = b.v - a.v; q2 = c.v - a.v
+    s1t1 = b.uv - a.uv; s2t2 = c.uv - a.uv
+    if s1t1 == s2t2 #otherwise we get NaN trying to divide infinity
+        s1t1 = Point(1, 0, 0)
+        s2t2 = Point(0, 1, 0)
+    end
+
     st_matrix = Matrix[ [s2t2.v, -1*s1t1.v],
                         [-1*s2t2.u, s1t1.u] ]
     q_matrix = Matrix[ [q1.x, q1.y, q1.z],
                        [q2.x, q2.y, q2.z] ]
-    tb_matrix = (st_matrix * q_matrix)/(s1t1.u*s2t2.v - s2t2.u*s1t1.v)
+    tb_matrix = (st_matrix * q_matrix)/(s1t1.u*s2t2.v - s1t1.v*s2t2.u)
     t = PointObject.from_array(tb_matrix.row(0)).normalize
     b = PointObject.from_array(tb_matrix.row(1)).normalize
     return [t, b]
