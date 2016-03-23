@@ -1,13 +1,13 @@
 def lerp(src, dest, amt)
-    return src + ( (dest - src) * Point(amt, amt, amt) )
+    return src + (dest - src).scale_by_factor(amt)
 end
 
 def convert_barycentric(vertices, bary_coord)
     a,b,c = vertices
-    a = a.scale_by_factor(bary_coord.x)
-    b = b.scale_by_factor(bary_coord.y)
-    c = c.scale_by_factor(bary_coord.z)
-    return a + b + c
+    x = (a.x * bary_coord.x) + (b.x * bary_coord.y) + (c.x * bary_coord.z)
+    y = (a.y * bary_coord.x) + (b.y * bary_coord.y) + (c.y * bary_coord.z)
+    z = (a.z * bary_coord.x) + (b.z * bary_coord.y) + (c.z * bary_coord.z)
+    return Point(x, y, z)
 end
 
 def triangle(vertices, resolution)

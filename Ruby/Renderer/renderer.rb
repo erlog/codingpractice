@@ -43,16 +43,17 @@ def render_model(filename, texture_filename, normalmap_filename, specmap_filenam
     bitmap = Bitmap.new(width, height)
     z_buffer = Z_Buffer.new(width, height)
 
-    #view_matrix = compute_view_matrix(0, 0, 0, 5)
+    #view_matrix = compute_view_matrix(0, 0, 0, -1)
     view_matrix = compute_view_matrix(20, -20, -5, 5)
     normal_matrix = view_matrix.inverse.transpose
     camera_direction = Point(0, 0, -1)
-    light_direction = Point(0, 0, -1).normalize
+    light_direction = Point(0, 0, -1)
     ambient_light = Pixel.from_gray(5)
 
     begin
     drawn_faces = 0
     drawn_pixels = 0
+    log("#{drawn_faces} faces drawn")
     object.each_face do |face|
         normal = compute_face_normal(face).apply_matrix(normal_matrix).scalar_product(camera_direction)
         next if normal > 0 #bail if the polygon isn't facing us
