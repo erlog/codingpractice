@@ -7,12 +7,6 @@ class Pixel
         @r, @g, @b = [r, g, b]
     end
 
-    def self.from_int24(int24)
-        b = int24 & 0xFF
-        g = (int24 >> 8) & 0xFF
-        r = (int24 >> 16) & 0xFF
-        return Pixel.new(r, g, b)
-    end
 
     def self.from_gray(int8)
         return Pixel.new(int8, int8, int8)
@@ -27,13 +21,15 @@ class Pixel
     end
 
     def to_normal
-        x, y, z = self.rgb.map{ |channel| ( (channel*2)/255.0 ) - 1 }
-        return Point(x, y, z).normalize
+        x = (@r/127.5) - 1
+        y = (@g/127.5) - 1
+        z = (@b/127.5) - 1
+        return Point(x, y, z).normalize!
     end
 
     def to_world_normal
         x, y, z = self.rgb.map { |channel| ((channel/255.0) - 0.5)*2 }
-        return Point(x, y, z).normalize
+        return Point(x, y, z).normalize!
     end
 
     def average(other)
@@ -44,7 +40,9 @@ class Pixel
     end
 
     def multiply(factor)
-        r, g, b = self.rgb.map{ |x| (x*factor).to_i }
+        r = (@r*factor).to_i
+        g = (@g*factor).to_i
+        b = (@b*factor).to_i
         return Pixel.new(r, g, b)
     end
 
@@ -171,9 +169,13 @@ def load_texture(filename)
     log("Copying to bitmap.")
     bitmap = Bitmap.new(png.width, png.height)
     coord = Point(0, png.height - 1)
-    png.pixels.each do |pixel|
-        pixel = Pixel.from_int24(pixel >> 8)
-        bitmap.set_pixel(coord, pixel)
+    png.pixels.each do |int24|
+        int24 = int24 >> 8
+        b = int24 & 0xFF
+        g = (int24 >> 8) & 0xFF
+        r = (int24 >> 16) & 0xFF
+        bitmap.set_pixel(coord, Pixel.new(r,g,b))
+
         coord.x += 1
         if coord.x == width
             coord.x = 0

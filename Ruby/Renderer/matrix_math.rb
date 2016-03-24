@@ -57,13 +57,6 @@ def compute_face_tb(face) #tangent/bitangent
     return [t,b]
 end
 
-def get_tbn(tangents, bitangents, normals, barycentric)
-    tangent = convert_barycentric(tangents, barycentric)
-    bitangent = convert_barycentric(bitangents, barycentric)
-    normal = convert_barycentric(normals, barycentric)
-    return [tangent, bitangent, normal]
-end
-
 def cos_sin(radians)
     return [Math.cos(radians), Math.sin(radians)]
 end

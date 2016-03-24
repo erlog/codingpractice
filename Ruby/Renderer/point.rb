@@ -30,7 +30,7 @@ class PointObject
     end
 
     def to_i!
-        @x, @y, @z = @x.to_i, @y.to_i, @z.to_i
+        @x = @x.to_i; @y = @y.to_i; @z = @z.to_i
         return self
     end
 
@@ -52,7 +52,7 @@ class PointObject
         y = (matrix[1][0] * @x) + (matrix[1][1] * @y) + (matrix[1][2] * @z) + matrix[1][3]
         z = (matrix[2][0] * @x) + (matrix[2][1] * @y) + (matrix[2][2] * @z) + matrix[2][3]
         d = (matrix[3][0] * @x) + (matrix[3][1] * @y) + (matrix[3][2] * @z) + matrix[3][3]
-        @x, @y, @z = x/d, y/d, z/d
+        @x = x/d; @y = y/d; @z = z/d    #parallel assignments are slower
         return self
     end
 
@@ -62,7 +62,7 @@ class PointObject
         x = (tangent.x * @x) + (bitangent.x * @y) + (normal.x * @z)
         y = (tangent.y * @x) + (bitangent.y * @y) + (normal.y * @z)
         z = (tangent.z * @x) + (bitangent.z * @y) + (normal.z * @z)
-        @x, @y, @z = x, y, z
+        @x = x; @y = y; @z = z    #parallel assignments are slower
         return self
     end
 
@@ -88,6 +88,13 @@ class PointObject
         return PointObject.new(x, y, z)
     end
 
+    def scale_by_factor!(factor)
+        @x = @x * factor
+        @y = @y * factor
+        @z = @z * factor
+        return self
+    end
+
     def scale_by_factor(factor)
         return PointObject.new(@x*factor, @y*factor, @z*factor)
     end
@@ -102,6 +109,12 @@ class PointObject
         y = (center.y + (@y * center.y)).to_i
         z = (center.z + (@z * center.z)).to_i
         return Point(x, y, z)
+    end
+
+    def to_texture!(texture_size)
+        @x = (@x * texture_size.x).to_i
+        @y = (@y * texture_size.y).to_i
+        return self
     end
 
     def to_screen!(center)

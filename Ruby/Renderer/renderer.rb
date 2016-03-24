@@ -71,18 +71,19 @@ def render_model(filename, texture_filename, normalmap_filename, specmap_filenam
         tangents = face.map(&:tangent)
         bitangents = face.map(&:bitangent)
 
-        barycentric_points.each do |barycentric|
+       for barycentric in barycentric_points do
             #get the screen coordinate
             vertex = convert_barycentric(verts, barycentric)
             screen_coord = vertex.apply_matrix!(view_matrix).to_screen!(screen_center)
             next if !bounds_check(screen_coord, screen_size)
             if z_buffer.should_draw?(screen_coord)
                 #get the color from the texture
-                uv = convert_barycentric(uvs, barycentric)
-                texture_coord = (uv * texture_size).to_i!
+                texture_coord = convert_barycentric(uvs, barycentric).to_texture!(texture_size)
                 color = texture.get_pixel(texture_coord)
                 #compute diffuse light intensity from tangent normal
-                tbn = get_tbn(tangents, bitangents, normals, barycentric)
+                tbn = [ convert_barycentric(tangents, barycentric),
+                        convert_barycentric(bitangents, barycentric),
+                        convert_barycentric(normals, barycentric) ]
                 tangent_normal = normalmap.get_pixel(texture_coord).to_normal
                 normal = tangent_normal.apply_tangent_matrix!(tbn).apply_matrix!(normal_matrix).normalize!
                 diffuse_intensity = clamp((normal.scalar_product(light_direction) * -1), 0, 1)
