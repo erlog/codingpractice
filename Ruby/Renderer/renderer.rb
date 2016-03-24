@@ -45,7 +45,9 @@ def render_model(filename, texture_filename, normalmap_filename, specmap_filenam
 
     #view_matrix = compute_view_matrix(0, 0, 0, -1)
     view_matrix = compute_view_matrix(20, -20, -5, 5)
-    normal_matrix = view_matrix.inverse.transpose
+    normal_matrix = view_matrix.inverse.transpose.to_a #to_a for performance
+    view_matrix = view_matrix.to_a                     #to_a for performance
+
     camera_direction = Point(0, 0, -1)
     light_direction = Point(0, 0, -1)
     ambient_light = Pixel.from_gray(5)
@@ -82,9 +84,9 @@ def render_model(filename, texture_filename, normalmap_filename, specmap_filenam
                 texture_coord = (uv * texture_size).to_i
                 color = texture.get_pixel(texture_coord)
                 #compute diffuse light intensity from tangent normal
-                tbn_matrix = get_tbn_matrix(tangents, bitangents, normals, barycentric)
+                tbn = get_tbn(tangents, bitangents, normals, barycentric)
                 tangent_normal = normalmap.get_pixel(texture_coord).to_normal
-                normal = tangent_normal.apply_tangent_matrix(tbn_matrix).apply_matrix(normal_matrix).normalize
+                normal = tangent_normal.apply_tangent_matrix(tbn).apply_matrix(normal_matrix).normalize
                 diffuse_intensity = clamp((normal.scalar_product(light_direction) * -1), 0, 1)
                 #compute specular highlight intensity
                 specular_power = clamp((1-specmap.get_pixel(texture_coord).r/255)*100, 1, 24)

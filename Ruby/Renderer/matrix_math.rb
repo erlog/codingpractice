@@ -58,11 +58,11 @@ def compute_face_tb(face) #tangent/bitangent
     return [t, b]
 end
 
-def get_tbn_matrix(tangents, bitangents, normals, barycentric)
-    t = convert_barycentric(tangents, barycentric)
-    b = convert_barycentric(bitangents, barycentric)
-    n = convert_barycentric(normals, barycentric)
-    return Matrix.columns([t.xyz, b.xyz, n.xyz])
+def get_tbn(tangents, bitangents, normals, barycentric)
+    tangent = convert_barycentric(tangents, barycentric)
+    bitangent = convert_barycentric(bitangents, barycentric)
+    normal = convert_barycentric(normals, barycentric)
+    return [tangent, bitangent, normal]
 end
 
 def cos_sin(radians)
