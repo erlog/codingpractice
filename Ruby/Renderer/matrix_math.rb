@@ -47,7 +47,6 @@ def compute_face_tb(face) #tangent/bitangent
         s1t1 = Point(1, 0, 0)
         s2t2 = Point(0, 1, 0)
     end
-
     st_matrix = Matrix[ [s2t2.v, -1*s1t1.v],
                         [-1*s2t2.u, s1t1.u] ]
     q_matrix = Matrix[ [q1.x, q1.y, q1.z],
@@ -55,7 +54,7 @@ def compute_face_tb(face) #tangent/bitangent
     tb_matrix = (st_matrix * q_matrix)/(s1t1.u*s2t2.v - s1t1.v*s2t2.u)
     t = PointObject.from_array(tb_matrix.row(0)).normalize
     b = PointObject.from_array(tb_matrix.row(1)).normalize
-    return [t, b]
+    return [t,b]
 end
 
 def get_tbn(tangents, bitangents, normals, barycentric)

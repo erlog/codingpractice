@@ -1,8 +1,15 @@
+ReferenceTriangle = [Point(1, 0, 0), Point(0, 1, 0), Point(0, 0, 1)]
+
 def lerp(src, dest, amt)
-    return src + (dest - src).scale_by_factor(amt)
+    #unrolled for performance
+    x = src.x + ( (dest.x - src.x) * amt )
+    y = src.y + ( (dest.y - src.y) * amt )
+    z = src.z + ( (dest.z - src.z) * amt )
+    return Point(x, y, z)
 end
 
 def convert_barycentric(vertices, bary_coord)
+    #unrolled for performance
     a,b,c = vertices
     x = (a.x * bary_coord.x) + (b.x * bary_coord.y) + (c.x * bary_coord.z)
     y = (a.y * bary_coord.x) + (b.y * bary_coord.y) + (c.y * bary_coord.z)
@@ -10,8 +17,8 @@ def convert_barycentric(vertices, bary_coord)
     return Point(x, y, z)
 end
 
-def triangle(vertices, resolution)
-    a, b, c = vertices
+def triangle(resolution)
+    a, b, c = ReferenceTriangle
     #return [a, b, c]                            #for vertex cloud
     left = line(a, b, resolution)
     right = line(a, c, resolution)
@@ -19,13 +26,13 @@ def triangle(vertices, resolution)
     #return left + right + bottom                #for wireframe
     filler = []
     bottom.each do |point|
-        filler += line(a, point, resolution)
+        filler += line_middle(a, point, resolution)
     end
     left.each do |point|
-        filler += line(c, point, resolution)
+        filler += line_middle(c, point, resolution)
     end
     right.each do |point|
-        filler += line(b, point, resolution)
+        filler += line_middle(b, point, resolution)
     end
     points = left + right + bottom + filler
     return points
@@ -43,14 +50,20 @@ def compute_triangle_resolution(face, screen_center)
     return [one, two, three].max
 end
 
-def line(src, dest, length)
+def line(src, dest, segments)
     points = [src, dest]
 
-    (1..length-1).each do |n|
-        amt = n.to_f/length
+    points += line_middle(src, dest, segments)
+
+    return points
+end
+
+def line_middle(src, dest, segments)
+    points = []
+    (1..segments-1).each do |n|
+        amt = n.to_f/segments
         point = lerp(src, dest, amt)
         points << point
     end
-
     return points
 end

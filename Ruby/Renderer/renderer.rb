@@ -9,7 +9,6 @@ ScreenHeight = 384
 White = Pixel.new(255, 255, 255)
 
 Start_Time = Time.now
-ReferenceTriangle = [Point(1, 0, 0), Point(0, 1, 0), Point(0, 0, 1)]
 
 def log(string)
     elapsed = (Time.now - Start_Time).round(3)
@@ -30,7 +29,7 @@ def render_model(filename, texture_filename, normalmap_filename, specmap_filenam
     log("Rendering model: #{filename}")
     object = Wavefront.from_file(filename)
     width = ScreenWidth; height = ScreenHeight
-    screen_center = Point((width/2), (height/2), 127)
+    screen_center = Point((width/2), (height/2), 32768)
     screen_size = Point(width - 1, height - 1)
 
     texture = load_texture(texture_filename)
@@ -57,15 +56,14 @@ def render_model(filename, texture_filename, normalmap_filename, specmap_filenam
     drawn_pixels = 0
     log("#{drawn_faces} faces drawn")
     object.each_face do |face|
-        normal = compute_face_normal(face).apply_matrix(normal_matrix).scalar_product(camera_direction)
+        normal = compute_face_normal(face).apply_matrix!(normal_matrix).scalar_product(camera_direction)
         next if normal > 0 #bail if the polygon isn't facing us
 
         drawn_faces += 1
         log("#{drawn_faces} faces drawn") if drawn_faces % 100 == 0
-        bitmap.writetofile("#{drawn_faces}.bmp") if drawn_faces % 300 == 0
         level_of_detail = compute_triangle_resolution(face, screen_center)
 
-        barycentric_points = triangle(ReferenceTriangle, level_of_detail)
+        barycentric_points = triangle(level_of_detail)
 
         verts = face.map(&:v)
         uvs = face.map(&:uv)
@@ -76,17 +74,17 @@ def render_model(filename, texture_filename, normalmap_filename, specmap_filenam
         barycentric_points.each do |barycentric|
             #get the screen coordinate
             vertex = convert_barycentric(verts, barycentric)
-            screen_coord = vertex.apply_matrix(view_matrix).to_screen(screen_center).xy_to_i
+            screen_coord = vertex.apply_matrix!(view_matrix).to_screen!(screen_center)
             next if !bounds_check(screen_coord, screen_size)
             if z_buffer.should_draw?(screen_coord)
                 #get the color from the texture
                 uv = convert_barycentric(uvs, barycentric)
-                texture_coord = (uv * texture_size).to_i
+                texture_coord = (uv * texture_size).to_i!
                 color = texture.get_pixel(texture_coord)
                 #compute diffuse light intensity from tangent normal
                 tbn = get_tbn(tangents, bitangents, normals, barycentric)
                 tangent_normal = normalmap.get_pixel(texture_coord).to_normal
-                normal = tangent_normal.apply_tangent_matrix(tbn).apply_matrix(normal_matrix).normalize
+                normal = tangent_normal.apply_tangent_matrix!(tbn).apply_matrix!(normal_matrix).normalize!
                 diffuse_intensity = clamp((normal.scalar_product(light_direction) * -1), 0, 1)
                 #compute specular highlight intensity
                 specular_power = clamp((1-specmap.get_pixel(texture_coord).r/255)*100, 1, 24)
@@ -105,9 +103,9 @@ def render_model(filename, texture_filename, normalmap_filename, specmap_filenam
         raise e
     end
     write_bitmap(bitmap)
-    bitmap.writetofile("3000.bmp")
     overdraw = (100.0 * drawn_pixels) / (width * height)
     log( "#{drawn_faces}/#{object.faces.length} faces drawn" )
+    log( "#{drawn_pixels} pixels drawn" )
     log( "#{overdraw.round(3)}% pixel overdraw" )
     log( (Time.now - start_time).round(3).to_s + " seconds taken")
 end
