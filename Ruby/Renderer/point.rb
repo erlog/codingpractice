@@ -46,6 +46,12 @@ class PointObject
         return [@x, @y, @z]
     end
 
+    def xy_negative?
+        return true if @x < 0
+        return true if @y < 0
+        return false
+    end
+
     def apply_matrix!(matrix)
         #matrix math unrolled for performance gains
         x = (matrix[0][0] * @x) + (matrix[0][1] * @y) + (matrix[0][2] * @z) + matrix[0][3]
@@ -170,10 +176,3 @@ class PointObject
 
 end
 
-def bounds_check(point, maximum_point)
-    return false if (point.x < 0)
-    return false if (point.x > maximum_point.x)
-    return false if (point.y < 0)
-    return false if (point.y > maximum_point.y)
-    return true
-end

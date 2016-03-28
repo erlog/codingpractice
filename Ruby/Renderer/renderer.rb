@@ -71,11 +71,10 @@ def render_model(filename, texture_filename, normalmap_filename, specmap_filenam
         tangents = face.map(&:tangent)
         bitangents = face.map(&:bitangent)
 
-       for barycentric in barycentric_points do
+        for barycentric in barycentric_points do
             #get the screen coordinate
             vertex = convert_barycentric(verts, barycentric)
             screen_coord = vertex.apply_matrix!(view_matrix).to_screen!(screen_center)
-            next if !bounds_check(screen_coord, screen_size)
             if z_buffer.should_draw?(screen_coord)
                 #get the color from the texture
                 texture_coord = convert_barycentric(uvs, barycentric).to_texture!(texture_size)

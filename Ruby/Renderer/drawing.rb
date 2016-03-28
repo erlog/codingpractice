@@ -25,35 +25,38 @@ def triangle(resolution)
     bottom = line(b, c, resolution)
     #return left + right + bottom                #for wireframe
     filler = []
-    bottom.each do |point|
-        filler += line_middle(a, point, resolution)
+    filler.concat(bottom)
+    for point in bottom
+        filler.concat(line_middle(a, point, resolution))
     end
-    left.each do |point|
-        filler += line_middle(c, point, resolution)
+    filler.concat(left)
+    for point in left
+        filler.concat(line_middle(c, point, resolution))
     end
-    right.each do |point|
-        filler += line_middle(b, point, resolution)
+    filler.concat(right)
+    for point in right
+        filler.concat(line_middle(b, point, resolution))
     end
-    points = left + right + bottom + filler
-    return points
+
+    return filler
 end
 
 def line_length(src, dest)
-    return Math.sqrt((dest.x - src.x)**2 + (dest.y - src.y)**2)
+    return Math.sqrt((dest.x - src.x)**2 + (dest.y - src.y)**2).to_i
 end
 
 def compute_triangle_resolution(face, screen_center)
     a, b, c = face.map(&:v).map{ |point| point.to_screen(screen_center) }
-    one = line_length(a, b).to_i
-    two = line_length(b, c).to_i
-    three = line_length(a, c).to_i
+    one = line_length(a, b)
+    two = line_length(b, c)
+    three = line_length(a, c)
     return [one, two, three].max
 end
 
 def line(src, dest, segments)
     points = [src, dest]
 
-    points += line_middle(src, dest, segments)
+    points.concat(line_middle(src, dest, segments))
 
     return points
 end

@@ -110,6 +110,14 @@ class Bitmap
 		output.close()
 	end
 
+    def in_bounds?(point)
+        if (point.x < 0) or (point.x >= @width) or (point.y < 0) or (point.y >= @height)
+            return false
+            #raise IndexError, "Invalid Coordinate: #{point.to_s}"
+        end
+        return true
+    end
+
     def bounds_check(point)
         if (point.x < 0) or (point.x >= @width) or (point.y < 0) or (point.y >= @height)
             raise IndexError, "Invalid Coordinate: #{point.to_s}"
@@ -117,11 +125,19 @@ class Bitmap
     end
 
     def set_pixel(point, pixel)
-        @pixelarray[point.y][point.x] = pixel
+        begin
+            @pixelarray[point.y][point.x] = pixel
+        rescue IndexError
+            pass
+        end
     end
 
     def get_pixel(point)
-		return @pixelarray[point.y][point.x]
+        begin
+            return @pixelarray[point.y][point.x]
+        rescue IndexError
+            pass
+        end
     end
 
 	def pixels
@@ -140,18 +156,32 @@ class Z_Buffer
 		@array = Array.new(@height){ Array.new(@width){nil} }
 	end
 
+    def is_negative?(point)
+        if (point.x < 0) or (point.y < 0)
+            return false
+            #raise IndexError, "Invalid Coordinate: #{point.to_s}"
+        end
+        return true
+    end
+
     def get_pixel(point)
-		return @array[point.y][point.x]
+        begin
+            return @array[point.y][point.x]
+        rescue IndexError
+            pass
+        end
     end
 
 	def set_pixel(point)
-        if (point.x < 0) or (point.x >= @width) or (point.y < 0) or (point.y >= @height)
-            raise IndexError, "Invalid Coordinate: #{point.to_s}"
+        begin
+            @array[point.y][point.x] = point.z
+        rescue IndexError
+            pass
         end
-		@array[point.y][point.x] = point.z
 	end
 
     def should_draw?(point)
+        return false if point.xy_negative?
         z_depth = self.get_pixel(point)
         if !z_depth or (point.z > z_depth)
             self.set_pixel(point)
