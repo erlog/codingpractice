@@ -25,15 +25,16 @@ def triangle(resolution)
     bottom = line(b, c, resolution)
     #return left + right + bottom                #for wireframe
     filler = []
+    filler.concat(left)
+    filler.concat(right)
     filler.concat(bottom)
+
     for point in bottom
         filler.concat(line_middle(a, point, resolution))
     end
-    filler.concat(left)
     for point in left
         filler.concat(line_middle(c, point, resolution))
     end
-    filler.concat(right)
     for point in right
         filler.concat(line_middle(b, point, resolution))
     end

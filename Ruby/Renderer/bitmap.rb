@@ -152,14 +152,6 @@ class Z_Buffer
 		@array = Array.new(@height){ Array.new(@width){NegativeInfinity} }
 	end
 
-    def is_negative?(point)
-        if (point.x < 0) or (point.y < 0)
-            return false
-            #raise IndexError, "Invalid Coordinate: #{point.to_s}"
-        end
-        return true
-    end
-
     def get_pixel(point)
         begin
             return @array[point.y][point.x]
@@ -177,9 +169,11 @@ class Z_Buffer
 	end
 
     def should_draw?(point)
-        return false if point.xy_negative?
-        z_depth = self.get_pixel(point)
-        if point.z > z_depth
+        if (point.x < 0) or (point.y < 0)
+            return false
+        end
+
+        if point.z > self.get_pixel(point)
             self.set_pixel(point)
             return true
         end
@@ -244,8 +238,7 @@ def load_texture(filename)
 
         coord.x += 1
         if coord.x == width
-            coord.x = 0
-            coord.y -= 1
+            coord.x = 0; coord.y -= 1
         end
     end
     return bitmap

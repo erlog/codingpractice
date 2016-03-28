@@ -46,12 +46,6 @@ class PointObject
         return [@x, @y, @z]
     end
 
-    def xy_negative?
-        return true if @x < 0
-        return true if @y < 0
-        return false
-    end
-
     def apply_matrix!(matrix)
         #matrix math unrolled for performance gains
         x = (matrix[0][0] * @x) + (matrix[0][1] * @y) + (matrix[0][2] * @z) + matrix[0][3]
@@ -110,16 +104,12 @@ class PointObject
     end
 
     def to_screen(center)
-        #unrolled for performance
-        x = (center.x + (@x * center.x)).to_i
-        y = (center.y + (@y * center.y)).to_i
-        z = (center.z + (@z * center.z)).to_i
-        return Point(x, y, z)
+        return self.dup.to_screen!(center)
     end
 
     def to_texture!(texture_size)
-        @x = (@x * texture_size.x).to_i
-        @y = (@y * texture_size.y).to_i
+        @x = (@x * texture_size.x)
+        @y = (@y * texture_size.y)
         return self
     end
 
