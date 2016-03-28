@@ -33,14 +33,15 @@ def render_model(filename, texture_filename, normalmap_filename, specmap_filenam
     screen_size = Point(width - 1, height - 1)
 
     texture = load_texture(texture_filename)
-    normalmap = load_texture(normalmap_filename)
-    specmap = load_texture(specmap_filename)
+    normalmap = TangentSpaceNormalMap.new(load_texture(normalmap_filename))
+    specmap = SpecularMap.new(load_texture(specmap_filename))
 
     start_time = Time.now
 
     texture_size = Point(texture.width - 1, texture.height - 1)
     bitmap = Bitmap.new(width, height)
     z_buffer = Z_Buffer.new(width, height)
+    triangle_cache = Hash.new{}
 
     #view_matrix = compute_view_matrix(0, 0, 0, -1)
     view_matrix = compute_view_matrix(20, -20, -5, 5)
@@ -63,7 +64,11 @@ def render_model(filename, texture_filename, normalmap_filename, specmap_filenam
         log("#{drawn_faces} faces drawn") if drawn_faces % 100 == 0
         level_of_detail = compute_triangle_resolution(face, screen_center)
 
-        barycentric_points = triangle(level_of_detail)
+        barycentric_points = triangle_cache[level_of_detail]
+        if !barycentric_points
+            barycentric_points = triangle(level_of_detail)
+            triangle_cache[level_of_detail] = barycentric_points
+        end
 
         verts = face.map(&:v)
         uvs = face.map(&:uv)
@@ -83,11 +88,11 @@ def render_model(filename, texture_filename, normalmap_filename, specmap_filenam
                 tbn = [ convert_barycentric(tangents, barycentric),
                         convert_barycentric(bitangents, barycentric),
                         convert_barycentric(normals, barycentric) ]
-                tangent_normal = normalmap.get_pixel(texture_coord).to_normal
+                tangent_normal = normalmap.get_normal(texture_coord).dup
                 normal = tangent_normal.apply_tangent_matrix!(tbn).apply_matrix!(normal_matrix).normalize!
                 diffuse_intensity = clamp((normal.scalar_product(light_direction) * -1), 0, 1)
                 #compute specular highlight intensity
-                specular_power = clamp((1-specmap.get_pixel(texture_coord).r/255)*100, 1, 24)
+                specular_power = specmap.get_specular(texture_coord)
                 reflection = normal.compute_reflection(light_direction).scalar_product(camera_direction)*-1
                 reflection_intensity = clamp(reflection, 0, 1)**specular_power
                 #combine lighting information for shading

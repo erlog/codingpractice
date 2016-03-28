@@ -50,7 +50,7 @@ def compute_triangle_resolution(face, screen_center)
     one = line_length(a, b)
     two = line_length(b, c)
     three = line_length(a, c)
-    return [one, two, three].max
+    return [one, two, three].max.to_f
 end
 
 def line(src, dest, segments)
@@ -63,10 +63,12 @@ end
 
 def line_middle(src, dest, segments)
     points = []
-    (1..segments-1).each do |n|
-        amt = n.to_f/segments
+    n = segments - 1
+    while n > 0
+        amt = n/segments
         point = lerp(src, dest, amt)
         points << point
+        n -= 1
     end
     return points
 end

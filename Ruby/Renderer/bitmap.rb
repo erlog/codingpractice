@@ -1,4 +1,5 @@
 require 'oily_png'
+NegativeInfinity = -1*Float::INFINITY
 
 class Pixel
     attr_reader :r; attr_reader :g; attr_reader :b
@@ -62,8 +63,10 @@ class Pixel
 end
 
 class Bitmap
+    include Enumerable
     attr_accessor :width
     attr_accessor :height
+    attr_accessor :pixelarray
 
 	def initialize(width, height, pixel = Pixel.new(0, 0, 0))
 		@bitsperpixel = 24
@@ -140,20 +143,13 @@ class Bitmap
         end
     end
 
-	def pixels
-		@pixelarray.each do |row|
-			row.each do |pixel|
-				yield pixel
-			end
-		end
-	end
 end
 
 class Z_Buffer
 	def initialize(width, height)
 		@width = width
 		@height = height
-		@array = Array.new(@height){ Array.new(@width){nil} }
+		@array = Array.new(@height){ Array.new(@width){NegativeInfinity} }
 	end
 
     def is_negative?(point)
@@ -183,11 +179,48 @@ class Z_Buffer
     def should_draw?(point)
         return false if point.xy_negative?
         z_depth = self.get_pixel(point)
-        if !z_depth or (point.z > z_depth)
+        if point.z > z_depth
             self.set_pixel(point)
             return true
         end
         return false
+    end
+end
+
+class TangentSpaceNormalMap
+	def initialize(bitmap)
+		@array = []
+        bitmap.pixelarray.each do |row|
+            @array << row.map(&:to_normal)
+        end
+	end
+
+    def get_normal(point)
+        begin
+            return @array[point.y][point.x]
+        rescue IndexError
+            pass
+        end
+    end
+end
+
+class SpecularMap
+	def initialize(bitmap)
+		@array = []
+        bitmap.pixelarray.each do |row|
+            #TODO: Figure out what to do here for real instead of cargo-culting
+            @array << row.map{ |pixel|
+                clamp((1-pixel.r/255)*100, 1, 24)
+            }
+        end
+	end
+
+    def get_specular(point)
+        begin
+            return @array[point.y][point.x]
+        rescue IndexError
+            pass
+        end
     end
 end
 

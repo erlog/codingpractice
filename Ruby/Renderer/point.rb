@@ -10,7 +10,7 @@ class PointObject
     attr_accessor :z
 
     def initialize(x, y, z)
-        @x = x.to_f; @y = y.to_f; @z = z.to_f
+        @x = x; @y = y; @z = z
         if @x == Float::NAN
             raise ArgumentError
         end
