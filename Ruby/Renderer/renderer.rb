@@ -3,10 +3,12 @@ require_relative 'point'
 require_relative 'drawing'
 require_relative 'wavefront'
 require_relative 'matrix_math'
+require 'thread'
 
 ScreenWidth = 384
 ScreenHeight = 384
 White = Pixel.new(255, 255, 255)
+TriangleCache = Hash.new()
 
 Start_Time = Time.now
 
@@ -25,23 +27,17 @@ def clamp(value, min, max)
     return value
 end
 
-def render_model(filename, texture_filename, normalmap_filename, specmap_filename)
-    log("Rendering model: #{filename}")
-    object = Wavefront.from_file(filename)
+def render_model(object, texture, normalmap, specmap)
     width = ScreenWidth; height = ScreenHeight
     screen_center = Point((width/2), (height/2), 32768)
     screen_size = Point(width - 1, height - 1)
 
-    texture = load_texture(texture_filename)
-    normalmap = TangentSpaceNormalMap.new(load_texture(normalmap_filename))
-    specmap = SpecularMap.new(load_texture(specmap_filename))
 
     start_time = Time.now
 
     texture_size = Point(texture.width - 1, texture.height - 1)
     bitmap = Bitmap.new(width, height)
     z_buffer = Z_Buffer.new(width, height)
-    triangle_cache = Hash.new{}
 
     #view_matrix = compute_view_matrix(0, 0, 0, -1)
     view_matrix = compute_view_matrix(20, -20, -5, 5)
@@ -61,13 +57,13 @@ def render_model(filename, texture_filename, normalmap_filename, specmap_filenam
         next if normal > 0 #bail if the polygon isn't facing us
 
         drawn_faces += 1
-        log("#{drawn_faces} faces drawn") if drawn_faces % 100 == 0
+        log("#{drawn_faces} faces drawn") if drawn_faces % 250 == 0
         level_of_detail = compute_triangle_resolution(face, screen_center)
 
-        barycentric_points = triangle_cache[level_of_detail]
+        barycentric_points = TriangleCache[level_of_detail]
         if !barycentric_points
             barycentric_points = triangle(level_of_detail)
-            triangle_cache[level_of_detail] = barycentric_points
+            TriangleCache[level_of_detail] = barycentric_points
         end
 
         verts = face.map(&:v)
@@ -81,6 +77,7 @@ def render_model(filename, texture_filename, normalmap_filename, specmap_filenam
             vertex = convert_barycentric(verts, barycentric)
             screen_coord = vertex.apply_matrix!(view_matrix).to_screen!(screen_center)
             if z_buffer.should_draw?(screen_coord)
+                next
                 #get the color from the texture
                 texture_coord = convert_barycentric(uvs, barycentric).to_texture!(texture_size)
                 color = texture.get_pixel(texture_coord)
@@ -115,10 +112,13 @@ def render_model(filename, texture_filename, normalmap_filename, specmap_filenam
     log( (Time.now - start_time).round(3).to_s + " seconds taken")
 end
 
-render_model("african_head.obj",
-            "african_head_diffuse.png",
-            "african_head_nm_tangent.png",
-            "african_head_spec.png")
-
-
+object = Wavefront.from_file("african_head.obj")
+texture = Thread.new{ load_texture("african_head_diffuse.png") }
+normalmap = Thread.new{ TangentSpaceNormalMap.new("african_head_nm_tangent.png") }
+specmap = Thread.new{ SpecularMap.new("african_head_spec.png") }
+texture = texture.value
+normalmap = normalmap.value
+specmap = specmap.value
+log("Rendering model")
+render_model(object, texture, normalmap, specmap)
 

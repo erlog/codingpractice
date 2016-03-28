@@ -188,7 +188,9 @@ class Z_Buffer
 end
 
 class TangentSpaceNormalMap
-	def initialize(bitmap)
+	def initialize(filename)
+        bitmap = load_texture(filename)
+        log("Processing normal map")
 		@array = []
         bitmap.pixelarray.each do |row|
             @array << row.map(&:to_normal)
@@ -205,7 +207,9 @@ class TangentSpaceNormalMap
 end
 
 class SpecularMap
-	def initialize(bitmap)
+	def initialize(filename)
+        bitmap = load_texture(filename)
+        log("Processing specular map")
 		@array = []
         bitmap.pixelarray.each do |row|
             #TODO: Figure out what to do here for real instead of cargo-culting
@@ -229,7 +233,6 @@ def load_texture(filename)
     log("Loading texture: #{filename}")
     png = ChunkyPNG::Image.from_file(filename)
     width, height = png.width, png.height
-    log("Copying to bitmap.")
     bitmap = Bitmap.new(png.width, png.height)
     coord = Point(0, png.height - 1)
     png.pixels.each do |int24|

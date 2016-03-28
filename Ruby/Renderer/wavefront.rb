@@ -25,7 +25,7 @@ class Wavefront
     end
 
     def each_face
-        @faces.each do |indexed_face|
+        for indexed_face in @faces
             yield build_face(indexed_face)
         end
     end
