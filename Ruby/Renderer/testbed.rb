@@ -1,12 +1,8 @@
-require_relative 'bitmap'
 require_relative 'point'
-#require_relative 'drawing'
-#require_relative 'wavefront'
-#require_relative 'matrix_math'
-require_relative 'renderer'
+require_relative 'bitmap'
+require 'matrix'
 
-Width = 512
-Height = 512
+ReferenceTriangle = [Point(1, 0, 0), Point(0, 1, 0), Point(0, 0, 1)]
 
 def convert_barycentric(vertices, bary_coord)
     #unrolled for performance
@@ -18,58 +14,61 @@ def convert_barycentric(vertices, bary_coord)
 end
 
 def line_length(src, dest)
-    return Math.sqrt((dest.x - src.x)**2 + (dest.y - src.y)**2).to_i
+    return Math.sqrt((dest.x - src.x)**2 + (dest.y - src.y)**2)
 end
 
-def new_triangle(triangle)
-    a,b,c = triangle
-    min_x = [a.x, b.x, c.x].min
-    max_x = [a.x, b.x, c.x].max
-
+def amounts(segments)
+    amounts = (0..segments).map{ |n| n.to_f/segments }
 end
 
-def triangle(resolution)
-    a, b, c = ReferenceTriangle
-    #return [a, b, c]                            #for vertex cloud
-    left = line(a, b, resolution)
-    right = line(a, c, resolution)
-    bottom = line(b, c, resolution)
-    #return left + right + bottom                #for wireframe
-    filler = []
-    filler.concat(left)
-    filler.concat(right)
-    filler.concat(bottom)
+def triangle_area(verts)
+    a,b,c = verts
+    return  (a.x * (b.y - c.y)) + (b.x * (c.y - a.y)) + (c.x * (a.y - b.y))
+end
 
-    for point in bottom
-        filler.concat(line_middle(a, point, resolution))
+def lerp(src, dest, amt)
+    #unrolled for performance
+    x = src.x + ( (dest.x - src.x) * amt )
+    y = src.y + ( (dest.y - src.y) * amt )
+    z = src.z + ( (dest.z - src.z) * amt )
+    return Point(x, y, z)
+end
+
+def line(src, dest)
+    segments = line_length(src, dest)
+    x_per_segment = (dest.x - src.x)/segments
+    y_per_segment = (dest.y - src.y)/segments
+
+    points = [dest]
+    x = src.x; y = src.y
+    n = 0
+    while n < segments
+        points << Point(x.ceil, y.ceil)
+        x += x_per_segment
+        y += y_per_segment
+        n += 1
     end
-    for point in left
-        filler.concat(line_middle(c, point, resolution))
+    return points.uniq
+end
+
+def triangle(verts)
+    a,b,c = verts
+    points = []
+    line_a = line(a,b)
+    for point in line_a
+        points.concat(line(point, c))
     end
-    for point in right
-        filler.concat(line_middle(b, point, resolution))
-    end
-
-    return filler
+    return points
 end
 
-def random_tri(width, height)
-    return [ Point(rand(width), rand(height)),
-             Point(rand(width), rand(height)),
-             Point(rand(width), rand(height)) ]
+verts = [Point(25, 25, 0), Point(125, 25, 0), Point(25, 125, 0)]
+
+points = triangle(verts)
+puts points.length
+puts triangle_area(verts)/2
+
+bitmap = Bitmap.new(200, 200)
+for point in points
+    bitmap.set_pixel(point, White)
 end
-
-bitmap = Bitmap.new(Width, Height)
-coords = new_triangle(random_tri(Width, Height))
-
-drawn_pixels = 0
-coords.each do |coord|
-    bitmap.set_pixel(coord, White)
-    drawn_pixels += 1
-end
-log(drawn_pixels.to_s)
-log(coords.length.to_s)
-write_bitmap(bitmap)
-
-
-
+bitmap.writetofile("test.bmp")
