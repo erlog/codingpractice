@@ -51,13 +51,13 @@ def render_model(object, texture, normalmap, specmap)
     drawn_faces = 0
     drawn_pixels = 0
     log("#{drawn_faces} faces drawn")
-    object.each_face do |face|
-        normal = compute_face_normal(face).apply_matrix!(normal_matrix).scalar_product(camera_direction)
+    for face in object.faces
+        normal = face.normal.apply_matrix!(normal_matrix).scalar_product(camera_direction)
         next if normal > 0 #bail if the polygon isn't facing us
 
         drawn_faces += 1
         log("#{drawn_faces} faces drawn") if drawn_faces % 100 == 0
-        level_of_detail = compute_triangle_resolution(face, screen_center)
+        level_of_detail = compute_triangle_resolution(face.verts, screen_center)
 
         barycentric_points = TriangleCache[level_of_detail]
         if !barycentric_points
@@ -65,24 +65,18 @@ def render_model(object, texture, normalmap, specmap)
             TriangleCache[level_of_detail] = barycentric_points
         end
 
-        verts = face.map(&:v)
-        uvs = face.map(&:uv)
-        normals = face.map(&:normal)
-        tangents = face.map(&:tangent)
-        bitangents = face.map(&:bitangent)
-
         for barycentric in barycentric_points do
             #get the screen coordinate
-            vertex = convert_barycentric(verts, barycentric)
+            vertex = convert_barycentric(face.verts, barycentric)
             screen_coord = vertex.apply_matrix!(view_matrix).to_screen!(screen_center)
             if z_buffer.should_draw?(screen_coord)
                 #get the color from the texture
-                texture_coord = convert_barycentric(uvs, barycentric).to_texture!(texture_size)
+                texture_coord = convert_barycentric(face.uvs, barycentric).to_texture!(texture_size)
                 color = texture.get_pixel(texture_coord)
                 #compute diffuse light intensity from tangent normal
-                tbn = [ convert_barycentric(tangents, barycentric),
-                        convert_barycentric(bitangents, barycentric),
-                        convert_barycentric(normals, barycentric) ]
+                tbn = [ convert_barycentric(face.tangents, barycentric),
+                        convert_barycentric(face.bitangents, barycentric),
+                        convert_barycentric(face.normals, barycentric) ]
                 tangent_normal = normalmap.get_normal(texture_coord).dup
                 normal = tangent_normal.apply_tangent_matrix!(tbn).apply_matrix!(normal_matrix).normalize!
                 diffuse_intensity = clamp((normal.scalar_product(light_direction) * -1), 0, 1)

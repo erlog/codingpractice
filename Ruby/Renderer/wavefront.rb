@@ -2,7 +2,6 @@ class Wavefront
     attr_reader :faces
 
     def initialize(faces, vertices, uvs, normals)
-        @faces = faces #faces are just triplets of indexed vertices
         @vertices = vertices
         @uvs = uvs
         @normals = normals
@@ -10,7 +9,7 @@ class Wavefront
         @bitangents = Array.new(vertices.length){[]}
 
         #compute tangents/bitangents for tangent space normal mapping
-        @faces.each do |indexed_face|
+        faces.each do |indexed_face|
             vertex_indices = indexed_face.map{ |vertex| vertex.v }
             face = self.build_face(indexed_face)
             tangent, bitangent = compute_face_tb(face)
@@ -19,15 +18,23 @@ class Wavefront
                 @bitangents[index] << bitangent
             end
         end
-        #average face tangent to get tangents of individual vertices
+
+        #average face tangent/bitangets to get t/b at individual vertices
         @tangents.map!{|group| group.inject(&:+).scale_by_factor(1.0/group.length) }
         @bitangents.map!{|group| group.inject(&:+).scale_by_factor(1.0/group.length) }
-    end
 
-    def each_face
-        for indexed_face in @faces
-            yield build_face(indexed_face)
+        #build our face objects
+        face_objects = []
+        faces.each do |indexed_face|
+            face = self.build_face(indexed_face)
+            verts = face.map(&:v)
+            uvs = face.map(&:uv)
+            normals = face.map(&:normal)
+            tangents = face.map(&:tangent)
+            bitangents = face.map(&:bitangent)
+            face_objects << Face.new(verts, uvs, normals, tangents, bitangents)
         end
+        @faces = face_objects
     end
 
     def build_face(indexed_face)
@@ -78,6 +85,29 @@ class Wavefront
     end
 end
 
+class Face
+    attr_reader :verts
+    attr_reader :uvs
+    attr_reader :normal  #face normal for camera calculations
+    attr_reader :normals #individual vertex normals for shading calculations
+    attr_reader :tangents
+    attr_reader :bitangents
+
+    def initialize(verts, uvs, normals, tangents, bitangents)
+        @verts = verts
+        @uvs = uvs
+        @normal = ((verts[1] - verts[0]).cross_product(verts[2] - verts[0])).normalize
+        @normals = normals
+        @tangents = tangents
+        @bitangents = bitangents
+    end
+
+    def apply_matrix!(matrix)
+        @vs.map!{ |vertex| vertex.apply_matrix(matrix) }
+        return self
+    end
+end
+
 class Vertex
     attr_accessor :v
     attr_reader :uv
@@ -94,24 +124,13 @@ class Vertex
     end
 end
 
-def compute_face_normal(face)
-    a, b, c = face
-    return ((b.v - a.v).cross_product(c.v - a.v)).normalize
-end
-
-def apply_matrix_to_face(face, matrix)
-    a, b, c = face
-    a.v = a.v.apply_matrix(matrix)
-    b.v = b.v.apply_matrix(matrix)
-    c.v = c.v.apply_matrix(matrix)
-    return [a, b, c]
-end
 
 #There be dragons below, it was written to transform model scale to world scale
 def find_normalizing_offset(numbers)
     return (numbers.max - (numbers.max - numbers.min)/2)*-1
 end
 
+#This "normalizes" as in rescales everything
 def normalize_vectors(vectors)
         x_offset = find_normalizing_offset(vectors.map(&:x))
         y_offset = find_normalizing_offset(vectors.map(&:y))

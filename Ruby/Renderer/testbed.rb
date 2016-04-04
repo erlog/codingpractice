@@ -1,12 +1,12 @@
-ReferenceTriangle = [Point(1, 0, 0), Point(0, 1, 0), Point(0, 0, 1)]
+require_relative 'bitmap'
+require_relative 'point'
+#require_relative 'drawing'
+#require_relative 'wavefront'
+#require_relative 'matrix_math'
+require_relative 'renderer'
 
-def lerp(src, dest, amt)
-    #unrolled for performance
-    x = src.x + ( (dest.x - src.x) * amt )
-    y = src.y + ( (dest.y - src.y) * amt )
-    z = src.z + ( (dest.z - src.z) * amt )
-    return Point(x, y, z)
-end
+Width = 512
+Height = 512
 
 def convert_barycentric(vertices, bary_coord)
     #unrolled for performance
@@ -15,6 +15,17 @@ def convert_barycentric(vertices, bary_coord)
     y = (a.y * bary_coord.x) + (b.y * bary_coord.y) + (c.y * bary_coord.z)
     z = (a.z * bary_coord.x) + (b.z * bary_coord.y) + (c.z * bary_coord.z)
     return Point(x, y, z)
+end
+
+def line_length(src, dest)
+    return Math.sqrt((dest.x - src.x)**2 + (dest.y - src.y)**2).to_i
+end
+
+def new_triangle(triangle)
+    a,b,c = triangle
+    min_x = [a.x, b.x, c.x].min
+    max_x = [a.x, b.x, c.x].max
+
 end
 
 def triangle(resolution)
@@ -42,34 +53,23 @@ def triangle(resolution)
     return filler
 end
 
-def line_length(src, dest)
-    return Math.sqrt((dest.x - src.x)**2 + (dest.y - src.y)**2).to_i
+def random_tri(width, height)
+    return [ Point(rand(width), rand(height)),
+             Point(rand(width), rand(height)),
+             Point(rand(width), rand(height)) ]
 end
 
-def compute_triangle_resolution(verts, screen_center)
-    a, b, c = verts.map{ |point| point.to_screen(screen_center) }
-    one = line_length(a, b)
-    two = line_length(b, c)
-    three = line_length(a, c)
-    return [one, two, three].max.to_f
+bitmap = Bitmap.new(Width, Height)
+coords = new_triangle(random_tri(Width, Height))
+
+drawn_pixels = 0
+coords.each do |coord|
+    bitmap.set_pixel(coord, White)
+    drawn_pixels += 1
 end
+log(drawn_pixels.to_s)
+log(coords.length.to_s)
+write_bitmap(bitmap)
 
-def line(src, dest, segments)
-    points = [src, dest]
 
-    points.concat(line_middle(src, dest, segments))
 
-    return points
-end
-
-def line_middle(src, dest, segments)
-    points = []
-    n = segments - 1
-    while n > 0
-        amt = n/segments
-        point = lerp(src, dest, amt)
-        points << point
-        n -= 1
-    end
-    return points
-end
