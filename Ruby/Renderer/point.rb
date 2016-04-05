@@ -22,15 +22,25 @@ class PointObject
     end
 
     def to_s
-        return [@x, @y, @z].to_s
+        return "Point(#{@x}, #{@y}, #{z})"
     end
 
-    def to_i
-        return PointObject.new(@x.to_i, @y.to_i, @z.to_i)
+    def to_f!
+        @x = @x.to_f; @y = @y.to_f; @z = @z.to_f
+        return self
     end
 
     def to_i!
         @x = @x.to_i; @y = @y.to_i; @z = @z.to_i
+        return self
+    end
+
+    def to_i
+        return self.dup.to_i!
+    end
+
+    def round!
+        @x = @x.round; @y = @y.round
         return self
     end
 
@@ -56,6 +66,10 @@ class PointObject
         return self
     end
 
+    def apply_matrix(matrix)
+        return self.dup.apply_matrix!(matrix)
+    end
+
     def apply_tangent_matrix!(tbn)
         #matrix math unrolled for performance gains
         tangent, bitangent, normal = tbn
@@ -64,6 +78,14 @@ class PointObject
         z = (tangent.z * @x) + (bitangent.z * @y) + (normal.z * @z)
         @x = x; @y = y; @z = z    #parallel assignments are slower
         return self
+    end
+
+    def <=>(other)
+        return 1 if self.y < other.y
+        return -1 if self.y > other.y
+        return -1 if self.x < other.x
+        return 1 if self.x > other.x
+        return 0
     end
 
     def hash
@@ -86,6 +108,33 @@ class PointObject
         y = (@z*other.x) - (@x*other.z)
         z = (@x*other.y) - (@y*other.x)
         return PointObject.new(x, y, z)
+    end
+
+    def from_barycentric(verts)
+        a,b,c = verts
+        x = (a.x * @x) + (b.x * @y) + (c.x * @z)
+        y = (a.y * @x) + (b.y * @y) + (c.y * @z)
+        z = (a.z * @x) + (b.z * @y) + (c.z * @z)
+        return PointObject.new(x, y, z)
+    end
+
+    def to_barycentric!(a, b, c)
+        vec_one = Point(c.x-a.x, b.x-a.x, a.x-@x)
+        vec_two = Point(c.y-a.y, b.y-a.y, a.y-@y)
+        u = vec_one.cross_product(vec_two)
+        x = 1.0 - ((u.x + u.y)/u.z.to_f)
+        y = u.y/u.z.to_f
+        z = u.x/u.z.to_f
+        #threshold = -3
+        #if (x < threshold) or (y < threshold) or (z < threshold)
+        #    return false
+        #end
+        @x = x; @y = y; @z = z
+        return self
+    end
+
+    def to_barycentric(a, b, c)
+        return self.dup.to_barycentric!(a, b, c)
     end
 
     def scale_by_factor!(factor)
@@ -128,8 +177,7 @@ class PointObject
     end
 
     def normalize
-        factor = Math.sqrt( (@x**2) + (@y**2) + (@z**2) )
-        return self.scale_by_factor(1.0/factor)
+        return self.dup.normalize!
     end
 
     def normalize!

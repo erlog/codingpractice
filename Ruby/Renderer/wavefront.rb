@@ -18,23 +18,17 @@ class Wavefront
                 @bitangents[index] << bitangent
             end
         end
+        @faces = faces
 
         #average face tangent/bitangets to get t/b at individual vertices
         @tangents.map!{|group| group.inject(&:+).scale_by_factor(1.0/group.length) }
         @bitangents.map!{|group| group.inject(&:+).scale_by_factor(1.0/group.length) }
+    end
 
-        #build our face objects
-        face_objects = []
-        faces.each do |indexed_face|
-            face = self.build_face(indexed_face)
-            verts = face.map(&:v)
-            uvs = face.map(&:uv)
-            normals = face.map(&:normal)
-            tangents = face.map(&:tangent)
-            bitangents = face.map(&:bitangent)
-            face_objects << Face.new(verts, uvs, normals, tangents, bitangents)
+    def each_face
+        for indexed_face in @faces
+            yield self.build_face(indexed_face)
         end
-        @faces = face_objects
     end
 
     def build_face(indexed_face)
@@ -85,29 +79,6 @@ class Wavefront
     end
 end
 
-class Face
-    attr_reader :verts
-    attr_reader :uvs
-    attr_reader :normal  #face normal for camera calculations
-    attr_reader :normals #individual vertex normals for shading calculations
-    attr_reader :tangents
-    attr_reader :bitangents
-
-    def initialize(verts, uvs, normals, tangents, bitangents)
-        @verts = verts
-        @uvs = uvs
-        @normal = ((verts[1] - verts[0]).cross_product(verts[2] - verts[0])).normalize
-        @normals = normals
-        @tangents = tangents
-        @bitangents = bitangents
-    end
-
-    def apply_matrix!(matrix)
-        @vs.map!{ |vertex| vertex.apply_matrix(matrix) }
-        return self
-    end
-end
-
 class Vertex
     attr_accessor :v
     attr_reader :uv
@@ -121,9 +92,14 @@ class Vertex
         @normal = normal
         @tangent = tangent
         @bitangent = bitangent
+        @screen_v = nil
     end
 end
 
+def compute_face_normal(face)
+    a, b, c = face
+    return ((b.v - a.v).cross_product(c.v - a.v)).normalize
+end
 
 #There be dragons below, it was written to transform model scale to world scale
 def find_normalizing_offset(numbers)

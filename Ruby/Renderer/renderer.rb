@@ -1,25 +1,14 @@
 require_relative 'bitmap'
-require_relative 'point'
 require_relative 'drawing'
-require_relative 'wavefront'
 require_relative 'matrix_math'
-require 'thread'
+require_relative 'point'
+require_relative 'utilities'
+require_relative 'wavefront'
 
 ScreenWidth = 384
 ScreenHeight = 384
-White = Pixel.new(255, 255, 255)
-TriangleCache = Hash.new()
 
 Start_Time = Time.now
-
-def log(string)
-    elapsed = (Time.now - Start_Time).round(3)
-    puts "#{elapsed}: #{string}"
-end
-
-def write_bitmap(bitmap)
-        bitmap.writetofile("output/renderer - " + Time.now.to_s[0..-7] + ".bmp")
-end
 
 def clamp(value, min, max)
     return min if value < min
@@ -50,33 +39,41 @@ def render_model(object, texture, normalmap, specmap)
     begin
     drawn_faces = 0
     drawn_pixels = 0
+    total_pixels = 0
     log("#{drawn_faces} faces drawn")
-    for face in object.faces
-        normal = face.normal.apply_matrix!(normal_matrix).scalar_product(camera_direction)
+
+    object.each_face do |face|
+        normal = compute_face_normal(face).apply_matrix!(normal_matrix).scalar_product(camera_direction)
         next if normal > 0 #bail if the polygon isn't facing us
 
         drawn_faces += 1
         log("#{drawn_faces} faces drawn") if drawn_faces % 100 == 0
-        level_of_detail = compute_triangle_resolution(face.verts, screen_center)
 
-        barycentric_points = TriangleCache[level_of_detail]
-        if !barycentric_points
-            barycentric_points = triangle(level_of_detail)
-            TriangleCache[level_of_detail] = barycentric_points
-        end
+        face = face.map{ |vertex|
+            vertex.v = vertex.v.apply_matrix(view_matrix).to_screen!(screen_center)
+            vertex
+        }
+        face = face.sort_by(&:v)
+        verts = face.map(&:v)
+        uvs = face.map(&:uv)
+        normals = face.map(&:normal)
+        tangents = face.map(&:tangent)
+        bitangents = face.map(&:bitangent)
+
+        barycentric_points = triangle(verts)
+        total_pixels += barycentric_points.length
 
         for barycentric in barycentric_points do
             #get the screen coordinate
-            vertex = convert_barycentric(face.verts, barycentric)
-            screen_coord = vertex.apply_matrix!(view_matrix).to_screen!(screen_center)
+            screen_coord = barycentric.from_barycentric(verts).round!
             if z_buffer.should_draw?(screen_coord)
                 #get the color from the texture
-                texture_coord = convert_barycentric(face.uvs, barycentric).to_texture!(texture_size)
+                texture_coord = barycentric.from_barycentric(uvs).to_texture!(texture_size).round!
                 color = texture.get_pixel(texture_coord)
                 #compute diffuse light intensity from tangent normal
-                tbn = [ convert_barycentric(face.tangents, barycentric),
-                        convert_barycentric(face.bitangents, barycentric),
-                        convert_barycentric(face.normals, barycentric) ]
+                tbn = [ barycentric.from_barycentric(tangents),
+                        barycentric.from_barycentric(bitangents),
+                        barycentric.from_barycentric(normals) ]
                 tangent_normal = normalmap.get_normal(texture_coord).dup
                 normal = tangent_normal.apply_tangent_matrix!(tbn).apply_matrix!(normal_matrix).normalize!
                 diffuse_intensity = clamp((normal.scalar_product(light_direction) * -1), 0, 1)
@@ -97,10 +94,11 @@ def render_model(object, texture, normalmap, specmap)
         raise e
     end
     write_bitmap(bitmap)
-    overdraw = (100.0 * drawn_pixels) / (width * height)
+    overdraw = (100.0 * drawn_pixels) / (total_pixels)
     log( "#{drawn_faces}/#{object.faces.length} faces drawn" )
     log( "#{drawn_pixels} pixels drawn" )
-    log( "#{overdraw.round(3)}% pixel overdraw" )
+    log( "#{total_pixels} points generated" )
+    log( "#{overdraw.round(3)}% efficiency" )
     log( (Time.now - start_time).round(3).to_s + " seconds taken")
 end
 

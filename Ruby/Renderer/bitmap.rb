@@ -17,6 +17,10 @@ class Pixel
         return [@r, @g, @b]
     end
 
+    def bgr
+        return [@b, @g, @r]
+    end
+
     def to_s
         return self.rgb.to_s
     end
@@ -61,6 +65,7 @@ class Pixel
         return Pixel.new(r, g, b)
     end
 end
+White = Pixel.new(255, 255, 255)
 
 class Bitmap
     include Enumerable
@@ -106,7 +111,7 @@ class Bitmap
 		output << generatedibheader()
 		for row in @pixelarray
 			for pixel in row
-				output << pixel.rgb.reverse.pack("CCC")
+                output << pixel.bgr.pack("CCC")
 			end
 			output << @padding
 		end
@@ -148,7 +153,9 @@ end
 class Z_Buffer
 	def initialize(width, height)
 		@width = width
+        @max_x = width - 1
 		@height = height
+        @max_y = height - 1
 		@array = Array.new(@height){ Array.new(@width){NegativeInfinity} }
 	end
 
@@ -170,6 +177,9 @@ class Z_Buffer
 
     def should_draw?(point)
         if (point.x < 0) or (point.y < 0)
+            return false
+        end
+        if (point.x > @max_x) or (point.y > @max_y)
             return false
         end
 
