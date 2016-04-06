@@ -67,6 +67,7 @@ def render_model(object, texture, normalmap, specmap)
             #get the screen coordinate
             screen_coord = barycentric.from_barycentric(verts).round!
             if z_buffer.should_draw?(screen_coord)
+                next
                 #get the color from the texture
                 texture_coord = barycentric.from_barycentric(uvs).to_texture!(texture_size).round!
                 color = texture.get_pixel(texture_coord)

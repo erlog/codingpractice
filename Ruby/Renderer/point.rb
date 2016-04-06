@@ -125,10 +125,7 @@ class PointObject
         x = 1.0 - ((u.x + u.y)/u.z.to_f)
         y = u.y/u.z.to_f
         z = u.x/u.z.to_f
-        #threshold = -3
-        #if (x < threshold) or (y < threshold) or (z < threshold)
-        #    return false
-        #end
+
         @x = x; @y = y; @z = z
         return self
     end

@@ -1,3 +1,13 @@
+def lerp(src, dest, amt)
+    x = src.x + ( (dest.x - src.x) * amt )
+    y = src.y + ( (dest.y - src.y) * amt )
+    return Point(x, y)
+end
+
+def amounts(segments)
+    return (0..segments).map{ |n| n/segments }
+end
+
 def horizontal_line(src_x, dest_x, y)
     src_x, dest_x = [src_x, dest_x].sort
     points = []
@@ -9,22 +19,51 @@ def horizontal_line(src_x, dest_x, y)
     return points
 end
 
+def line(src, dest)
+    segments = line_length(src, dest) + 1
+    amts = amounts(segments.to_f)
+
+    points = []
+    for amt in amts
+        points << lerp(src, dest, amt)
+    end
+
+    return points
+end
+
 def triangle(verts)
     a,b,c = verts
     area = triangle_area(a, b, c)
     return [] if area == 0
-    d = compute_triangle_d(verts)
 
-    points = []
-    #paint top half
-    points.concat(half_triangle_positive(a, b, d))
-    #paint bottom half
-    points.concat(half_triangle_negative(b, c, d))
+    wireframe_points = []
+    fill_points = []
     barys = []
-    for point in points
-        bary = point.to_barycentric(a, b, c)
-        barys << bary if bary
+
+    #paint outline
+    wireframe_points.concat(line(a, b))
+    wireframe_points.concat(line(a, c))
+    wireframe_points.concat(line(b, c))
+    for point in wireframe_points
+        barys << point.to_barycentric(a, b, c)
     end
+
+    #fill triangle
+
+    d = compute_triangle_d(verts)
+    #paint top half
+    fill_points.concat(half_triangle_positive(a, b, d))
+    #paint bottom half
+    fill_points.concat(half_triangle_negative(b, c, d))
+
+    for point in fill_points
+        bary = point.to_barycentric(a, b, c)
+        next if bary.x < 0
+        next if bary.y < 0
+        next if bary.z < 0
+        barys << bary
+    end
+
     return barys
 end
 
@@ -76,17 +115,5 @@ end
 
 def line_length(src, dest)
     return Math.sqrt((dest.x - src.x)**2 + (dest.y - src.y)**2)
-end
-
-def line(src, dest, segments)
-    points = [src, dest]
-    n = segments - 1
-    while n > 0
-        amt = n/segments
-        point = lerp(src, dest, amt)
-        points << point
-        n -= 1
-    end
-    return points
 end
 
