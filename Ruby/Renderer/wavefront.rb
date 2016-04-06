@@ -101,6 +101,14 @@ def compute_face_normal(face)
     return ((b.v - a.v).cross_product(c.v - a.v)).normalize
 end
 
+def face_to_screen(face, view_matrix, screen_center)
+    face[0].v = face[0].v.apply_matrix(view_matrix).to_screen!(screen_center)
+    face[1].v = face[1].v.apply_matrix(view_matrix).to_screen!(screen_center)
+    face[2].v = face[2].v.apply_matrix(view_matrix).to_screen!(screen_center)
+    face = face.sort_by(&:v)
+    return face
+end
+
 #There be dragons below, it was written to transform model scale to world scale
 def find_normalizing_offset(numbers)
     return (numbers.max - (numbers.max - numbers.min)/2)*-1

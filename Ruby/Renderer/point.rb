@@ -149,9 +149,6 @@ class PointObject
         return (@x*other.x) + (@y*other.y) + (@z*other.z)
     end
 
-    def to_screen(center)
-        return self.dup.to_screen!(center)
-    end
 
     def to_texture!(texture_size)
         @x = (@x * texture_size.x)
@@ -161,10 +158,14 @@ class PointObject
 
     def to_screen!(center)
         #unrolled for performance
-        @x = (center.x + (@x * center.x)).to_i
-        @y = (center.y + (@y * center.y)).to_i
-        @z = (center.z + (@z * center.z)).to_i
+        @x = (center.x + (@x * center.x)).round
+        @y = (center.y + (@y * center.y)).round
+        @z = (center.z + (@z * center.z)).round
         return self
+    end
+
+    def to_screen(center)
+        return self.dup.to_screen!(center)
     end
 
     def compute_reflection(light_direction)

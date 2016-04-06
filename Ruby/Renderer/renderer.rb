@@ -49,11 +49,8 @@ def render_model(object, texture, normalmap, specmap)
         drawn_faces += 1
         log("#{drawn_faces} faces drawn") if drawn_faces % 100 == 0
 
-        face = face.map{ |vertex|
-            vertex.v = vertex.v.apply_matrix(view_matrix).to_screen!(screen_center)
-            vertex
-        }
-        face = face.sort_by(&:v)
+        face = face_to_screen(face, view_matrix, screen_center)
+
         verts = face.map(&:v)
         uvs = face.map(&:uv)
         normals = face.map(&:normal)
@@ -67,7 +64,6 @@ def render_model(object, texture, normalmap, specmap)
             #get the screen coordinate
             screen_coord = barycentric.from_barycentric(verts).round!
             if z_buffer.should_draw?(screen_coord)
-                next
                 #get the color from the texture
                 texture_coord = barycentric.from_barycentric(uvs).to_texture!(texture_size).round!
                 color = texture.get_pixel(texture_coord)

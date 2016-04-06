@@ -19,12 +19,12 @@ def horizontal_line(src_x, dest_x, y)
     return points
 end
 
-def line(src, dest)
-    segments = line_length(src, dest) + 1
-    amts = amounts(segments.to_f)
+def line_middle(src, dest)
+    segments = line_length(src, dest).ceil.to_f
 
     points = []
-    for amt in amts
+    for n in (1..segments-1)
+        amt = n/segments
         points << lerp(src, dest, amt)
     end
 
@@ -36,20 +36,19 @@ def triangle(verts)
     area = triangle_area(a, b, c)
     return [] if area == 0
 
-    wireframe_points = []
+    wireframe_points = [a,b,c]
     fill_points = []
     barys = []
 
     #paint outline
-    wireframe_points.concat(line(a, b))
-    wireframe_points.concat(line(a, c))
-    wireframe_points.concat(line(b, c))
+    wireframe_points.concat(line_middle(a, b))
+    wireframe_points.concat(line_middle(a, c))
+    wireframe_points.concat(line_middle(b, c))
     for point in wireframe_points
         barys << point.to_barycentric(a, b, c)
     end
 
     #fill triangle
-
     d = compute_triangle_d(verts)
     #paint top half
     fill_points.concat(half_triangle_positive(a, b, d))
