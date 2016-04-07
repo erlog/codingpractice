@@ -110,7 +110,7 @@ class PointObject
         return PointObject.new(x, y, z)
     end
 
-    def from_barycentric(verts)
+    def to_cartesian(verts)
         a,b,c = verts
         x = (a.x * @x) + (b.x * @y) + (c.x * @z)
         y = (a.y * @x) + (b.y * @y) + (c.y * @z)

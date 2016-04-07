@@ -98,7 +98,7 @@ end
 
 def compute_face_normal(face)
     a, b, c = face
-    return ((b.v - a.v).cross_product(c.v - a.v)).normalize
+    return ((b.v - a.v).cross_product(c.v - a.v)).normalize!
 end
 
 def face_to_screen(face, view_matrix, screen_center)

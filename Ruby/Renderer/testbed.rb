@@ -34,7 +34,7 @@ verts = verts.map{ |vert| vert.to_screen!(screen_center) }
 points = triangle(verts)
 
 for bary in points
-    pos = bary.from_barycentric(verts).round!
+    pos = bary.to_cartesian(verts).round!
     bitmap.set_pixel(pos, White)
 end
 puts points.length

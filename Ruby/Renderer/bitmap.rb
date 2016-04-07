@@ -121,15 +121,16 @@ class Bitmap
     def in_bounds?(point)
         if (point.x < 0) or (point.x >= @width) or (point.y < 0) or (point.y >= @height)
             return false
-            #raise IndexError, "Invalid Coordinate: #{point.to_s}"
         end
+
         return true
     end
 
-    def bounds_check(point)
-        if (point.x < 0) or (point.x >= @width) or (point.y < 0) or (point.y >= @height)
-            raise IndexError, "Invalid Coordinate: #{point.to_s}"
-        end
+    def verts_in_bounds?(verts)
+        return true if self.in_bounds?(verts[0])
+        return true if self.in_bounds?(verts[1])
+        return true if self.in_bounds?(verts[2])
+        return false
     end
 
     def set_pixel(point, pixel)
@@ -151,42 +152,35 @@ class Bitmap
 end
 
 class Z_Buffer
+    attr_accessor :oob_pixels
+    attr_accessor :drawn_pixels
+    attr_accessor :occluded_pixels
+
 	def initialize(width, height)
 		@width = width
         @max_x = width - 1
 		@height = height
         @max_y = height - 1
 		@array = Array.new(@height){ Array.new(@width){NegativeInfinity} }
-	end
-
-    def get_pixel(point)
-        begin
-            return @array[point.y][point.x]
-        rescue IndexError
-            pass
-        end
-    end
-
-	def set_pixel(point)
-        begin
-            @array[point.y][point.x] = point.z
-        rescue IndexError
-            pass
-        end
+        @oob_pixels= 0
+        @occluded_pixels = 0
+        @drawn_pixels = 0
 	end
 
     def should_draw?(point)
-        if (point.x < 0) or (point.y < 0)
-            return false
-        end
-        if (point.x > @max_x) or (point.y > @max_y)
+        #a lot of this used to be in functions but this thing gets called every pixel
+        if (point.x < 0) or (point.y < 0) or (point.x > @max_x) or (point.y > @max_y)
+            @oob_pixels += 1
             return false
         end
 
-        if point.z > self.get_pixel(point)
-            self.set_pixel(point)
+        if (point.z > @array[point.y][point.x])
+            @drawn_pixels += 1
+            @array[point.y][point.x] = point.z
             return true
         end
+
+        @occluded_pixels += 1
         return false
     end
 end

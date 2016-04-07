@@ -38,16 +38,12 @@ def render_model(object, texture, normalmap, specmap)
 
     begin
     drawn_faces = 0
-    drawn_pixels = 0
     total_pixels = 0
-    log("#{drawn_faces} faces drawn")
 
     object.each_face do |face|
         normal = compute_face_normal(face).apply_matrix!(normal_matrix).scalar_product(camera_direction)
         next if normal > 0 #bail if the polygon isn't facing us
-
         drawn_faces += 1
-        log("#{drawn_faces} faces drawn") if drawn_faces % 100 == 0
 
         face = face_to_screen(face, view_matrix, screen_center)
 
@@ -62,15 +58,15 @@ def render_model(object, texture, normalmap, specmap)
 
         for barycentric in barycentric_points do
             #get the screen coordinate
-            screen_coord = barycentric.from_barycentric(verts).round!
+            screen_coord = barycentric.to_cartesian(verts).round!
             if z_buffer.should_draw?(screen_coord)
                 #get the color from the texture
-                texture_coord = barycentric.from_barycentric(uvs).to_texture!(texture_size).round!
+                texture_coord = barycentric.to_cartesian(uvs).to_texture!(texture_size).round!
                 color = texture.get_pixel(texture_coord)
                 #compute diffuse light intensity from tangent normal
-                tbn = [ barycentric.from_barycentric(tangents),
-                        barycentric.from_barycentric(bitangents),
-                        barycentric.from_barycentric(normals) ]
+                tbn = [ barycentric.to_cartesian(tangents),
+                        barycentric.to_cartesian(bitangents),
+                        barycentric.to_cartesian(normals) ]
                 tangent_normal = normalmap.get_normal(texture_coord).dup
                 normal = tangent_normal.apply_tangent_matrix!(tbn).apply_matrix!(normal_matrix).normalize!
                 diffuse_intensity = clamp((normal.scalar_product(light_direction) * -1), 0, 1)
@@ -82,7 +78,6 @@ def render_model(object, texture, normalmap, specmap)
                 shaded_color = color.multiply(0.05 + 0.6*reflection_intensity + 0.75*diffuse_intensity)
                 #finally write our pixel
                 bitmap.set_pixel(screen_coord, shaded_color)
-                drawn_pixels += 1
             end
         end
     end
@@ -91,10 +86,12 @@ def render_model(object, texture, normalmap, specmap)
         raise e
     end
     write_bitmap(bitmap)
-    overdraw = (100.0 * drawn_pixels) / (total_pixels)
+    overdraw = (100.0 * z_buffer.drawn_pixels) / (total_pixels)
     log( "#{drawn_faces}/#{object.faces.length} faces drawn" )
-    log( "#{drawn_pixels} pixels drawn" )
     log( "#{total_pixels} points generated" )
+    log( "  #{z_buffer.occluded_pixels} pixels occluded" )
+    log( "  #{z_buffer.oob_pixels} pixels offscreen" )
+    log( "  #{z_buffer.drawn_pixels} pixels drawn" )
     log( "#{overdraw.round(3)}% efficiency" )
     log( (Time.now - start_time).round(3).to_s + " seconds taken")
 end
