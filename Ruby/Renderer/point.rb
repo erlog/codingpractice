@@ -11,9 +11,6 @@ class PointObject
 
     def initialize(x, y, z)
         @x = x; @y = y; @z = z
-        if @x == Float::NAN
-            raise ArgumentError
-        end
     end
 
     def self.from_array(xyz)
@@ -103,11 +100,16 @@ class PointObject
         return true
     end
 
-    def cross_product(other)
+    def cross_product!(other)
         x = (@y*other.z) - (@z*other.y)
         y = (@z*other.x) - (@x*other.z)
         z = (@x*other.y) - (@y*other.x)
-        return PointObject.new(x, y, z)
+        @x = x; @y = y; @z = z
+        return self
+    end
+
+    def cross_product(other)
+        return self.dup.cross_product!(other)
     end
 
     def to_cartesian(verts)
@@ -121,7 +123,7 @@ class PointObject
     def to_barycentric!(a, b, c)
         vec_one = Point(c.x-a.x, b.x-a.x, a.x-@x)
         vec_two = Point(c.y-a.y, b.y-a.y, a.y-@y)
-        u = vec_one.cross_product(vec_two)
+        u = vec_one.cross_product!(vec_two)
         x = 1.0 - ((u.x + u.y)/u.z.to_f)
         y = u.y/u.z.to_f
         z = u.x/u.z.to_f

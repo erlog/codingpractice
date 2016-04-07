@@ -55,7 +55,7 @@ def render_model(object, texture, normalmap, specmap)
 
         barycentric_points = triangle(verts)
         total_pixels += barycentric_points.length
-
+        next
         for barycentric in barycentric_points do
             #get the screen coordinate
             screen_coord = barycentric.to_cartesian(verts).round!

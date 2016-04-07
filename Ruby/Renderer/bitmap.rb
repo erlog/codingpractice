@@ -190,7 +190,7 @@ class TangentSpaceNormalMap
         bitmap = load_texture(filename)
         log("Processing normal map")
 		@array = []
-        bitmap.pixelarray.each do |row|
+        for row in bitmap.pixelarray
             @array << row.map(&:to_normal)
         end
 	end
@@ -209,7 +209,7 @@ class SpecularMap
         bitmap = load_texture(filename)
         log("Processing specular map")
 		@array = []
-        bitmap.pixelarray.each do |row|
+        for row in bitmap.pixelarray
             #TODO: Figure out what to do here for real instead of cargo-culting
             @array << row.map{ |pixel|
                 clamp((1-pixel.r/255)*100, 1, 24)
@@ -233,7 +233,7 @@ def load_texture(filename)
     width, height = png.width, png.height
     bitmap = Bitmap.new(png.width, png.height)
     coord = Point(0, png.height - 1)
-    png.pixels.each do |int24|
+    for int24 in png.pixels
         int24 = int24 >> 8
         b = int24 & 0xFF
         g = (int24 >> 8) & 0xFF

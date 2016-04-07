@@ -57,12 +57,11 @@ def triangle(verts)
 
     for point in fill_points
         bary = point.to_barycentric(a, b, c)
-        next if bary.x < 0
-        next if bary.y < 0
-        next if bary.z < 0
+        next if (bary.x < 0) or (bary.y < 0) or  (bary.z < 0)
         barys << bary
     end
 
+    #puts "#{barys.length} / #{area}"
     return barys
 end
 

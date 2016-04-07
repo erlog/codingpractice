@@ -9,11 +9,11 @@ class Wavefront
         @bitangents = Array.new(vertices.length){[]}
 
         #compute tangents/bitangents for tangent space normal mapping
-        faces.each do |indexed_face|
+        for indexed_face in faces
             vertex_indices = indexed_face.map{ |vertex| vertex.v }
             face = self.build_face(indexed_face)
             tangent, bitangent = compute_face_tb(face)
-            vertex_indices.each do |index|
+            for index in vertex_indices
                 @tangents[index] << tangent
                 @bitangents[index] << bitangent
             end
@@ -50,7 +50,7 @@ class Wavefront
         faces, vertices, uvs, normals  = [], [], [], []
 
         lines = open(file_path).readlines.map!(&:strip)
-        lines.each do |line|
+        for line in lines
             parts = line.split(" ")
             if parts[0] == "v"
                 x, y, z = parts[1..-1].map(&:to_f)
