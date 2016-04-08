@@ -4,7 +4,9 @@ require_relative 'matrix_math'
 require_relative 'point'
 require_relative 'utilities'
 require_relative 'wavefront'
+require 'ruby-prof'
 
+Profile = false
 ScreenWidth = 384
 ScreenHeight = 384
 
@@ -48,7 +50,6 @@ def render_model(object, texture, normalmap, specmap)
         face = face_to_screen(face, view_matrix, screen_center)
 
         verts = face.map(&:v)
-        next if triangle_area(verts[0], verts[1], verts[2]) == 0 #we need a real triangle for barycentric to work
 
         uvs = face.map(&:uv)
         normals = face.map(&:normal)
@@ -103,5 +104,15 @@ texture = load_texture("african_head_diffuse.png")
 normalmap = TangentSpaceNormalMap.new("african_head_nm_tangent.png")
 specmap = SpecularMap.new("african_head_spec.png")
 log("Rendering model")
-render_model(object, texture, normalmap, specmap)
+if Profile
+    RubyProf.start
+    render_model(object, texture, normalmap, specmap)
+    result = RubyProf.stop
+
+    # print a flat profile to text
+     printer = RubyProf::FlatPrinter.new(result)
+     printer.print(STDOUT)
+else
+    render_model(object, texture, normalmap, specmap)
+end
 

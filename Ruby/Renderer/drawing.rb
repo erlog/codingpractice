@@ -34,9 +34,11 @@ def line_middle(src, dest)
     segments = line_length(src, dest).ceil.to_f
 
     points = []
-    for n in (1..segments-1)
+    n = 1
+    while n < segments
         amt = n/segments
         points << lerp(src, dest, amt)
+        n += 1
     end
 
     return points
