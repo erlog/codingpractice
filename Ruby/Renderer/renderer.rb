@@ -48,6 +48,8 @@ def render_model(object, texture, normalmap, specmap)
         face = face_to_screen(face, view_matrix, screen_center)
 
         verts = face.map(&:v)
+        next if triangle_area(verts[0], verts[1], verts[2]) == 0 #we need a real triangle for barycentric to work
+
         uvs = face.map(&:uv)
         normals = face.map(&:normal)
         tangents = face.map(&:tangent)
@@ -55,7 +57,7 @@ def render_model(object, texture, normalmap, specmap)
 
         barycentric_points = triangle(verts)
         total_pixels += barycentric_points.length
-        next
+
         for barycentric in barycentric_points do
             #get the screen coordinate
             screen_coord = barycentric.to_cartesian(verts).round!

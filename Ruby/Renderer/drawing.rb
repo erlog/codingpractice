@@ -1,7 +1,18 @@
+require_relative 'point'
+
+BarycentricTriangle = [Point(1.0, 0, 0), Point(0, 1.0, 0), Point(0, 0, 1.0)]
+
 def lerp(src, dest, amt)
     x = src.x + ( (dest.x - src.x) * amt )
     y = src.y + ( (dest.y - src.y) * amt )
     return Point(x, y)
+end
+
+def lerp_3d(src, dest, amt)
+    x = src.x + ( (dest.x - src.x) * amt )
+    y = src.y + ( (dest.y - src.y) * amt )
+    z = src.z + ( (dest.z - src.z) * amt )
+    return Point(x, y, z)
 end
 
 def amounts(segments)
@@ -11,10 +22,10 @@ end
 def horizontal_line(src_x, dest_x, y)
     src_x, dest_x = [src_x, dest_x].sort
     points = []
-    x = src_x
-    while x <= dest_x
-        points << Point(x, y)
-        x += 1
+    dest_x += 1
+    while src_x < dest_x
+        points << Point(src_x, y)
+        src_x += 1
     end
     return points
 end
@@ -31,22 +42,40 @@ def line_middle(src, dest)
     return points
 end
 
+def barycentric_line_middle(src, dest, length)
+    points = []
+    for n in (1..length-1)
+        amt = n/length
+        points << lerp_3d(src, dest, amt)
+    end
+
+    return points
+end
+
+def barycentric_wireframe(a, b, c)
+    bary_a, bary_b, bary_c = BarycentricTriangle
+    points = [bary_a, bary_b, bary_c]
+
+    left_length = line_length(a, b).ceil.to_f
+    points.concat(barycentric_line_middle(bary_a, bary_b, left_length))
+    right_length = line_length(a, c).ceil.to_f
+    points.concat(barycentric_line_middle(bary_a, bary_c, right_length))
+    bottom_length = line_length(b, c).ceil.to_f
+    points.concat(barycentric_line_middle(bary_b, bary_c, bottom_length))
+
+    return points
+end
+
 def triangle(verts)
     a,b,c = verts
-    area = triangle_area(a, b, c)
-    return [] if area == 0
 
     wireframe_points = [a,b,c]
     fill_points = []
-    barys = []
 
     #paint outline
-    wireframe_points.concat(line_middle(a, b))
-    wireframe_points.concat(line_middle(a, c))
-    wireframe_points.concat(line_middle(b, c))
-    for point in wireframe_points
-        barys << point.to_barycentric(a, b, c)
-    end
+    barys = barycentric_wireframe(a, b, c)
+    return barys if triangle_area(a, b, c) == 0 #points are colinear
+
 
     #fill triangle
     d = compute_triangle_d(verts)
@@ -57,17 +86,16 @@ def triangle(verts)
 
     for point in fill_points
         bary = point.to_barycentric(a, b, c)
-        next if (bary.x < 0) or (bary.y < 0) or  (bary.z < 0)
+        next if (bary.x <= 0) or (bary.y <= 0) or  (bary.z <= 0)
         barys << bary
     end
 
-    #puts "#{barys.length} / #{area}"
     return barys
 end
 
 def triangle_area(a, b, c)
     #we only need these to compute a ratio so the final divide by 2 is not necessary
-    return ( (a.x*b.y) + (b.x*c.y) + (c.x*a.y) - (a.y*b.x) - (b.y*c.x) - (c.y*a.x) ).abs
+    return ( (a.x*b.y) + (b.x*c.y) + (c.x*a.y) - (a.y*b.x) - (b.y*c.x) - (c.y*a.x) )
 end
 
 def compute_triangle_d(verts)
