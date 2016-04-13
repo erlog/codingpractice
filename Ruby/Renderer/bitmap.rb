@@ -13,6 +13,12 @@ class Pixel
         return Pixel.new(int8, int8, int8)
     end
 
+    def rgb=(rgb_array)
+        @r = rgb_array[0]
+        @b = rgb_array[1]
+        @g = rgb_array[2]
+    end
+
     def rgb
         return [@r, @g, @b]
     end
@@ -29,12 +35,12 @@ class Pixel
         x = (@r/127.5) - 1
         y = (@g/127.5) - 1
         z = (@b/127.5) - 1
-        return PointObject.new(x, y, z).normalize!
+        return normalize!(PointObject.new(x, y, z))
     end
 
     def to_world_normal
         x, y, z = self.rgb.map { |channel| ((channel/255.0) - 0.5)*2 }
-        return PointObject.new(x, y, z).normalize!
+        return normalize!(PointObject.new(x, y, z))
     end
 
     def average(other)
@@ -233,6 +239,7 @@ def load_texture(filename)
     width, height = png.width, png.height
     bitmap = Bitmap.new(png.width, png.height)
     coord = PointObject.new(0, png.height - 1, 0)
+
     for int24 in png.pixels
         int24 = int24 >> 8
         b = int24 & 0xFF

@@ -89,7 +89,7 @@ def triangle(verts)
     fill_points.concat(half_triangle_negative(b, c, d))
 
     for point in fill_points
-        bary = point.to_barycentric!(a, b, c)
+        bary = cartesian_to_barycentric(point, verts)
         next if (bary.x <= 0) or (bary.y <= 0) or  (bary.z <= 0)
         barys << bary
     end

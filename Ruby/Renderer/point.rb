@@ -19,31 +19,14 @@ class PointObject
         return "PointObject.new(#{@x}, #{@y}, #{z})"
     end
 
-    def to_f!
-        @x = @x.to_f; @y = @y.to_f; @z = @z.to_f
-        return self
-    end
-
     def to_i!
         @x = @x.to_i; @y = @y.to_i; @z = @z.to_i
         return self
     end
 
-    def to_i
-        return self.dup.to_i!
-    end
-
     def round!
         @x = @x.round; @y = @y.round
         return self
-    end
-
-    def u
-        return @x
-    end
-
-    def v
-        return @y
     end
 
     def xyz
@@ -75,10 +58,10 @@ class PointObject
     end
 
     def <=>(other)
-        return 1 if self.y < other.y
-        return -1 if self.y > other.y
-        return -1 if self.x < other.x
-        return 1 if self.x > other.x
+        return 1 if @y < other.y
+        return -1 if @y > other.y
+        return -1 if @x < other.x
+        return 1 if @x > other.x
         return 0
     end
 
@@ -109,30 +92,6 @@ class PointObject
         return self.dup.cross_product!(other)
     end
 
-    def to_cartesian(verts)
-        x,y,z = barycentric_to_cartesian( @x, @y, @z,
-                                          verts[0].x, verts[0].y, verts[0].z,
-                                          verts[1].x, verts[1].y, verts[1].z,
-                                          verts[2].x, verts[2].y, verts[2].z )
-        return PointObject.new(x, y, z)
-    end
-
-    def to_barycentric!(a, b, c)
-        vec_one = PointObject.new(c.x-a.x, b.x-a.x, a.x-@x)
-        vec_two = PointObject.new(c.y-a.y, b.y-a.y, a.y-@y)
-        u = vec_one.cross_product!(vec_two)
-        x = 1.0 - ((u.x + u.y)/u.z.to_f)
-        y = u.y/u.z.to_f
-        z = u.x/u.z.to_f
-
-        @x = x; @y = y; @z = z
-        return self
-    end
-
-    def to_barycentric(a, b, c)
-        return self.dup.to_barycentric!(a, b, c)
-    end
-
     def scale_by_factor!(factor)
         @x = @x * factor
         @y = @y * factor
@@ -141,13 +100,12 @@ class PointObject
     end
 
     def scale_by_factor(factor)
-        return PointObject.new(@x*factor, @y*factor, @z*factor)
+        return self.dup.scale_by_factor!(factor)
     end
 
     def scalar_product(other)
         return (@x*other.x) + (@y*other.y) + (@z*other.z)
     end
-
 
     def to_texture!(texture_size)
         @x = (@x * texture_size.x)
@@ -170,27 +128,7 @@ class PointObject
     def compute_reflection(light_direction)
         reflection = self.scale_by_factor(-2*self.scalar_product(light_direction))
         reflection += light_direction
-        return reflection.normalize
-    end
-
-    def normalize
-        return self.dup.normalize!
-    end
-
-    def normalize!
-        length = Math.sqrt( (@x**2) + (@y**2) + (@z**2) )
-        @x = @x/length
-        @y = @y/length
-        @z = @z/length
-        return self
-    end
-
-    def rgb
-        point = self.normalize
-        r = (point.x*127) + 128
-        g = (point.y*127) + 128
-        b = (point.z*127) + 128
-        return Pixel.new(r, g, b)
+        return normalize!(reflection)
     end
 
     def +(other)
@@ -204,10 +142,32 @@ class PointObject
     def /(other)
         return PointObject.new(@x/other.x, @y/other.y, @z/other.z)
     end
-
-    def *(other)
-        return PointObject.new(@x*other.x, @y*other.y, @z*other.z)
-    end
-
 end
 
+def normalize(point)
+    return normalize!(point.dup)
+end
+
+def normalize!(point)
+    length = Math.sqrt( (point.x**2) + (point.y**2) + (point.z**2) )
+    point.x /= length
+    point.y /= length
+    point.z /= length
+    return point
+end
+
+def cartesian_to_barycentric(cart, verts)
+    x,y,z = c_cartesian_to_barycentric(   cart.x, cart.y, cart.z,
+                                          verts[0].x, verts[0].y, verts[0].z,
+                                          verts[1].x, verts[1].y, verts[1].z,
+                                          verts[2].x, verts[2].y, verts[2].z )
+    return PointObject.new(x, y, z)
+end
+
+def barycentric_to_cartesian(bary, verts)
+    x,y,z = c_barycentric_to_cartesian(   bary.x, bary.y, bary.z,
+                                          verts[0].x, verts[0].y, verts[0].z,
+                                          verts[1].x, verts[1].y, verts[1].z,
+                                          verts[2].x, verts[2].y, verts[2].z )
+    return PointObject.new(x, y, z)
+end

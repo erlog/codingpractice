@@ -50,22 +50,20 @@ def render_model(object, texture, normalmap, specmap)
         tangents = face.map(&:tangent)
         bitangents = face.map(&:bitangent)
 
-        barycentric_points = triangle(verts)
-        total_pixels += barycentric_points.length
-
-        for barycentric in barycentric_points do
+        for barycentric in triangle(verts) do
+            total_pixels += 1
             #get the screen coordinate
-            screen_coord = barycentric.to_cartesian(verts).round!
+            screen_coord = barycentric_to_cartesian(barycentric, verts).round!
             if z_buffer.should_draw?(screen_coord)
                 #get the color from the texture
-                texture_coord = barycentric.to_cartesian(uvs).to_texture!(texture_size).round!
+                texture_coord = barycentric_to_cartesian(barycentric, uvs).to_texture!(texture_size).round!
                 color = texture.get_pixel(texture_coord)
                 #compute diffuse light intensity from tangent normal
-                tbn = [ barycentric.to_cartesian(tangents),
-                        barycentric.to_cartesian(bitangents),
-                        barycentric.to_cartesian(normals) ]
+                tbn = [ barycentric_to_cartesian(barycentric, tangents),
+                        barycentric_to_cartesian(barycentric, bitangents),
+                        barycentric_to_cartesian(barycentric, normals) ]
                 tangent_normal = normalmap.get_normal(texture_coord).dup
-                normal = tangent_normal.apply_tangent_matrix!(tbn).apply_matrix!(normal_matrix).normalize!
+                normal = normalize!(tangent_normal.apply_tangent_matrix!(tbn).apply_matrix!(normal_matrix))
                 diffuse_intensity = clamp((normal.scalar_product(light_direction) * -1), 0, 1)
                 #compute specular highlight intensity
                 specular_power = specmap.get_specular(texture_coord)
