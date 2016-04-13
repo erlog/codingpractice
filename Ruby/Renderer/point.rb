@@ -157,17 +157,11 @@ def normalize!(point)
 end
 
 def cartesian_to_barycentric(cart, verts)
-    x,y,z = c_cartesian_to_barycentric(   cart.x, cart.y, cart.z,
-                                          verts[0].x, verts[0].y, verts[0].z,
-                                          verts[1].x, verts[1].y, verts[1].z,
-                                          verts[2].x, verts[2].y, verts[2].z )
+    x,y,z = c_cartesian_to_barycentric(cart.xyz, verts[0].xyz, verts[1].xyz, verts[2].xyz)
     return PointObject.new(x, y, z)
 end
 
 def barycentric_to_cartesian(bary, verts)
-    x,y,z = c_barycentric_to_cartesian(   bary.x, bary.y, bary.z,
-                                          verts[0].x, verts[0].y, verts[0].z,
-                                          verts[1].x, verts[1].y, verts[1].z,
-                                          verts[2].x, verts[2].y, verts[2].z )
+    x,y,z = c_barycentric_to_cartesian(bary.xyz, verts[0].xyz, verts[1].xyz, verts[2].xyz)
     return PointObject.new(x, y, z)
 end
