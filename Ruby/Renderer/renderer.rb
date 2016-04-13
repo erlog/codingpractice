@@ -14,22 +14,22 @@ Start_Time = Time.now
 
 def render_model(object, texture, normalmap, specmap)
     width = ScreenWidth; height = ScreenHeight
-    screen_center = PointObject.new((width/2), (height/2), 255)
-    screen_size = PointObject.new(width - 1, height - 1, 0)
+    screen_center = Point.new([(width/2), (height/2), 255])
+    screen_size = Point.new([width - 1, height - 1, 0])
 
     start_time = Time.now
 
-    texture_size = PointObject.new(texture.width - 1, texture.height - 1, 0)
+    texture_size = Point.new([texture.width - 1, texture.height - 1, 0])
     bitmap = Bitmap.new(width, height)
     z_buffer = Z_Buffer.new(width, height)
 
-    #view_matrix = compute_view_matrix(0, 0, 0, -1)
-    view_matrix = compute_view_matrix(20, -20, -5, 5)
+    view_matrix = compute_view_matrix(0, 0, 0, 5)
+    #view_matrix = compute_view_matrix(20, -20, -5, 5)
     normal_matrix = view_matrix.inverse.transpose.to_a #to_a for performance
     view_matrix = view_matrix.to_a                     #to_a for performance
 
-    camera_direction = PointObject.new(0, 0, -1)
-    light_direction = PointObject.new(0, 0, -1)
+    camera_direction = Point.new([0, 0, -1])
+    light_direction = Point.new([0, 0, -1])
     ambient_light = Pixel.from_gray(5)
 
     begin

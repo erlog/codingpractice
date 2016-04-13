@@ -54,15 +54,15 @@ class Wavefront
             parts = line.split(" ")
             if parts[0] == "v"
                 x, y, z = parts[1..-1].map(&:to_f)
-                vertices << PointObject.new(x, y, z)
+                vertices << Point.new([x, y, z])
 
             elsif parts[0] == "vt"
                 x, y, z = parts[1..-1].map(&:to_f)
-                uvs << PointObject.new(x, y, z)
+                uvs << Point.new([x, y, z])
 
             elsif parts[0] == "vn"
                 x, y, z = parts[1..-1].map(&:to_f)
-                normals << PointObject.new(x, y, z)
+                normals << Point.new([x, y, z])
 
             elsif parts[0] == "f"
                 v, vt, vn = parts[1].split("/").map{ |index| index.to_i - 1}
@@ -102,9 +102,9 @@ def compute_face_normal(face)
 end
 
 def face_to_screen(face, view_matrix, screen_center)
-    face[0].v = face[0].v.apply_matrix(view_matrix).to_screen!(screen_center)
-    face[1].v = face[1].v.apply_matrix(view_matrix).to_screen!(screen_center)
-    face[2].v = face[2].v.apply_matrix(view_matrix).to_screen!(screen_center)
+    face[0].v = face[0].v.to_screen(screen_center)
+    face[1].v = face[1].v.to_screen(screen_center)
+    face[2].v = face[2].v.to_screen(screen_center)
     face = face.sort_by(&:v)
     return face
 end
@@ -119,10 +119,10 @@ def normalize_vectors(vectors)
         x_offset = find_normalizing_offset(vectors.map(&:x))
         y_offset = find_normalizing_offset(vectors.map(&:y))
         z_offset = find_normalizing_offset(vectors.map(&:z))
-        offset = PointObject.new(x_offset, y_offset, z_offset)
+        offset = Point.new([x_offset, y_offset, z_offset])
         vectors.map!{ |vertex| vertex + offset }
 
         max = (vectors.map(&:x) + vectors.map(&:y) + vectors.map(&:z)).max
-        return vectors.map!{ |vertex| vertex/PointObject.new(max, max, max)}
+        return vectors.map!{ |vertex| vertex/Point.new([max, max, max])}
 end
 

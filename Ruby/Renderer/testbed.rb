@@ -17,7 +17,7 @@ def random_tri(size)
 end
 
 def test_tri()
-    a,b,c = PointObject.new(0, 0, 0), PointObject.new(1, 0, 0), PointObject.new(0, 1, 0)
+    a,b,c = PointObject.new(0, 0, 0), PointObject.new(196, 196, 0), PointObject.new(196, 0, 0)
     return [a,b,c].sort
 end
 
@@ -26,7 +26,7 @@ bitmap_a = Bitmap.new(width, height)
 bitmap_b = Bitmap.new(width, height)
 
 verts = test_tri
-verts = random_tri(383)
+#verts = random_tri(383)
 points = triangle(verts)
 a,b,c = verts
 

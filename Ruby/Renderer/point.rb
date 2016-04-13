@@ -1,45 +1,41 @@
 require_relative 'c_optimization'; include C_Optimization
 
-class PointObject
+class Point
     attr_reader :id
-    attr_accessor :x
-    attr_accessor :y
-    attr_accessor :z
+    attr_accessor :xyz
 
-    def initialize(x, y, z)
-        @x = x; @y = y; @z = z
-    end
-
-    def self.from_array(xyz)
-        @x, @y, @z = xyz.to_a
-        return PointObject.new(@x, @y, @z)
+    def initialize(xyz)
+        @xyz = xyz
     end
 
     def to_s
-        return "PointObject.new(#{@x}, #{@y}, #{z})"
+        return "Point.new([#{@xyz[0]}, #{@xyz[1]}, #{@xyz[2]}])"
     end
 
     def to_i!
-        @x = @x.to_i; @y = @y.to_i; @z = @z.to_i
+        @xyz[0] = @xyz[0].to_i; @xyz[1] = @xyz[1].to_i; @xyz[2] = @xyz[2].to_i
         return self
     end
 
     def round!
-        @x = @x.round; @y = @y.round
+        @xyz[0] = @xyz[0].round; @xyz[1] = @xyz[1].round
         return self
     end
 
-    def xyz
-        return [@x, @y, @z]
-    end
+    def x; return @xyz[0]; end;
+    def y; return @xyz[1]; end;
+    def z; return @xyz[2]; end;
+    def x=(value); @xyz[0] = value; end;
+    def y=(value); @xyz[1] = value; end;
+    def z=(value); @xyz[2] = value; end;
 
     def apply_matrix!(matrix)
         #matrix math unrolled for performance gains
-        x = (matrix[0][0] * @x) + (matrix[0][1] * @y) + (matrix[0][2] * @z) + matrix[0][3]
-        y = (matrix[1][0] * @x) + (matrix[1][1] * @y) + (matrix[1][2] * @z) + matrix[1][3]
-        z = (matrix[2][0] * @x) + (matrix[2][1] * @y) + (matrix[2][2] * @z) + matrix[2][3]
-        d = (matrix[3][0] * @x) + (matrix[3][1] * @y) + (matrix[3][2] * @z) + matrix[3][3]
-        @x = x/d; @y = y/d; @z = z/d    #parallel assignments are slower
+        x = (matrix[0][0] * @xyz[0]) + (matrix[0][1] * @xyz[1]) + (matrix[0][2] * @xyz[2]) + matrix[0][3]
+        y = (matrix[1][0] * @xyz[0]) + (matrix[1][1] * @xyz[1]) + (matrix[1][2] * @xyz[2]) + matrix[1][3]
+        z = (matrix[2][0] * @xyz[0]) + (matrix[2][1] * @xyz[1]) + (matrix[2][2] * @xyz[2]) + matrix[2][3]
+        d = (matrix[3][0] * @xyz[0]) + (matrix[3][1] * @xyz[1]) + (matrix[3][2] * @xyz[2]) + matrix[3][3]
+        @xyz[0] = x/d; @xyz[1] = y/d; @xyz[2] = z/d    #parallel assignments are slower
         return self
     end
 
@@ -50,18 +46,18 @@ class PointObject
     def apply_tangent_matrix!(tbn)
         #matrix math unrolled for performance gains
         tangent, bitangent, normal = tbn
-        x = (tangent.x * @x) + (bitangent.x * @y) + (normal.x * @z)
-        y = (tangent.y * @x) + (bitangent.y * @y) + (normal.y * @z)
-        z = (tangent.z * @x) + (bitangent.z * @y) + (normal.z * @z)
-        @x = x; @y = y; @z = z    #parallel assignments are slower
+        x = (tangent.x * @xyz[0]) + (bitangent.x * @xyz[1]) + (normal.x * @xyz[2])
+        y = (tangent.y * @xyz[0]) + (bitangent.y * @xyz[1]) + (normal.y * @xyz[2])
+        z = (tangent.z * @xyz[0]) + (bitangent.z * @xyz[1]) + (normal.z * @xyz[2])
+        @xyz[0] = x; @xyz[1] = y; @xyz[2] = z    #parallel assignments are slower
         return self
     end
 
     def <=>(other)
-        return 1 if @y < other.y
-        return -1 if @y > other.y
-        return -1 if @x < other.x
-        return 1 if @x > other.x
+        return 1 if @xyz[1] < other.y
+        return -1 if @xyz[1] > other.y
+        return -1 if @xyz[0] < other.x
+        return 1 if @xyz[0] > other.x
         return 0
     end
 
@@ -74,17 +70,17 @@ class PointObject
     end
 
     def ==(other)
-        return false if @x != other.x
-        return false if @y != other.y
-        return false if @z != other.z
+        return false if @xyz[0] != other.x
+        return false if @xyz[1] != other.y
+        return false if @xyz[2] != other.z
         return true
     end
 
     def cross_product!(other)
-        x = (@y*other.z) - (@z*other.y)
-        y = (@z*other.x) - (@x*other.z)
-        z = (@x*other.y) - (@y*other.x)
-        @x = x; @y = y; @z = z
+        x = (@xyz[1]*other.z) - (@xyz[2]*other.y)
+        y = (@xyz[2]*other.x) - (@xyz[0]*other.z)
+        z = (@xyz[0]*other.y) - (@xyz[1]*other.x)
+        @xyz[0] = x; @xyz[1] = y; @xyz[2] = z
         return self
     end
 
@@ -93,9 +89,9 @@ class PointObject
     end
 
     def scale_by_factor!(factor)
-        @x = @x * factor
-        @y = @y * factor
-        @z = @z * factor
+        @xyz[0] = @xyz[0] * factor
+        @xyz[1] = @xyz[1] * factor
+        @xyz[2] = @xyz[2] * factor
         return self
     end
 
@@ -104,20 +100,20 @@ class PointObject
     end
 
     def scalar_product(other)
-        return (@x*other.x) + (@y*other.y) + (@z*other.z)
+        return (@xyz[0]*other.x) + (@xyz[1]*other.y) + (@xyz[2]*other.z)
     end
 
     def to_texture!(texture_size)
-        @x = (@x * texture_size.x)
-        @y = (@y * texture_size.y)
+        @xyz[0] = (@xyz[0] * texture_size.x)
+        @xyz[1] = (@xyz[1] * texture_size.y)
         return self
     end
 
     def to_screen!(center)
         #unrolled for performance
-        @x = (center.x + (@x * center.x)).round
-        @y = (center.y + (@y * center.y)).round
-        @z = (center.z + (@z * center.z)).round
+        @xyz[0] = (center.x + (@xyz[0] * center.x)).round
+        @xyz[1] = (center.y + (@xyz[1] * center.y)).round
+        @xyz[2] = (center.z + (@xyz[2] * center.z)).round
         return self
     end
 
@@ -132,15 +128,15 @@ class PointObject
     end
 
     def +(other)
-        return PointObject.new(@x+other.x, @y+other.y, @z+other.z)
+        return Point.new([@xyz[0]+other.x, @xyz[1]+other.y, @xyz[2]+other.z])
     end
 
     def -(other)
-        return PointObject.new(@x-other.x, @y-other.y, @z-other.z)
+        return Point.new([@xyz[0]-other.x, @xyz[1]-other.y, @xyz[2]-other.z])
     end
 
     def /(other)
-        return PointObject.new(@x/other.x, @y/other.y, @z/other.z)
+        return Point.new([@xyz[0]/other.x, @xyz[1]/other.y, @xyz[2]/other.z])
     end
 end
 
@@ -150,18 +146,18 @@ end
 
 def normalize!(point)
     length = Math.sqrt( (point.x**2) + (point.y**2) + (point.z**2) )
-    point.x /= length
-    point.y /= length
-    point.z /= length
+    point.x = point.x/length
+    point.y = point.y/length
+    point.z = point.z/length
     return point
 end
 
 def cartesian_to_barycentric(cart, verts)
     x,y,z = c_cartesian_to_barycentric(cart.xyz, verts[0].xyz, verts[1].xyz, verts[2].xyz)
-    return PointObject.new(x, y, z)
+    return Point.new([x, y, z])
 end
 
 def barycentric_to_cartesian(bary, verts)
     x,y,z = c_barycentric_to_cartesian(bary.xyz, verts[0].xyz, verts[1].xyz, verts[2].xyz)
-    return PointObject.new(x, y, z)
+    return Point.new([x, y, z])
 end
