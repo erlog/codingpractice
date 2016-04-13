@@ -1,7 +1,4 @@
-
-def Point(x, y, z = 1)
-    return PointObject.new(x, y, z)
-end
+require_relative 'c_optimization'; include C_Optimization
 
 class PointObject
     attr_reader :id
@@ -19,7 +16,7 @@ class PointObject
     end
 
     def to_s
-        return "Point(#{@x}, #{@y}, #{z})"
+        return "PointObject.new(#{@x}, #{@y}, #{z})"
     end
 
     def to_f!
@@ -113,16 +110,16 @@ class PointObject
     end
 
     def to_cartesian(verts)
-        a,b,c = verts
-        x = (a.x * @x) + (b.x * @y) + (c.x * @z)
-        y = (a.y * @x) + (b.y * @y) + (c.y * @z)
-        z = (a.z * @x) + (b.z * @y) + (c.z * @z)
+        x,y,z = barycentric_to_cartesian( @x, @y, @z,
+                                          verts[0].x, verts[0].y, verts[0].z,
+                                          verts[1].x, verts[1].y, verts[1].z,
+                                          verts[2].x, verts[2].y, verts[2].z )
         return PointObject.new(x, y, z)
     end
 
     def to_barycentric!(a, b, c)
-        vec_one = Point(c.x-a.x, b.x-a.x, a.x-@x)
-        vec_two = Point(c.y-a.y, b.y-a.y, a.y-@y)
+        vec_one = PointObject.new(c.x-a.x, b.x-a.x, a.x-@x)
+        vec_two = PointObject.new(c.y-a.y, b.y-a.y, a.y-@y)
         u = vec_one.cross_product!(vec_two)
         x = 1.0 - ((u.x + u.y)/u.z.to_f)
         y = u.y/u.z.to_f

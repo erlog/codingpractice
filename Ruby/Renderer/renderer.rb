@@ -6,26 +6,20 @@ require_relative 'utilities'
 require_relative 'wavefront'
 require 'ruby-prof'
 
-Profile = false
+Profile = (ARGV[0] == "profile")
 ScreenWidth = 384
 ScreenHeight = 384
 
 Start_Time = Time.now
 
-def clamp(value, min, max)
-    return min if value < min
-    return max if value > max
-    return value
-end
-
 def render_model(object, texture, normalmap, specmap)
     width = ScreenWidth; height = ScreenHeight
-    screen_center = Point((width/2), (height/2), 255)
-    screen_size = Point(width - 1, height - 1)
+    screen_center = PointObject.new((width/2), (height/2), 255)
+    screen_size = PointObject.new(width - 1, height - 1, 0)
 
     start_time = Time.now
 
-    texture_size = Point(texture.width - 1, texture.height - 1)
+    texture_size = PointObject.new(texture.width - 1, texture.height - 1, 0)
     bitmap = Bitmap.new(width, height)
     z_buffer = Z_Buffer.new(width, height)
 
@@ -34,8 +28,8 @@ def render_model(object, texture, normalmap, specmap)
     normal_matrix = view_matrix.inverse.transpose.to_a #to_a for performance
     view_matrix = view_matrix.to_a                     #to_a for performance
 
-    camera_direction = Point(0, 0, -1)
-    light_direction = Point(0, 0, -1)
+    camera_direction = PointObject.new(0, 0, -1)
+    light_direction = PointObject.new(0, 0, -1)
     ambient_light = Pixel.from_gray(5)
 
     begin

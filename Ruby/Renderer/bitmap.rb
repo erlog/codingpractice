@@ -29,12 +29,12 @@ class Pixel
         x = (@r/127.5) - 1
         y = (@g/127.5) - 1
         z = (@b/127.5) - 1
-        return Point(x, y, z).normalize!
+        return PointObject.new(x, y, z).normalize!
     end
 
     def to_world_normal
         x, y, z = self.rgb.map { |channel| ((channel/255.0) - 0.5)*2 }
-        return Point(x, y, z).normalize!
+        return PointObject.new(x, y, z).normalize!
     end
 
     def average(other)
@@ -232,7 +232,7 @@ def load_texture(filename)
     png = ChunkyPNG::Image.from_file(filename)
     width, height = png.width, png.height
     bitmap = Bitmap.new(png.width, png.height)
-    coord = Point(0, png.height - 1)
+    coord = PointObject.new(0, png.height - 1, 0)
     for int24 in png.pixels
         int24 = int24 >> 8
         b = int24 & 0xFF

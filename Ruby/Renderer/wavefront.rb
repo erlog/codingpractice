@@ -54,15 +54,15 @@ class Wavefront
             parts = line.split(" ")
             if parts[0] == "v"
                 x, y, z = parts[1..-1].map(&:to_f)
-                vertices << Point(x, y, z)
+                vertices << PointObject.new(x, y, z)
 
             elsif parts[0] == "vt"
                 x, y, z = parts[1..-1].map(&:to_f)
-                uvs << Point(x, y, z)
+                uvs << PointObject.new(x, y, z)
 
             elsif parts[0] == "vn"
                 x, y, z = parts[1..-1].map(&:to_f)
-                normals << Point(x, y, z)
+                normals << PointObject.new(x, y, z)
 
             elsif parts[0] == "f"
                 v, vt, vn = parts[1].split("/").map{ |index| index.to_i - 1}
@@ -119,10 +119,10 @@ def normalize_vectors(vectors)
         x_offset = find_normalizing_offset(vectors.map(&:x))
         y_offset = find_normalizing_offset(vectors.map(&:y))
         z_offset = find_normalizing_offset(vectors.map(&:z))
-        offset = Point(x_offset, y_offset, z_offset)
+        offset = PointObject.new(x_offset, y_offset, z_offset)
         vectors.map!{ |vertex| vertex + offset }
 
         max = (vectors.map(&:x) + vectors.map(&:y) + vectors.map(&:z)).max
-        return vectors.map!{ |vertex| vertex/Point(max, max, max)}
+        return vectors.map!{ |vertex| vertex/PointObject.new(max, max, max)}
 end
 
