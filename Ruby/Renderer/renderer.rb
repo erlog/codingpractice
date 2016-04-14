@@ -6,7 +6,7 @@ require_relative 'utilities'
 require_relative 'wavefront'
 require 'ruby-prof'
 
-Profile = (ARGV[0] == "profile")
+Profile = (ARGV[0] == "-profile")
 ScreenWidth = 384
 ScreenHeight = 384
 
@@ -23,8 +23,8 @@ def render_model(object, texture, normalmap, specmap)
     bitmap = Bitmap.new(width, height)
     z_buffer = Z_Buffer.new(width, height)
 
-    view_matrix = compute_view_matrix(0, 0, 0, 5)
-    #view_matrix = compute_view_matrix(20, -20, -5, 5)
+    #view_matrix = compute_view_matrix(0, 0, 0, 5)
+    view_matrix = compute_view_matrix(20, -20, -5, 5)
     normal_matrix = view_matrix.inverse.transpose.to_a #to_a for performance
     view_matrix = view_matrix.to_a                     #to_a for performance
 
@@ -44,7 +44,6 @@ def render_model(object, texture, normalmap, specmap)
         face = face_to_screen(face, view_matrix, screen_center)
 
         verts = face.map(&:v)
-
         uvs = face.map(&:uv)
         normals = face.map(&:normal)
         tangents = face.map(&:tangent)

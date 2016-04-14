@@ -5,15 +5,15 @@ BarycentricTriangle = [ Point.new([1.0, 0.0, 0.0]),
                         Point.new([0.0, 0.0, 1.0]) ]
 
 def lerp(src, dest, amt)
-    x = src.x + ( (dest.x - src.x) * amt )
-    y = src.y + ( (dest.y - src.y) * amt )
+    x = src.xyz[0] + ( (dest.xyz[0] - src.xyz[0]) * amt )
+    y = src.xyz[1] + ( (dest.xyz[1] - src.xyz[1]) * amt )
     return Point.new([x, y, 1])
 end
 
 def lerp_3d(src, dest, amt)
-    x = src.x + ( (dest.x - src.x) * amt )
-    y = src.y + ( (dest.y - src.y) * amt )
-    z = src.z + ( (dest.z - src.z) * amt )
+    x = src.xyz[0] + ( (dest.xyz[0] - src.xyz[0]) * amt )
+    y = src.xyz[1] + ( (dest.xyz[1] - src.xyz[1]) * amt )
+    z = src.xyz[2] + ( (dest.xyz[2] - src.xyz[2]) * amt )
     return Point.new([x, y, z])
 end
 
@@ -89,8 +89,8 @@ def triangle(verts)
     fill_points.concat(half_triangle_negative(b, c, d))
 
     for point in fill_points
-        bary = cartesian_to_barycentric(point, verts)
-        next if (bary.x <= 0) or (bary.y <= 0) or  (bary.z <= 0)
+        bary = cartesian_to_barycentric!(point, verts)
+        next if (bary.xyz[0] <= 0) or (bary.xyz[1] <= 0) or  (bary.xyz[2] <= 0)
         barys << bary
     end
 
@@ -99,21 +99,21 @@ end
 
 def triangle_area(a, b, c)
     #we only need these to compute a ratio so the final divide by 2 is not necessary
-    return ( (a.x*b.y) + (b.x*c.y) + (c.x*a.y) - (a.y*b.x) - (b.y*c.x) - (c.y*a.x) )
+    return ( (a.xyz[0]*b.xyz[1]) + (b.xyz[0]*c.xyz[1]) + (c.xyz[0]*a.xyz[1]) - (a.xyz[1]*b.xyz[0]) - (b.xyz[1]*c.xyz[0]) - (c.xyz[1]*a.xyz[0]) )
 end
 
 def compute_triangle_d(verts)
     #for splitting any triangle into 2 flat-bottomed triangles
     a,b,c = verts
-    dx = a.x + ( (b.y - a.y) / (c.y - a.y).to_f ) * (c.x - a.x)
-    return Point.new([dx.to_i, b.y, 1])
+    dx = a.xyz[0] + ( (b.xyz[1] - a.xyz[1]) / (c.xyz[1] - a.xyz[1]).to_f ) * (c.xyz[0] - a.xyz[0])
+    return Point.new([dx.to_i, b.xyz[1], 1])
 end
 
 
 def half_triangle_positive(a, b, d)
     points = []
-    y = b.y
-    while y <= a.y
+    y = b.xyz[1]
+    while y <= a.xyz[1]
         left_x = compute_x(a, b, y)
         right_x = compute_x(a, d, y)
         points.concat(horizontal_line(left_x, right_x, y))
@@ -124,8 +124,8 @@ end
 
 def half_triangle_negative(b, c, d)
     points = []
-    y = c.y
-    while y <= b.y
+    y = c.xyz[1]
+    while y <= b.xyz[1]
         left_x = compute_x(c, b, y)
         right_x = compute_x(c, d, y)
         points.concat(horizontal_line(left_x, right_x, y))
@@ -136,14 +136,14 @@ end
 
 def compute_x(src, dest, y)
     #finds the x value for a given y value that lies between 2 points
-    return dest.x if y == dest.y
-    return src.x if y == src.y
-    amt = (y - src.y)/(dest.y - src.y).to_f
-    x = src.x + ( (dest.x - src.x) * amt ).round
+    return dest.xyz[0] if y == dest.xyz[1]
+    return src.xyz[0] if y == src.xyz[1]
+    amt = (y - src.xyz[1])/(dest.xyz[1] - src.xyz[1]).to_f
+    x = src.xyz[0] + ( (dest.xyz[0] - src.xyz[0]) * amt ).round
     return x
 end
 
 def line_length(src, dest)
-    return Math.sqrt((dest.x - src.x)**2 + (dest.y - src.y)**2)
+    return Math.sqrt((dest.xyz[0] - src.xyz[0])**2 + (dest.xyz[1] - src.xyz[1])**2)
 end
 

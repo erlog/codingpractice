@@ -125,7 +125,7 @@ class Bitmap
 	end
 
     def in_bounds?(point)
-        if (point.x < 0) or (point.x >= @width) or (point.y < 0) or (point.y >= @height)
+        if (point.xyz[0] < 0) or (point.xyz[0] >= @width) or (point.xyz[1] < 0) or (point.xyz[1] >= @height)
             return false
         end
 
@@ -141,7 +141,7 @@ class Bitmap
 
     def set_pixel(point, pixel)
         begin
-            @pixelarray[point.y][point.x] = pixel
+            @pixelarray[point.xyz[1]][point.xyz[0]] = pixel
         rescue IndexError
             pass
         end
@@ -149,7 +149,7 @@ class Bitmap
 
     def get_pixel(point)
         begin
-            return @pixelarray[point.y][point.x]
+            return @pixelarray[point.xyz[1]][point.xyz[0]]
         rescue IndexError
             pass
         end
@@ -175,14 +175,14 @@ class Z_Buffer
 
     def should_draw?(point)
         #a lot of this used to be in functions but this thing gets called every pixel
-        if (point.x < 0) or (point.y < 0) or (point.x > @max_x) or (point.y > @max_y)
+        if (point.xyz[0] < 0) or (point.xyz[1] < 0) or (point.xyz[0] > @max_x) or (point.xyz[1] > @max_y)
             @oob_pixels += 1
             return false
         end
 
-        if (point.z > @array[point.y][point.x])
+        if (point.xyz[2] > @array[point.xyz[1]][point.xyz[0]])
             @drawn_pixels += 1
-            @array[point.y][point.x] = point.z
+            @array[point.xyz[1]][point.xyz[0]] = point.xyz[2]
             return true
         end
 
@@ -203,7 +203,7 @@ class TangentSpaceNormalMap
 
     def get_normal(point)
         begin
-            return @array[point.y][point.x]
+            return @array[point.xyz[1]][point.xyz[0]]
         rescue IndexError
             pass
         end
@@ -225,7 +225,7 @@ class SpecularMap
 
     def get_specular(point)
         begin
-            return @array[point.y][point.x]
+            return @array[point.xyz[1]][point.xyz[0]]
         rescue IndexError
             pass
         end
@@ -247,9 +247,9 @@ def load_texture(filename)
         r = (int24 >> 16) & 0xFF
         bitmap.set_pixel(coord, Pixel.new(r,g,b))
 
-        coord.x += 1
-        if coord.x == width
-            coord.x = 0; coord.y -= 1
+        coord.xyz[0] += 1
+        if coord.xyz[0] == width
+            coord.xyz[0] = 0; coord.xyz[1] -= 1
         end
     end
     return bitmap

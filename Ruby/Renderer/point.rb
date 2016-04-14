@@ -8,6 +8,10 @@ class Point
         @xyz = xyz
     end
 
+    def dup
+        return Point.new([xyz[0], xyz[1], xyz[2]])
+    end
+
     def to_s
         return "Point.new([#{@xyz[0]}, #{@xyz[1]}, #{@xyz[2]}])"
     end
@@ -21,13 +25,6 @@ class Point
         @xyz[0] = @xyz[0].round; @xyz[1] = @xyz[1].round
         return self
     end
-
-    def x; return @xyz[0]; end;
-    def y; return @xyz[1]; end;
-    def z; return @xyz[2]; end;
-    def x=(value); @xyz[0] = value; end;
-    def y=(value); @xyz[1] = value; end;
-    def z=(value); @xyz[2] = value; end;
 
     def apply_matrix!(matrix)
         #matrix math unrolled for performance gains
@@ -46,18 +43,18 @@ class Point
     def apply_tangent_matrix!(tbn)
         #matrix math unrolled for performance gains
         tangent, bitangent, normal = tbn
-        x = (tangent.x * @xyz[0]) + (bitangent.x * @xyz[1]) + (normal.x * @xyz[2])
-        y = (tangent.y * @xyz[0]) + (bitangent.y * @xyz[1]) + (normal.y * @xyz[2])
-        z = (tangent.z * @xyz[0]) + (bitangent.z * @xyz[1]) + (normal.z * @xyz[2])
+        x = (tangent.xyz[0] * @xyz[0]) + (bitangent.xyz[0] * @xyz[1]) + (normal.xyz[0] * @xyz[2])
+        y = (tangent.xyz[1] * @xyz[0]) + (bitangent.xyz[1] * @xyz[1]) + (normal.xyz[1] * @xyz[2])
+        z = (tangent.xyz[2] * @xyz[0]) + (bitangent.xyz[2] * @xyz[1]) + (normal.xyz[2] * @xyz[2])
         @xyz[0] = x; @xyz[1] = y; @xyz[2] = z    #parallel assignments are slower
         return self
     end
 
     def <=>(other)
-        return 1 if @xyz[1] < other.y
-        return -1 if @xyz[1] > other.y
-        return -1 if @xyz[0] < other.x
-        return 1 if @xyz[0] > other.x
+        return 1 if @xyz[1] < other.xyz[1]
+        return -1 if @xyz[1] > other.xyz[1]
+        return -1 if @xyz[0] < other.xyz[0]
+        return 1 if @xyz[0] > other.xyz[0]
         return 0
     end
 
@@ -70,16 +67,16 @@ class Point
     end
 
     def ==(other)
-        return false if @xyz[0] != other.x
-        return false if @xyz[1] != other.y
-        return false if @xyz[2] != other.z
+        return false if @xyz[0] != other.xyz[0]
+        return false if @xyz[1] != other.xyz[1]
+        return false if @xyz[2] != other.xyz[2]
         return true
     end
 
     def cross_product!(other)
-        x = (@xyz[1]*other.z) - (@xyz[2]*other.y)
-        y = (@xyz[2]*other.x) - (@xyz[0]*other.z)
-        z = (@xyz[0]*other.y) - (@xyz[1]*other.x)
+        x = (@xyz[1]*other.xyz[2]) - (@xyz[2]*other.xyz[1])
+        y = (@xyz[2]*other.xyz[0]) - (@xyz[0]*other.xyz[2])
+        z = (@xyz[0]*other.xyz[1]) - (@xyz[1]*other.xyz[0])
         @xyz[0] = x; @xyz[1] = y; @xyz[2] = z
         return self
     end
@@ -100,20 +97,20 @@ class Point
     end
 
     def scalar_product(other)
-        return (@xyz[0]*other.x) + (@xyz[1]*other.y) + (@xyz[2]*other.z)
+        return (@xyz[0]*other.xyz[0]) + (@xyz[1]*other.xyz[1]) + (@xyz[2]*other.xyz[2])
     end
 
     def to_texture!(texture_size)
-        @xyz[0] = (@xyz[0] * texture_size.x)
-        @xyz[1] = (@xyz[1] * texture_size.y)
+        @xyz[0] = (@xyz[0] * texture_size.xyz[0])
+        @xyz[1] = (@xyz[1] * texture_size.xyz[1])
         return self
     end
 
     def to_screen!(center)
         #unrolled for performance
-        @xyz[0] = (center.x + (@xyz[0] * center.x)).round
-        @xyz[1] = (center.y + (@xyz[1] * center.y)).round
-        @xyz[2] = (center.z + (@xyz[2] * center.z)).round
+        @xyz[0] = (center.xyz[0] + (@xyz[0] * center.xyz[0])).round
+        @xyz[1] = (center.xyz[1] + (@xyz[1] * center.xyz[1])).round
+        @xyz[2] = (center.xyz[2] + (@xyz[2] * center.xyz[2])).round
         return self
     end
 
@@ -128,15 +125,15 @@ class Point
     end
 
     def +(other)
-        return Point.new([@xyz[0]+other.x, @xyz[1]+other.y, @xyz[2]+other.z])
+        return Point.new([@xyz[0]+other.xyz[0], @xyz[1]+other.xyz[1], @xyz[2]+other.xyz[2]])
     end
 
     def -(other)
-        return Point.new([@xyz[0]-other.x, @xyz[1]-other.y, @xyz[2]-other.z])
+        return Point.new([@xyz[0]-other.xyz[0], @xyz[1]-other.xyz[1], @xyz[2]-other.xyz[2]])
     end
 
     def /(other)
-        return Point.new([@xyz[0]/other.x, @xyz[1]/other.y, @xyz[2]/other.z])
+        return Point.new([@xyz[0]/other.xyz[0], @xyz[1]/other.xyz[1], @xyz[2]/other.xyz[2]])
     end
 end
 
@@ -145,16 +142,17 @@ def normalize(point)
 end
 
 def normalize!(point)
-    length = Math.sqrt( (point.x**2) + (point.y**2) + (point.z**2) )
-    point.x = point.x/length
-    point.y = point.y/length
-    point.z = point.z/length
+    length = Math.sqrt( (point.xyz[0]**2) + (point.xyz[1]**2) + (point.xyz[2]**2) )
+    point.xyz[0] = point.xyz[0]/length
+    point.xyz[1] = point.xyz[1]/length
+    point.xyz[2] = point.xyz[2]/length
     return point
 end
 
-def cartesian_to_barycentric(cart, verts)
+def cartesian_to_barycentric!(cart, verts)
     x,y,z = c_cartesian_to_barycentric(cart.xyz, verts[0].xyz, verts[1].xyz, verts[2].xyz)
-    return Point.new([x, y, z])
+    cart.xyz = [x,y,z]
+    return cart
 end
 
 def barycentric_to_cartesian(bary, verts)
