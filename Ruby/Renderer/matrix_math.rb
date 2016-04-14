@@ -47,13 +47,13 @@ def compute_face_tb(face) #tangent/bitangent
         s1t1 = Point.new([1, 0, 0])
         s2t2 = Point.new([0, 1, 0])
     end
-    st_matrix = Matrix[ [s2t2.xyz[1], -1*s1t1.xyz[1]],
-                        [-1*s2t2.xyz[0], s1t1.xyz[0]] ]
-    q_matrix = Matrix[ [q1.xyz[0], q1.xyz[1], q1.xyz[2]],
-                       [q2.xyz[0], q2.xyz[1], q2.xyz[2]] ]
-    tb_matrix = (st_matrix * q_matrix)/(s1t1.xyz[0]*s2t2.xyz[1] - s1t1.xyz[1]*s2t2.xyz[0])
-    t = normalize!(Point.new(tb_matrix.row(0).to_a))
-    b = normalize!(Point.new(tb_matrix.row(1).to_a))
+    st_matrix = Matrix[ [s2t2.y, -1*s1t1.y],
+                        [-1*s2t2.x, s1t1.x] ]
+    q_matrix = Matrix[ [q1.x, q1.y, q1.z],
+                       [q2.x, q2.y, q2.z] ]
+    tb_matrix = (st_matrix * q_matrix)/(s1t1.x*s2t2.y - s1t1.y*s2t2.x)
+    t = Point.new(tb_matrix.row(0).to_a).normalize!
+    b = Point.new(tb_matrix.row(1).to_a).normalize!
     return [t,b]
 end
 

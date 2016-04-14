@@ -2,37 +2,32 @@ require_relative 'c_optimization'; include C_Optimization
 
 class Point
     attr_reader :id
-    attr_accessor :xyz
-
-    def initialize(xyz)
-        @xyz = xyz
-    end
 
     def dup
-        return Point.new([xyz[0], xyz[1], xyz[2]])
-    end
-
-    def to_s
-        return "Point.new([#{@xyz[0]}, #{@xyz[1]}, #{@xyz[2]}])"
+        return Point.new([self.x, self.y, self.z])
     end
 
     def to_i!
-        @xyz.map!(&:to_i)
+        self.x = self.x.to_i
+        self.y = self.y.to_i
         return self
     end
 
     def round!
-        @xyz.map!(&:round)
+        self.x = self.x.round
+        self.y = self.y.round
         return self
     end
 
     def apply_matrix!(matrix)
         #matrix math unrolled for performance gains
-        x = (matrix[0][0] * @xyz[0]) + (matrix[0][1] * @xyz[1]) + (matrix[0][2] * @xyz[2]) + matrix[0][3]
-        y = (matrix[1][0] * @xyz[0]) + (matrix[1][1] * @xyz[1]) + (matrix[1][2] * @xyz[2]) + matrix[1][3]
-        z = (matrix[2][0] * @xyz[0]) + (matrix[2][1] * @xyz[1]) + (matrix[2][2] * @xyz[2]) + matrix[2][3]
-        d = (matrix[3][0] * @xyz[0]) + (matrix[3][1] * @xyz[1]) + (matrix[3][2] * @xyz[2]) + matrix[3][3]
-        @xyz = [x/d, y/d, z/d]
+        x = (matrix[0][0] * self.x) + (matrix[0][1] * self.y) + (matrix[0][2] * self.z) + matrix[0][3]
+        y = (matrix[1][0] * self.x) + (matrix[1][1] * self.y) + (matrix[1][2] * self.z) + matrix[1][3]
+        z = (matrix[2][0] * self.x) + (matrix[2][1] * self.y) + (matrix[2][2] * self.z) + matrix[2][3]
+        d = (matrix[3][0] * self.x) + (matrix[3][1] * self.y) + (matrix[3][2] * self.z) + matrix[3][3]
+        self.x = x/d
+        self.y = y/d
+        self.z = z/d
         return self
     end
 
@@ -43,18 +38,20 @@ class Point
     def apply_tangent_matrix!(tbn)
         #matrix math unrolled for performance gains
         tangent, bitangent, normal = tbn
-        @xyz = [
-            (tangent.xyz[0] * @xyz[0]) + (bitangent.xyz[0] * @xyz[1]) + (normal.xyz[0] * @xyz[2]),
-            (tangent.xyz[1] * @xyz[0]) + (bitangent.xyz[1] * @xyz[1]) + (normal.xyz[1] * @xyz[2]),
-            (tangent.xyz[2] * @xyz[0]) + (bitangent.xyz[2] * @xyz[1]) + (normal.xyz[2] * @xyz[2])]
+        x = (tangent.x * self.x) + (bitangent.x * self.y) + (normal.x * self.z)
+        y = (tangent.y * self.x) + (bitangent.y * self.y) + (normal.y * self.z)
+        z = (tangent.z * self.x) + (bitangent.z * self.y) + (normal.z * self.z)
+        self.x = x
+        self.y = y
+        self.z = z
         return self
     end
 
     def <=>(other)
-        return 1 if @xyz[1] < other.xyz[1]
-        return -1 if @xyz[1] > other.xyz[1]
-        return -1 if @xyz[0] < other.xyz[0]
-        return 1 if @xyz[0] > other.xyz[0]
+        return 1 if self.y < other.y
+        return -1 if self.y > other.y
+        return -1 if self.x < other.x
+        return 1 if self.x > other.x
         return 0
     end
 
@@ -67,16 +64,16 @@ class Point
     end
 
     def ==(other)
-        return false if @xyz[0] != other.xyz[0]
-        return false if @xyz[1] != other.xyz[1]
-        return false if @xyz[2] != other.xyz[2]
+        return false if self.x != other.x
+        return false if self.y != other.y
+        return false if self.z != other.z
         return true
     end
 
     def cross_product!(other)
-        @xyz = [ (@xyz[1]*other.xyz[2]) - (@xyz[2]*other.xyz[1]),
-                 (@xyz[2]*other.xyz[0]) - (@xyz[0]*other.xyz[2]),
-                 (@xyz[0]*other.xyz[1]) - (@xyz[1]*other.xyz[0]) ]
+        self.x = (self.y*other.z) - (self.z*other.y)
+        self.y = (self.z*other.x) - (self.x*other.z)
+        self.z = (self.x*other.y) - (self.y*other.x)
         return self
     end
 
@@ -85,9 +82,9 @@ class Point
     end
 
     def scale_by_factor!(factor)
-        @xyz = [ @xyz[0] * factor,
-                 @xyz[1] * factor,
-                 @xyz[2] * factor ]
+        self.x *= factor
+        self.y *= factor
+        self.z *= factor
         return self
     end
 
@@ -96,21 +93,20 @@ class Point
     end
 
     def scalar_product(other)
-        return (@xyz[0]*other.xyz[0]) + (@xyz[1]*other.xyz[1]) + (@xyz[2]*other.xyz[2])
+        return (self.x*other.x) + (self.y*other.y) + (self.z*other.z)
     end
 
     def to_texture!(texture_size)
-        @xyz = [ (@xyz[0] * texture_size.xyz[0]),
-                 (@xyz[1] * texture_size.xyz[1]),
-                  @xyz[2] ]
+        self.x = (self.x * texture_size.x)
+        self.y = (self.y * texture_size.y)
         return self
     end
 
     def to_screen!(center)
         #unrolled for performance
-        @xyz = [ (center.xyz[0] + (@xyz[0] * center.xyz[0])).round,
-                 (center.xyz[1] + (@xyz[1] * center.xyz[1])).round,
-                 (center.xyz[2] + (@xyz[2] * center.xyz[2])).round ]
+        self.x = (center.x + (self.x * center.x)).round
+        self.y = (center.y + (self.y * center.y)).round
+        self.z = (center.z + (self.z * center.z))
         return self
     end
 
@@ -118,40 +114,26 @@ class Point
         return self.dup.to_screen!(center)
     end
 
-    def compute_reflection(light_direction)
+    def compute_reflection!(light_direction)
         reflection = self.scale_by_factor(-2*self.scalar_product(light_direction))
         reflection += light_direction
-        return normalize!(reflection)
+        return reflection.normalize!
     end
 
     def +(other)
-        return Point.new([@xyz[0]+other.xyz[0], @xyz[1]+other.xyz[1], @xyz[2]+other.xyz[2]])
+        return Point.new([self.x+other.x, self.y+other.y, self.z+other.z])
     end
 
     def -(other)
-        return Point.new([@xyz[0]-other.xyz[0], @xyz[1]-other.xyz[1], @xyz[2]-other.xyz[2]])
+        return Point.new([self.x-other.x, self.y-other.y, self.z-other.z])
     end
 
     def /(other)
-        return Point.new([@xyz[0]/other.xyz[0], @xyz[1]/other.xyz[1], @xyz[2]/other.xyz[2]])
+        return Point.new([self.x/other.x, self.y/other.y, self.z/other.z])
+    end
+
+    def to_cartesian(verts)
+        return self.dup.to_cartesian!(verts)
     end
 end
 
-def normalize(point)
-    return normalize!(point.dup)
-end
-
-def normalize!(point)
-    point.xyz = c_normalize(point.xyz)
-    return point
-end
-
-def cartesian_to_barycentric!(cart, verts)
-    cart.xyz = c_cartesian_to_barycentric(cart.xyz, verts[0].xyz, verts[1].xyz, verts[2].xyz)
-    return cart
-end
-
-def barycentric_to_cartesian(bary, verts)
-    xyz = c_barycentric_to_cartesian(bary.xyz, verts[0].xyz, verts[1].xyz, verts[2].xyz)
-    return Point.new(xyz)
-end

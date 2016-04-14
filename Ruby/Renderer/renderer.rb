@@ -49,31 +49,31 @@ def render_model(object, texture, normalmap, specmap)
         tangents = face.map(&:tangent)
         bitangents = face.map(&:bitangent)
 
-        for barycentric in triangle(verts) do
+        triangle(verts){ |barycentric|
             total_pixels += 1
             #get the screen coordinate
-            screen_coord = barycentric_to_cartesian(barycentric, verts).round!
+            screen_coord = barycentric.to_cartesian(verts).round!
             if z_buffer.should_draw?(screen_coord)
                 #get the color from the texture
-                texture_coord = barycentric_to_cartesian(barycentric, uvs).to_texture!(texture_size).round!
+                texture_coord = barycentric.to_cartesian(uvs).to_texture!(texture_size).round!
                 color = texture.get_pixel(texture_coord)
                 #compute diffuse light intensity from tangent normal
-                tbn = [ barycentric_to_cartesian(barycentric, tangents),
-                        barycentric_to_cartesian(barycentric, bitangents),
-                        barycentric_to_cartesian(barycentric, normals) ]
+                tbn = [ barycentric.to_cartesian(tangents),
+                        barycentric.to_cartesian(bitangents),
+                        barycentric.to_cartesian(normals) ]
                 tangent_normal = normalmap.get_normal(texture_coord).dup
-                normal = normalize!(tangent_normal.apply_tangent_matrix!(tbn).apply_matrix!(normal_matrix))
+                normal = tangent_normal.apply_tangent_matrix!(tbn).apply_matrix!(normal_matrix).normalize!
                 diffuse_intensity = clamp((normal.scalar_product(light_direction) * -1), 0, 1)
                 #compute specular highlight intensity
                 specular_power = specmap.get_specular(texture_coord)
-                reflection = normal.compute_reflection(light_direction).scalar_product(camera_direction)*-1
+                reflection = normal.compute_reflection!(light_direction).scalar_product(camera_direction)*-1
                 reflection_intensity = clamp(reflection, 0, 1)**specular_power
                 #combine lighting information for shading
                 shaded_color = color.multiply(0.05 + 0.6*reflection_intensity + 0.75*diffuse_intensity)
                 #finally write our pixel
                 bitmap.set_pixel(screen_coord, shaded_color)
             end
-        end
+        }
     end
     rescue Exception => e
         write_bitmap(bitmap)

@@ -27,19 +27,20 @@ bitmap_b = Bitmap.new(width, height)
 
 #verts = test_tri
 verts = random_tri(383)
-points = triangle(verts)
+drawn = 0
 a,b,c = verts
 
-for bary in points
-    pos = barycentric_to_cartesian(bary, verts).round!
+triangle(verts){ |bary|
+    pos = bary.to_cartesian(verts).round!
     bitmap_a.set_pixel(pos, White)
-end
+    drawn += 1
+}
 
 for point in verts
     bitmap_a.set_pixel(point, Pixel.new(255,0,255))
 end
 
-puts points.length
+puts drawn
 puts triangle_area(a, b, c).abs/2.0
 puts line_length(a, b)
 puts line_length(b, c)
