@@ -17,12 +17,12 @@ class Point
     end
 
     def to_i!
-        @xyz[0] = @xyz[0].to_i; @xyz[1] = @xyz[1].to_i; @xyz[2] = @xyz[2].to_i
+        @xyz.map!(&:to_i)
         return self
     end
 
     def round!
-        @xyz[0] = @xyz[0].round; @xyz[1] = @xyz[1].round
+        @xyz.map!(&:round)
         return self
     end
 
@@ -32,7 +32,7 @@ class Point
         y = (matrix[1][0] * @xyz[0]) + (matrix[1][1] * @xyz[1]) + (matrix[1][2] * @xyz[2]) + matrix[1][3]
         z = (matrix[2][0] * @xyz[0]) + (matrix[2][1] * @xyz[1]) + (matrix[2][2] * @xyz[2]) + matrix[2][3]
         d = (matrix[3][0] * @xyz[0]) + (matrix[3][1] * @xyz[1]) + (matrix[3][2] * @xyz[2]) + matrix[3][3]
-        @xyz[0] = x/d; @xyz[1] = y/d; @xyz[2] = z/d    #parallel assignments are slower
+        @xyz = [x/d, y/d, z/d]
         return self
     end
 
@@ -43,10 +43,10 @@ class Point
     def apply_tangent_matrix!(tbn)
         #matrix math unrolled for performance gains
         tangent, bitangent, normal = tbn
-        x = (tangent.xyz[0] * @xyz[0]) + (bitangent.xyz[0] * @xyz[1]) + (normal.xyz[0] * @xyz[2])
-        y = (tangent.xyz[1] * @xyz[0]) + (bitangent.xyz[1] * @xyz[1]) + (normal.xyz[1] * @xyz[2])
-        z = (tangent.xyz[2] * @xyz[0]) + (bitangent.xyz[2] * @xyz[1]) + (normal.xyz[2] * @xyz[2])
-        @xyz[0] = x; @xyz[1] = y; @xyz[2] = z    #parallel assignments are slower
+        @xyz = [
+            (tangent.xyz[0] * @xyz[0]) + (bitangent.xyz[0] * @xyz[1]) + (normal.xyz[0] * @xyz[2]),
+            (tangent.xyz[1] * @xyz[0]) + (bitangent.xyz[1] * @xyz[1]) + (normal.xyz[1] * @xyz[2]),
+            (tangent.xyz[2] * @xyz[0]) + (bitangent.xyz[2] * @xyz[1]) + (normal.xyz[2] * @xyz[2])]
         return self
     end
 
@@ -74,10 +74,9 @@ class Point
     end
 
     def cross_product!(other)
-        x = (@xyz[1]*other.xyz[2]) - (@xyz[2]*other.xyz[1])
-        y = (@xyz[2]*other.xyz[0]) - (@xyz[0]*other.xyz[2])
-        z = (@xyz[0]*other.xyz[1]) - (@xyz[1]*other.xyz[0])
-        @xyz[0] = x; @xyz[1] = y; @xyz[2] = z
+        @xyz = [ (@xyz[1]*other.xyz[2]) - (@xyz[2]*other.xyz[1]),
+                 (@xyz[2]*other.xyz[0]) - (@xyz[0]*other.xyz[2]),
+                 (@xyz[0]*other.xyz[1]) - (@xyz[1]*other.xyz[0]) ]
         return self
     end
 
@@ -86,9 +85,9 @@ class Point
     end
 
     def scale_by_factor!(factor)
-        @xyz[0] = @xyz[0] * factor
-        @xyz[1] = @xyz[1] * factor
-        @xyz[2] = @xyz[2] * factor
+        @xyz = [ @xyz[0] * factor,
+                 @xyz[1] * factor,
+                 @xyz[2] * factor ]
         return self
     end
 
@@ -101,16 +100,17 @@ class Point
     end
 
     def to_texture!(texture_size)
-        @xyz[0] = (@xyz[0] * texture_size.xyz[0])
-        @xyz[1] = (@xyz[1] * texture_size.xyz[1])
+        @xyz = [ (@xyz[0] * texture_size.xyz[0]),
+                 (@xyz[1] * texture_size.xyz[1]),
+                  @xyz[2] ]
         return self
     end
 
     def to_screen!(center)
         #unrolled for performance
-        @xyz[0] = (center.xyz[0] + (@xyz[0] * center.xyz[0])).round
-        @xyz[1] = (center.xyz[1] + (@xyz[1] * center.xyz[1])).round
-        @xyz[2] = (center.xyz[2] + (@xyz[2] * center.xyz[2])).round
+        @xyz = [ (center.xyz[0] + (@xyz[0] * center.xyz[0])).round,
+                 (center.xyz[1] + (@xyz[1] * center.xyz[1])).round,
+                 (center.xyz[2] + (@xyz[2] * center.xyz[2])).round ]
         return self
     end
 
@@ -142,20 +142,16 @@ def normalize(point)
 end
 
 def normalize!(point)
-    length = Math.sqrt( (point.xyz[0]**2) + (point.xyz[1]**2) + (point.xyz[2]**2) )
-    point.xyz[0] = point.xyz[0]/length
-    point.xyz[1] = point.xyz[1]/length
-    point.xyz[2] = point.xyz[2]/length
+    point.xyz = c_normalize(point.xyz)
     return point
 end
 
 def cartesian_to_barycentric!(cart, verts)
-    x,y,z = c_cartesian_to_barycentric(cart.xyz, verts[0].xyz, verts[1].xyz, verts[2].xyz)
-    cart.xyz = [x,y,z]
+    cart.xyz = c_cartesian_to_barycentric(cart.xyz, verts[0].xyz, verts[1].xyz, verts[2].xyz)
     return cart
 end
 
 def barycentric_to_cartesian(bary, verts)
-    x,y,z = c_barycentric_to_cartesian(bary.xyz, verts[0].xyz, verts[1].xyz, verts[2].xyz)
-    return Point.new([x, y, z])
+    xyz = c_barycentric_to_cartesian(bary.xyz, verts[0].xyz, verts[1].xyz, verts[2].xyz)
+    return Point.new(xyz)
 end
