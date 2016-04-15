@@ -4,6 +4,7 @@ require_relative 'matrix_math'
 require_relative 'point'
 require_relative 'utilities'
 require_relative 'wavefront'
+require_relative 'c_optimization'; include C_Optimization
 require 'ruby-prof'
 
 Profile = (ARGV[0] == "-profile")
@@ -14,22 +15,22 @@ Start_Time = Time.now
 
 def render_model(object, texture, normalmap, specmap)
     width = ScreenWidth; height = ScreenHeight
-    screen_center = Point.new([(width/2), (height/2), 255])
-    screen_size = Point.new([width - 1, height - 1, 0])
+    screen_center = Point.new((width/2), (height/2), 255)
+    screen_size = Point.new(width - 1, height - 1, 0)
 
     start_time = Time.now
 
-    texture_size = Point.new([texture.width - 1, texture.height - 1, 0])
+    texture_size = Point.new(texture.width - 1, texture.height - 1, 0)
     bitmap = Bitmap.new(width, height)
     z_buffer = Z_Buffer.new(width, height)
 
     #view_matrix = compute_view_matrix(0, 0, 0, 5)
     view_matrix = compute_view_matrix(20, -20, -5, 5)
-    normal_matrix = view_matrix.inverse.transpose.to_a #to_a for performance
-    view_matrix = view_matrix.to_a                     #to_a for performance
+    normal_matrix = C_Matrix.new(view_matrix.inverse.transpose.to_a.flatten)
+    view_matrix = C_Matrix.new(view_matrix.to_a.flatten)
 
-    camera_direction = Point.new([0, 0, -1])
-    light_direction = Point.new([0, 0, -1])
+    camera_direction = Point.new(0, 0, -1)
+    light_direction = Point.new(0, 0, -1)
     ambient_light = Pixel.from_gray(5)
 
     begin

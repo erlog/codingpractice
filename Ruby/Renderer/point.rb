@@ -3,8 +3,8 @@ require_relative 'c_optimization'; include C_Optimization
 class Point
     attr_reader :id
 
-    def dup
-        return Point.new([self.x, self.y, self.z])
+    def to_s
+        return "Point.new(#{self.x}, #{self.y}, #{self.z})"
     end
 
     def to_i!
@@ -19,32 +19,8 @@ class Point
         return self
     end
 
-    def apply_matrix!(matrix)
-        #matrix math unrolled for performance gains
-        x = (matrix[0][0] * self.x) + (matrix[0][1] * self.y) + (matrix[0][2] * self.z) + matrix[0][3]
-        y = (matrix[1][0] * self.x) + (matrix[1][1] * self.y) + (matrix[1][2] * self.z) + matrix[1][3]
-        z = (matrix[2][0] * self.x) + (matrix[2][1] * self.y) + (matrix[2][2] * self.z) + matrix[2][3]
-        d = (matrix[3][0] * self.x) + (matrix[3][1] * self.y) + (matrix[3][2] * self.z) + matrix[3][3]
-        self.x = x/d
-        self.y = y/d
-        self.z = z/d
-        return self
-    end
-
     def apply_matrix(matrix)
         return self.dup.apply_matrix!(matrix)
-    end
-
-    def apply_tangent_matrix!(tbn)
-        #matrix math unrolled for performance gains
-        tangent, bitangent, normal = tbn
-        x = (tangent.x * self.x) + (bitangent.x * self.y) + (normal.x * self.z)
-        y = (tangent.y * self.x) + (bitangent.y * self.y) + (normal.y * self.z)
-        z = (tangent.z * self.x) + (bitangent.z * self.y) + (normal.z * self.z)
-        self.x = x
-        self.y = y
-        self.z = z
-        return self
     end
 
     def <=>(other)
@@ -70,22 +46,8 @@ class Point
         return true
     end
 
-    def cross_product!(other)
-        self.x = (self.y*other.z) - (self.z*other.y)
-        self.y = (self.z*other.x) - (self.x*other.z)
-        self.z = (self.x*other.y) - (self.y*other.x)
-        return self
-    end
-
     def cross_product(other)
         return self.dup.cross_product!(other)
-    end
-
-    def scale_by_factor!(factor)
-        self.x *= factor
-        self.y *= factor
-        self.z *= factor
-        return self
     end
 
     def scale_by_factor(factor)
@@ -102,14 +64,6 @@ class Point
         return self
     end
 
-    def to_screen!(center)
-        #unrolled for performance
-        self.x = (center.x + (self.x * center.x)).round
-        self.y = (center.y + (self.y * center.y)).round
-        self.z = (center.z + (self.z * center.z))
-        return self
-    end
-
     def to_screen(center)
         return self.dup.to_screen!(center)
     end
@@ -120,20 +74,20 @@ class Point
         return reflection.normalize!
     end
 
-    def +(other)
-        return Point.new([self.x+other.x, self.y+other.y, self.z+other.z])
-    end
-
     def -(other)
-        return Point.new([self.x-other.x, self.y-other.y, self.z-other.z])
+        return self.dup.minus!(other)
     end
 
-    def /(other)
-        return Point.new([self.x/other.x, self.y/other.y, self.z/other.z])
+    def +(other)
+        return self.dup.plus!(other)
     end
 
     def to_cartesian(verts)
         return self.dup.to_cartesian!(verts)
+    end
+
+    def normalize
+        return self.dup.normalize!
     end
 end
 

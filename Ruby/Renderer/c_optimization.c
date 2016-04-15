@@ -2,127 +2,127 @@
 #include "stdio.h"
 
 typedef struct c_point { double x; double y; double z; } Point;
+typedef struct c_matrix { double m[16]; } Matrix;
 
 VALUE C_Optimization = Qnil;
 VALUE C_Point = Qnil;
+VALUE C_Matrix = Qnil;
 
-void print_point(double* point) {
-    printf("C_Point: PointObject.new(%f, %f, %f)\r\n", point[0], point[1], point[2]);
+void print_point(Point* point) {
+    printf("C_Point: PointObject.new(%f, %f, %f)\r\n", point->x, point->y, point->z);
     return;
 }
 
-double* cross_product(double* point_a, double* point_b) {
-    double* result = malloc(sizeof(double)*3);
-    result[0] = (point_a[1] * point_b[2]) - (point_a[2] * point_b[1]);
-    result[1] = (point_a[2] * point_b[0]) - (point_a[0] * point_b[2]);
-    result[2] = (point_a[0] * point_b[1]) - (point_a[1] * point_b[0]);
+static Point* cross_product(Point* point_a, Point* point_b) {
+    static Point* result;
+    result = ALLOC(Point);
+    result->x = (point_a->y * point_b->z) - (point_a->z * point_b->y);
+    result->y = (point_a->z * point_b->x) - (point_a->x * point_b->z);
+    result->z = (point_a->x * point_b->y) - (point_a->y * point_b->x);
     return result;
 }
 
-VALUE array_to_point(double x, double y, double z) {
-    VALUE result[3];
-    result[0] = DBL2NUM(x);
-    result[1] = DBL2NUM(y);
-    result[2] = DBL2NUM(z);
-    return rb_ary_new4(3, result);
-}
-
-double* point_to_array(VALUE rb_point_array) {
-    double* point = malloc(sizeof(double)*3);
-    point[0] = NUM2DBL(rb_ary_entry(rb_point_array, 0));
-    point[1] = NUM2DBL(rb_ary_entry(rb_point_array, 1));
-    point[2] = NUM2DBL(rb_ary_entry(rb_point_array, 2));
-    return point;
-}
-
-
-VALUE method_normalize(VALUE self, VALUE rb_xyz) {
-    double* xyz = point_to_array(rb_xyz);
-    double length = sqrt( pow(xyz[0],2) + pow(xyz[1],2) + pow(xyz[2],2) );
-
-    return array_to_point(xyz[0]/length, xyz[1]/length, xyz[2]/length);
-}
-
-static void C_Point_deallocate(void* point) {
-    xfree(point);
+static void deallocate_struct(void* my_struct) {
+    xfree(my_struct);
     return;
 }
 
-static VALUE C_Point_allocate(VALUE klass) {
-    Point* point;
-    point = ALLOC(Point);
-    return Data_Wrap_Struct(klass, NULL, C_Point_deallocate, point);
+static VALUE C_Matrix_allocate(VALUE klass) {
+    Matrix* matrix; matrix = ALLOC(Matrix);
+    return Data_Wrap_Struct(klass, NULL, deallocate_struct, matrix);
 }
 
-static VALUE C_Point_initialize(VALUE self, VALUE rb_ary_point) {
-    Check_Type(rb_ary_point, T_ARRAY);
-    double* value = point_to_array(rb_ary_point);
+static VALUE C_Matrix_initialize(VALUE self, VALUE rb_array) {
+    Matrix* matrix; Data_Get_Struct(self, Matrix, matrix);
+    int i;
+    for(i = 0; i < 16; i++) {
+        matrix->m[i] = NUM2DBL(rb_ary_entry(rb_array, i));
+    }
+    return self;
+}
 
-    Point* point;
-    Data_Get_Struct(self, Point, point);
+static VALUE C_Point_allocate(VALUE klass) {
+    Point* point; point = ALLOC(Point);
+    return Data_Wrap_Struct(klass, NULL, deallocate_struct, point);
+}
 
-    point->x = value[0]; point->y = value[1]; point->z = value[2];
+static VALUE C_Point_dup(VALUE self) {
+    Point* point; Data_Get_Struct(self, Point, point);
+    Point* new_point; new_point = ALLOC(Point);
+    new_point->x = point->x; new_point->y = point->y; new_point->z = point->z;
+    return Data_Wrap_Struct(rb_class_of(self), NULL, deallocate_struct, new_point);
+}
 
+static VALUE C_Point_initialize(VALUE self, VALUE x, VALUE y, VALUE z) {
+    Point* point; Data_Get_Struct(self, Point, point);
+    point->x = NUM2DBL(x); point->y = NUM2DBL(y); point->z = NUM2DBL(z);
     return self;
 }
 
 static VALUE C_Point_x(VALUE self) {
-    Point* point; Data_Get_Struct(self, Point, point);
-    return DBL2NUM(point->x);
+    Point* point; Data_Get_Struct(self, Point, point); return DBL2NUM(point->x);
 }
 static VALUE C_Point_y(VALUE self) {
-    Point* point; Data_Get_Struct(self, Point, point);
-    return DBL2NUM(point->y);
+    Point* point; Data_Get_Struct(self, Point, point); return DBL2NUM(point->y);
 }
 static VALUE C_Point_z(VALUE self) {
-    Point* point; Data_Get_Struct(self, Point, point);
-    return DBL2NUM(point->z);
+    Point* point; Data_Get_Struct(self, Point, point); return DBL2NUM(point->z);
 }
 
 static VALUE C_Point_x_set(VALUE self, VALUE value) {
-    Point* point; Data_Get_Struct(self, Point, point);
-    point->x = NUM2DBL(value);
+    Point* point; Data_Get_Struct(self, Point, point); point->x = NUM2DBL(value);
     return self;
 }
 static VALUE C_Point_y_set(VALUE self, VALUE value) {
-    Point* point; Data_Get_Struct(self, Point, point);
-    point->y = NUM2DBL(value);
+    Point* point; Data_Get_Struct(self, Point, point); point->y = NUM2DBL(value);
     return self;
 }
 static VALUE C_Point_z_set(VALUE self, VALUE value) {
+    Point* point; Data_Get_Struct(self, Point, point); point->z = NUM2DBL(value);
+    return self;
+}
+
+static VALUE C_Point_minus(VALUE self, VALUE rb_other) {
     Point* point; Data_Get_Struct(self, Point, point);
-    point->z = NUM2DBL(value);
+    Point* other; Data_Get_Struct(rb_other, Point, other);
+    point->x -= other->x; point->y -= other->y; point->z -= other->z;
+    return self;
+}
+static VALUE C_Point_plus(VALUE self, VALUE rb_other) {
+    Point* point; Data_Get_Struct(self, Point, point);
+    Point* other; Data_Get_Struct(rb_other, Point, other);
+    point->x += other->x; point->y += other->y; point->z += other->z;
     return self;
 }
 
 static VALUE C_Point_normalize(VALUE self) {
     Point* point; Data_Get_Struct(self, Point, point);
     double length = sqrt( pow(point->x,2) + pow(point->y,2) + pow(point->z,2) );
-    point->x = point->x/length;
-    point->y = point->y/length;
-    point->z = point->z/length;
+    point->x /= length; point->y /= length; point->z /= length;
     return self;
 }
 
-VALUE C_Point_to_barycentric(VALUE self, VALUE rb_verts) {
+static VALUE C_Point_to_barycentric(VALUE self, VALUE rb_verts) {
     Point* cart; Data_Get_Struct(self, Point, cart);
     Point* a; Data_Get_Struct(rb_ary_entry(rb_verts, 0), Point, a);
     Point* b; Data_Get_Struct(rb_ary_entry(rb_verts, 1), Point, b);
     Point* c; Data_Get_Struct(rb_ary_entry(rb_verts, 2), Point, c);
 
-    double vec_one[3];
-    vec_one[0] = c->x - a->x; vec_one[1] = b->x - a->x; vec_one[2] = a->x - cart->x;
-    double vec_two[3];
-    vec_two[0] = c->y - a->y; vec_two[1] = b->y - a->y; vec_two[2] = a->y - cart->y;
-    double* vec_u = cross_product(vec_one, vec_two);
+    Point* vec_one;
+    vec_one = ALLOC(Point);
+    vec_one->x = c->x - a->x; vec_one->y = b->x - a->x; vec_one->z = a->x - cart->x;
+    Point* vec_two;
+    vec_two = ALLOC(Point);
+    vec_two->x = c->y - a->y; vec_two->y = b->y - a->y; vec_two->z = a->y - cart->y;
+    Point* vec_u = cross_product(vec_one, vec_two);
 
-    cart->x = 1.0 - ((vec_u[0] + vec_u[1]) / vec_u[2]);
-    cart->y = vec_u[1] / vec_u[2];
-    cart->z = vec_u[0] / vec_u[2];
+    cart->x = 1.0 - ((vec_u->x + vec_u->y) / vec_u->z);
+    cart->y = vec_u->y / vec_u->z;
+    cart->z = vec_u->x / vec_u->z;
     return self;
 }
 
-VALUE C_Point_to_cartesian(VALUE self, VALUE rb_verts) {
+static VALUE C_Point_to_cartesian(VALUE self, VALUE rb_verts) {
     Point* bary; Data_Get_Struct(self, Point, bary);
     Point* a; Data_Get_Struct(rb_ary_entry(rb_verts, 0), Point, a);
     Point* b; Data_Get_Struct(rb_ary_entry(rb_verts, 1), Point, b);
@@ -131,17 +131,69 @@ VALUE C_Point_to_cartesian(VALUE self, VALUE rb_verts) {
     double x = (a->x * bary->x) + (b->x * bary->y) + (c->x * bary->z);
     double y = (a->y * bary->x) + (b->y * bary->y) + (c->y * bary->z);
     double z = (a->z * bary->x) + (b->z * bary->y) + (c->z * bary->z);
-    bary->x = x;
-    bary->y = y;
-    bary->z = z;
+    bary->x = x; bary->y = y; bary->z = z;
+    return self;
+}
+
+static VALUE C_Point_to_screen(VALUE self, VALUE rb_center) {
+    Point* point; Data_Get_Struct(self, Point, point);
+    Point* center; Data_Get_Struct(rb_center, Point, center);
+
+    point->x = roundf(center->x + (point->x * center->x));
+    point->y = roundf(center->y + (point->y * center->y));
+    point->z = (center->z + (point->z * center->z));
+    return self;
+}
+
+static VALUE C_Point_apply_matrix(VALUE self, VALUE rb_matrix) {
+    Point* point; Data_Get_Struct(self, Point, point);
+    Matrix* matrix_struct; Data_Get_Struct(rb_matrix, Matrix, matrix_struct);
+    double* matrix = matrix_struct->m;
+    double x = (matrix[0] * point->x) + (matrix[1] * point->y) + (matrix[2] * point->z) + matrix[3];
+    double y = (matrix[4] * point->x) + (matrix[5] * point->y) + (matrix[6] * point->z) + matrix[7];
+    double z = (matrix[8] * point->x) + (matrix[9] * point->y) + (matrix[10] * point->z) + matrix[11];
+    double d = (matrix[12] * point->x) + (matrix[13] * point->y) + (matrix[14] * point->z) + matrix[15];
+    point->x = x/d; point->y = y/d; point->z = z/d;
+    return self;
+}
+
+static VALUE C_Point_apply_tangent_matrix(VALUE self, VALUE rb_tbn) {
+    Point* point; Data_Get_Struct(self, Point, point);
+    Point* tangent; Data_Get_Struct(rb_ary_entry(rb_tbn, 0), Point, tangent);
+    Point* bitangent; Data_Get_Struct(rb_ary_entry(rb_tbn, 1), Point, bitangent);
+    Point* normal; Data_Get_Struct(rb_ary_entry(rb_tbn, 2), Point, normal);
+
+    double x = (tangent->x * point->x) + (bitangent->x * point->y) + (normal->x * point->z);
+    double y = (tangent->y * point->x) + (bitangent->y * point->y) + (normal->y * point->z);
+    double z = (tangent->z * point->x) + (bitangent->z * point->y) + (normal->z * point->z);
+
+    point->x = x; point->y = y; point->z = z;
+    return self;
+}
+
+static VALUE C_Point_scale_by_factor(VALUE self, VALUE value) {
+    Point* point; Data_Get_Struct(self, Point, point);
+    double factor = NUM2DBL(value);
+    point->x *= factor; point->y *= factor; point->z *= factor;
+    return self;
+}
+
+static VALUE C_Point_cross_product(VALUE self, VALUE rb_other) {
+    Point* point; Data_Get_Struct(self, Point, point);
+    Point* other; Data_Get_Struct(rb_other, Point, other);
+    Point* result = cross_product(point, other);
+    *point = *result;
     return self;
 }
 
 void Init_c_optimization() {
     C_Optimization = rb_define_module("C_Optimization");
+    C_Matrix = rb_define_class_under(C_Optimization, "C_Matrix", rb_cObject);
+    rb_define_alloc_func(C_Matrix, C_Matrix_allocate);
+    rb_define_method(C_Matrix, "initialize", C_Matrix_initialize, 1);
     C_Point = rb_define_class_under(C_Optimization, "Point", rb_cObject);
     rb_define_alloc_func(C_Point, C_Point_allocate);
-    rb_define_method(C_Point, "initialize", C_Point_initialize, 1);
+    rb_define_method(C_Point, "initialize", C_Point_initialize, 3);
     rb_define_method(C_Point, "x", C_Point_x, 0);
     rb_define_method(C_Point, "u", C_Point_x, 0);
     rb_define_method(C_Point, "y", C_Point_y, 0);
@@ -150,8 +202,16 @@ void Init_c_optimization() {
     rb_define_method(C_Point, "x=", C_Point_x_set, 1);
     rb_define_method(C_Point, "y=", C_Point_y_set, 1);
     rb_define_method(C_Point, "z=", C_Point_z_set, 1);
+    rb_define_method(C_Point, "minus!", C_Point_minus, 1);
+    rb_define_method(C_Point, "plus!", C_Point_minus, 1);
     rb_define_method(C_Point, "normalize!", C_Point_normalize, 0);
     rb_define_method(C_Point, "to_barycentric!", C_Point_to_barycentric, 1);
     rb_define_method(C_Point, "to_cartesian!", C_Point_to_cartesian, 1);
+    rb_define_method(C_Point, "to_screen!", C_Point_to_screen, 1);
+    rb_define_method(C_Point, "apply_matrix!", C_Point_apply_matrix, 1);
+    rb_define_method(C_Point, "apply_tangent_matrix!", C_Point_apply_tangent_matrix, 1);
+    rb_define_method(C_Point, "scale_by_factor!", C_Point_scale_by_factor, 1);
+    rb_define_method(C_Point, "cross_product!", C_Point_cross_product, 1);
+    rb_define_method(C_Point, "dup", C_Point_dup, 0);
 }
 

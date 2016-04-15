@@ -1,20 +1,20 @@
 require_relative 'point'
 
-BarycentricTriangle = [ Point.new([1.0, 0.0, 0.0]),
-                        Point.new([0.0, 1.0, 0.0]),
-                        Point.new([0.0, 0.0, 1.0]) ]
+BarycentricTriangle = [ Point.new(1.0, 0.0, 0.0),
+                        Point.new(0.0, 1.0, 0.0),
+                        Point.new(0.0, 0.0, 1.0) ]
 
 def lerp(src, dest, amt)
     x = src.x + ( (dest.x - src.x) * amt )
     y = src.y + ( (dest.y - src.y) * amt )
-    return Point.new([x, y, 1])
+    return Point.new(x, y, 1)
 end
 
 def lerp_3d(src, dest, amt)
     x = src.x + ( (dest.x - src.x) * amt )
     y = src.y + ( (dest.y - src.y) * amt )
     z = src.z + ( (dest.z - src.z) * amt )
-    return Point.new([x, y, z])
+    return Point.new(x, y, z)
 end
 
 def amounts(segments)
@@ -26,7 +26,7 @@ def horizontal_line(src_x, dest_x, y)
     points = []
     dest_x += 1
     while src_x < dest_x
-        points << Point.new([src_x, y, 1])
+        points << Point.new(src_x, y, 1)
         src_x += 1
     end
     return points
@@ -107,7 +107,7 @@ def compute_triangle_d(verts)
     #for splitting any triangle into 2 flat-bottomed triangles
     a,b,c = verts
     dx = a.x + ( (b.y - a.y) / (c.y - a.y).to_f ) * (c.x - a.x)
-    return Point.new([dx.to_i, b.y, 1])
+    return Point.new(dx.to_i, b.y, 1)
 end
 
 
