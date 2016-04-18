@@ -4,19 +4,6 @@ BarycentricTriangle = [ Point.new(1.0, 0.0, 0.0),
                         Point.new(0.0, 1.0, 0.0),
                         Point.new(0.0, 0.0, 1.0) ]
 
-def lerp(src, dest, amt)
-    x = src.x + ( (dest.x - src.x) * amt )
-    y = src.y + ( (dest.y - src.y) * amt )
-    return Point.new(x, y, 1)
-end
-
-def lerp_3d(src, dest, amt)
-    x = src.x + ( (dest.x - src.x) * amt )
-    y = src.y + ( (dest.y - src.y) * amt )
-    z = src.z + ( (dest.z - src.z) * amt )
-    return Point.new(x, y, z)
-end
-
 def amounts(segments)
     return (0..segments).map{ |n| n/segments }
 end
@@ -50,7 +37,7 @@ def barycentric_line_middle(src, dest, length)
     points = []
     for n in (1..length-1)
         amt = n/length
-        points << lerp_3d(src, dest, amt)
+        points << lerp(src, dest, amt)
     end
 
     return points
@@ -79,7 +66,7 @@ def triangle(verts)
     for bary in barycentric_wireframe(a, b, c)
         yield bary
     end
-    return if triangle_area(a, b, c) == 0 #points are colinear
+    return if should_not_draw_triangle(a, b, c)
 
 
     #fill triangle
@@ -91,16 +78,11 @@ def triangle(verts)
 
     for point in fill_points
         bary = point.to_barycentric!(verts)
-        next if (bary.x <= 0) or (bary.y <= 0) or  (bary.z <= 0)
+        next if bary.contains_negative?
         yield bary
     end
 
     return
-end
-
-def triangle_area(a, b, c)
-    #we only need these to compute a ratio so the final divide by 2 is not necessary
-    return ( (a.x*b.y) + (b.x*c.y) + (c.x*a.y) - (a.y*b.x) - (b.y*c.x) - (c.y*a.x) )
 end
 
 def compute_triangle_d(verts)

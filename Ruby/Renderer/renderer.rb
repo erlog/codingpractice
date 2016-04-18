@@ -56,7 +56,7 @@ def render_model(object, texture, normalmap, specmap)
             screen_coord = barycentric.to_cartesian(verts).round!
             if z_buffer.should_draw?(screen_coord)
                 #get the color from the texture
-                texture_coord = barycentric.to_cartesian(uvs).to_texture!(texture_size).round!
+                texture_coord = barycentric.to_cartesian(uvs).to_texture!(texture_size)
                 color = texture.get_pixel(texture_coord)
                 #compute diffuse light intensity from tangent normal
                 tbn = [ barycentric.to_cartesian(tangents),

@@ -4,6 +4,12 @@ require_relative 'utilities'
 require_relative 'drawing'
 require_relative 'matrix_math'
 require 'matrix'
+require_relative 'c_optimization'; include C_Optimization
+
+a = Point.new(0,0,0)
+b = Point.new(1,1,1)
+puts lerp(0.5)
+exit
 
 width = 384
 height = 384
