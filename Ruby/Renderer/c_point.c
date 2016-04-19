@@ -1,7 +1,12 @@
 #include "ruby.h"
-//#include "stdio.h"
+#include "stdbool.h"
 #include "c_optimization_main.h"
 #include "c_point.h"
+
+void set_point(Point* point, double x, double y, double z) {
+    point->x = x; point->y = y; point->z = z;
+    return;
+}
 
 void print_point(Point* point) {
     printf("C_Point: PointObject.new(%f, %f, %f)\r\n", point->x, point->y, point->z);
@@ -9,14 +14,41 @@ void print_point(Point* point) {
 }
 
 double scalar_product(Point* point_a, Point* point_b) {
-    double result = (point_a->x*point_b->x) + (point_a->y*point_b->y) + (point_a->z*point_b->z);
+    double result = (point_a->x*point_b->x) +
+                    (point_a->y*point_b->y) +
+                    (point_a->z*point_b->z);
     return result;
 }
 
 void normalize(Point* point) {
-    double length = sqrt( pow(point->x,2) + pow(point->y,2) + pow(point->z,2) );
+    double length = sqrt( pow(point->x,2) +
+                    pow(point->y,2) +
+                    pow(point->z,2) );
     point->x /= length; point->y /= length; point->z /= length;
     return;
+}
+
+void cartesian_to_barycentric(Point* cart, Point* result,
+                                                Point* a, Point* b, Point* c) {
+    Point* vec_one;
+    vec_one = ALLOC(Point);
+    vec_one->x = c->x - a->x; vec_one->y = b->x - a->x; vec_one->z = a->x - cart->x;
+    Point* vec_two;
+    vec_two = ALLOC(Point);
+    vec_two->x = c->y - a->y; vec_two->y = b->y - a->y; vec_two->z = a->y - cart->y;
+    Point* vec_u = cross_product(vec_one, vec_two);
+
+    result->x = 1.0 - ((vec_u->x + vec_u->y) / vec_u->z);
+    result->y = vec_u->y / vec_u->z;
+    result->z = vec_u->x / vec_u->z;
+    return;
+}
+
+bool does_not_contain_negative(Point* point) {
+    if( (point->x <= 0) || (point->y <= 0) || (point->z <= 0) ) {
+        return false;
+    }
+    return true;
 }
 
 Point* cross_product(Point* point_a, Point* point_b) {
@@ -106,17 +138,7 @@ VALUE C_Point_to_barycentric(VALUE self, VALUE rb_verts) {
     Point* b; Data_Get_Struct(rb_ary_entry(rb_verts, 1), Point, b);
     Point* c; Data_Get_Struct(rb_ary_entry(rb_verts, 2), Point, c);
 
-    Point* vec_one;
-    vec_one = ALLOC(Point);
-    vec_one->x = c->x - a->x; vec_one->y = b->x - a->x; vec_one->z = a->x - cart->x;
-    Point* vec_two;
-    vec_two = ALLOC(Point);
-    vec_two->x = c->y - a->y; vec_two->y = b->y - a->y; vec_two->z = a->y - cart->y;
-    Point* vec_u = cross_product(vec_one, vec_two);
-
-    cart->x = 1.0 - ((vec_u->x + vec_u->y) / vec_u->z);
-    cart->y = vec_u->y / vec_u->z;
-    cart->z = vec_u->x / vec_u->z;
+    cartesian_to_barycentric(cart, cart, a, b, c);
     return self;
 }
 

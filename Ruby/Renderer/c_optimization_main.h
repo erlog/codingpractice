@@ -22,6 +22,7 @@ VALUE C_Matrix_initialize(VALUE self, VALUE rb_array);
 //Generic Ruby Functions
 VALUE C_lerp(VALUE self, VALUE rb_src, VALUE rb_dest, VALUE rb_amt);
 VALUE C_should_not_draw_triangle(VALUE self, VALUE rb_a, VALUE rb_b, VALUE rb_c);
+VALUE C_compute_triangle_d(VALUE self, VALUE rb_a, VALUE rb_b, VALUE rb_c);
 
 //Generic Functions
 void Init_c_optimization();

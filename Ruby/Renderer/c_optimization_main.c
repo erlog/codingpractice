@@ -1,6 +1,7 @@
 #include "ruby.h"
 #include "c_optimization_main.h"
 #include "c_point.h"
+#include "c_drawing.h"
 
 //Ruby Modules and Classes
 VALUE C_Optimization = Qnil;
@@ -31,37 +32,9 @@ VALUE C_Matrix_initialize(VALUE self, VALUE rb_array) {
     return self;
 }
 
-VALUE C_lerp(VALUE self, VALUE rb_src, VALUE rb_dest, VALUE rb_amt) {
-    Point* src; Data_Get_Struct(rb_src, Point, src);
-    Point* dest; Data_Get_Struct(rb_dest, Point, dest);
-    double amt = NUM2DBL(rb_amt);
-
-    Point* new_point; new_point = ALLOC(Point);
-    new_point->x = src->x + ( (dest->x - src->x) * amt );
-    new_point->y = src->y + ( (dest->y - src->y) * amt );
-    new_point->z = src->z + ( (dest->z - src->z) * amt );
-
-    return Data_Wrap_Struct(rb_class_of(rb_src), NULL, deallocate_struct, new_point);
-}
-
-VALUE C_should_not_draw_triangle(VALUE self, VALUE rb_a, VALUE rb_b, VALUE rb_c) {
-    Point* a; Data_Get_Struct(rb_a, Point, a);
-    Point* b; Data_Get_Struct(rb_b, Point, b);
-    Point* c; Data_Get_Struct(rb_c, Point, c);
-
-    double area = ( (a->x*b->y) + (b->x*c->y) +
-                    (c->x*a->y) - (a->y*b->x) -
-                    (b->y*c->x) - (c->y*a->x) );
-
-    if(area == 0) { return Qtrue; }
-
-    return Qfalse;
-}
-
 void Init_c_optimization() {
     C_Optimization = rb_define_module("C_Optimization");
-    rb_define_module_function(C_Optimization, "lerp", C_lerp, 3);
-    rb_define_module_function(C_Optimization, "should_not_draw_triangle", C_should_not_draw_triangle, 3);
+    rb_define_module_function(C_Optimization, "triangle", C_triangle, 1);
 
     C_Matrix = rb_define_class_under(C_Optimization, "C_Matrix", rb_cObject);
     rb_define_alloc_func(C_Matrix, C_Matrix_allocate);

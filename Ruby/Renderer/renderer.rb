@@ -1,5 +1,5 @@
 require_relative 'bitmap'
-require_relative 'drawing'
+#require_relative 'drawing'
 require_relative 'matrix_math'
 require_relative 'point'
 require_relative 'utilities'
