@@ -53,18 +53,22 @@ VALUE C_triangle(VALUE self, VALUE rb_verts) {
 
     int i;
     int length;
+    int max;
 
     //yield our wireframe
     length = line_length(a, b); //we already yielded the vertex
-    for(i = length-1; i > 0; i--) {
+    max = length - 1;
+    for(i = max; i > 0; i--) {
         lerp(bary_a, bary_b, bary, i/(float)length); rb_yield(rb_bary);
     }
     length = line_length(b, c); //we already yielded the vertex
-    for(i = length-1; i > 0; i--) {
+    max = length - 1;
+    for(i = max; i > 0; i--) {
         lerp(bary_b, bary_c, bary, i/(float)length); rb_yield(rb_bary);
     }
     length = line_length(a, c); //we already yielded the vertex
-    for(i = length-1; i > 0; i--) {
+    max = length - 1;
+    for(i = max; i > 0; i--) {
         lerp(bary_a, bary_c, bary, i/(float)length); rb_yield(rb_bary);
     }
     if(should_not_draw_triangle(a, b, c)) { return Qnil; }

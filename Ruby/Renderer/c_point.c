@@ -10,7 +10,7 @@ void set_point(Point* point, double x, double y, double z) {
 }
 
 int line_length(Point* src, Point* dest) {
-    return (int)sqrt(powf(dest->x - src->x,2) + powf(dest->y - src->y,2));
+    return (int)sqrt(powf(dest->x - src->x,2) + powf(dest->y - src->y,2)) + 1;
 }
 
 void lerp(Point* src, Point* dest, Point* result, double amt) {
