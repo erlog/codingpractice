@@ -1,5 +1,4 @@
 require_relative 'bitmap'
-#require_relative 'drawing'
 require_relative 'matrix_math'
 require_relative 'point'
 require_relative 'utilities'
@@ -13,25 +12,22 @@ ScreenHeight = 384
 
 Start_Time = Time.now
 
-def render_model(object, texture, normalmap, specmap)
-    width = ScreenWidth; height = ScreenHeight
-    screen_center = Point.new((width/2), (height/2), 255)
-    screen_size = Point.new(width - 1, height - 1, 0)
+def render_model(bitmap, object, texture, normalmap, specmap)
+    screen_center = Point.new((bitmap.width/2), (bitmap.height/2), 255)
+    screen_size = Point.new(bitmap.width - 1, bitmap.height - 1, 0)
 
     start_time = Time.now
 
     texture_size = Point.new(texture.width - 1, texture.height - 1, 0)
-    bitmap = Bitmap.new(width, height)
-    z_buffer = Z_Buffer.new(width, height)
+    z_buffer = Z_Buffer.new(bitmap.width, bitmap.height)
 
-    #view_matrix = compute_view_matrix(0, 0, 0, 5)
     view_matrix = compute_view_matrix(20, -20, -5, 5)
     normal_matrix = C_Matrix.new(view_matrix.inverse.transpose.to_a.flatten)
     view_matrix = C_Matrix.new(view_matrix.to_a.flatten)
 
     camera_direction = Point.new(0, 0, -1)
     light_direction = Point.new(0, 0, -1)
-    ambient_light = Pixel.from_gray(5)
+    ambient_light = Pixel.new(5,5,5)
 
     begin
     drawn_faces = 0
@@ -53,7 +49,7 @@ def render_model(object, texture, normalmap, specmap)
         triangle(verts){ |barycentric|
             total_pixels += 1
             #get the screen coordinate
-            screen_coord = barycentric.to_cartesian(verts).round!
+            screen_coord = barycentric.to_cartesian_screen(verts)
             if z_buffer.should_draw?(screen_coord)
                 #get the color from the texture
                 texture_coord = barycentric.to_cartesian(uvs).to_texture!(texture_size)
@@ -91,6 +87,7 @@ def render_model(object, texture, normalmap, specmap)
     log( (Time.now - start_time).round(3).to_s + " seconds taken")
 end
 
+bitmap = Bitmap.new(ScreenWidth, ScreenHeight)
 object = Wavefront.from_file("african_head.obj")
 texture = load_texture("african_head_diffuse.png")
 normalmap = TangentSpaceNormalMap.new("african_head_nm_tangent.png")
@@ -98,13 +95,13 @@ specmap = SpecularMap.new("african_head_spec.png")
 log("Rendering model")
 if Profile
     RubyProf.start
-    render_model(object, texture, normalmap, specmap)
+    render_model(bitmap, object, texture, normalmap, specmap)
     result = RubyProf.stop
 
     # print a flat profile to text
      printer = RubyProf::FlatPrinter.new(result)
      printer.print(STDOUT)
 else
-    render_model(object, texture, normalmap, specmap)
+    render_model(bitmap, object, texture, normalmap, specmap)
 end
 

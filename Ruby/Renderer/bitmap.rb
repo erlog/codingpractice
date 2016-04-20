@@ -1,34 +1,10 @@
 require 'oily_png'
-NegativeInfinity = -1*Float::INFINITY
 
 class Pixel
     attr_reader :r; attr_reader :g; attr_reader :b
 
     def initialize(r, g, b)
         @r, @g, @b = [r, g, b]
-    end
-
-
-    def self.from_gray(int8)
-        return Pixel.new(int8, int8, int8)
-    end
-
-    def rgb=(rgb_array)
-        @r = rgb_array[0]
-        @b = rgb_array[1]
-        @g = rgb_array[2]
-    end
-
-    def rgb
-        return [@r, @g, @b]
-    end
-
-    def bgr
-        return [@b, @g, @r]
-    end
-
-    def to_s
-        return self.rgb.to_s
     end
 
     def to_normal
@@ -38,39 +14,14 @@ class Pixel
         return Point.new(x, y, z).normalize!
     end
 
-    def to_world_normal
-        x, y, z = self.rgb.map { |channel| ((channel/255.0) - 0.5)*2 }
-        return Point.new(x, y, z).normalize!
-    end
-
-    def average(other)
-        r = (@r + other.r)/2
-        g = (@g + other.g)/2
-        b = (@b + other.b)/2
-        return Pixel.new(r, g, b)
-    end
-
     def multiply(factor)
-        r = (@r*factor).to_i
-        g = (@g*factor).to_i
-        b = (@b*factor).to_i
-        return Pixel.new(r, g, b)
-    end
-
-    def -(other)
-        r = @r - other.r
-        g = @g - other.g
-        b = @g - other.b
-        return Pixel.new(r, g, b)
-    end
-
-    def +(other)
-        r = @r + other.r
-        g = @g + other.g
-        b = @g + other.b
+        r = (@r*factor).round
+        g = (@g*factor).round
+        b = (@b*factor).round
         return Pixel.new(r, g, b)
     end
 end
+
 White = Pixel.new(255, 255, 255)
 
 class Bitmap
@@ -117,27 +68,12 @@ class Bitmap
 		output << generatedibheader()
 		for row in @pixelarray
 			for pixel in row
-                output << pixel.bgr.pack("CCC")
+                output << [pixel.b,pixel.g,pixel.r].pack("CCC")
 			end
 			output << @padding
 		end
 		output.close()
 	end
-
-    def in_bounds?(point)
-        if (point.x < 0) or (point.x >= @width) or (point.y < 0) or (point.y >= @height)
-            return false
-        end
-
-        return true
-    end
-
-    def verts_in_bounds?(verts)
-        return true if self.in_bounds?(verts[0])
-        return true if self.in_bounds?(verts[1])
-        return true if self.in_bounds?(verts[2])
-        return false
-    end
 
     def set_pixel(point, pixel)
         begin
@@ -155,40 +91,6 @@ class Bitmap
         end
     end
 
-end
-
-class Z_Buffer
-    attr_accessor :oob_pixels
-    attr_accessor :drawn_pixels
-    attr_accessor :occluded_pixels
-
-	def initialize(width, height)
-		@width = width
-        @max_x = width - 1
-		@height = height
-        @max_y = height - 1
-		@array = Array.new(@height){ Array.new(@width){NegativeInfinity} }
-        @oob_pixels= 0
-        @occluded_pixels = 0
-        @drawn_pixels = 0
-	end
-
-    def should_draw?(point)
-        #a lot of this used to be in functions but this thing gets called every pixel
-        if (point.x < 0) or (point.y < 0) or (point.x > @max_x) or (point.y > @max_y)
-            @oob_pixels += 1
-            return false
-        end
-
-        if (point.z > @array[point.y][point.x])
-            @drawn_pixels += 1
-            @array[point.y][point.x] = point.z
-            return true
-        end
-
-        @occluded_pixels += 1
-        return false
-    end
 end
 
 class TangentSpaceNormalMap

@@ -108,21 +108,3 @@ def face_to_screen(face, view_matrix, screen_center)
     face = face.sort_by(&:v)
     return face
 end
-
-#There be dragons below, it was written to transform model scale to world scale
-def find_normalizing_offset(numbers)
-    return (numbers.max - (numbers.max - numbers.min)/2)*-1
-end
-
-#This "normalizes" as in rescales everything
-def normalize_vectors(vectors)
-        x_offset = find_normalizing_offset(vectors.map(&:x))
-        y_offset = find_normalizing_offset(vectors.map(&:y))
-        z_offset = find_normalizing_offset(vectors.map(&:z))
-        offset = Point.new(x_offset, y_offset, z_offset)
-        vectors.map!{ |vertex| vertex + offset }
-
-        max = (vectors.map(&:x) + vectors.map(&:y) + vectors.map(&:z)).max
-        return vectors.map!{ |vertex| vertex/Point.new(max, max, max)}
-end
-

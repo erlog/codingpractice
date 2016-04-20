@@ -5,6 +5,7 @@
 VALUE C_Optimization;
 VALUE C_Point;
 VALUE C_Matrix;
+VALUE C_ZBuffer;
 
 //Ruby Constants
 VALUE RB_ZERO;

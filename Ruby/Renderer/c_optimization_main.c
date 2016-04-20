@@ -3,6 +3,7 @@
 #include "c_optimization_main.h"
 #include "c_point.h"
 #include "c_drawing.h"
+#include "c_bitmap.h"
 
 //Ruby Modules and Classes
 VALUE C_Optimization = Qnil;
@@ -43,6 +44,14 @@ void Init_c_optimization() {
     C_Optimization = rb_define_module("C_Optimization");
     rb_define_module_function(C_Optimization, "triangle", C_triangle, 1);
 
+    C_ZBuffer = rb_define_class_under(C_Optimization, "Z_Buffer", rb_cObject);
+    rb_define_alloc_func(C_ZBuffer, C_ZBuffer_allocate);
+    rb_define_method(C_ZBuffer, "initialize", C_ZBuffer_initialize, 2);
+    rb_define_method(C_ZBuffer, "should_draw?", C_ZBuffer_should_draw, 1);
+    rb_define_method(C_ZBuffer, "drawn_pixels", C_ZBuffer_drawn_pixels, 0);
+    rb_define_method(C_ZBuffer, "oob_pixels", C_ZBuffer_oob_pixels, 0);
+    rb_define_method(C_ZBuffer, "occluded_pixels", C_ZBuffer_occluded_pixels, 0);
+
     C_Matrix = rb_define_class_under(C_Optimization, "C_Matrix", rb_cObject);
     rb_define_alloc_func(C_Matrix, C_Matrix_allocate);
     rb_define_method(C_Matrix, "initialize", C_Matrix_initialize, 1);
@@ -65,6 +74,7 @@ void Init_c_optimization() {
     rb_define_method(C_Point, "round!", C_Point_round, 0);
     rb_define_method(C_Point, "to_barycentric!", C_Point_to_barycentric, 1);
     rb_define_method(C_Point, "to_cartesian!", C_Point_to_cartesian, 1);
+    rb_define_method(C_Point, "to_cartesian_screen", C_Point_to_cartesian_screen, 1);
     rb_define_method(C_Point, "to_screen!", C_Point_to_screen, 1);
     rb_define_method(C_Point, "to_texture!", C_Point_to_texture, 1);
     rb_define_method(C_Point, "apply_matrix!", C_Point_apply_matrix, 1);

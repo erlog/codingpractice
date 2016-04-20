@@ -28,6 +28,7 @@ VALUE C_Point_normalize(VALUE self);
 VALUE C_Point_round(VALUE self);
 VALUE C_Point_to_barycentric(VALUE self, VALUE rb_verts);
 VALUE C_Point_to_cartesian(VALUE self, VALUE rb_verts);
+VALUE C_Point_to_cartesian_screen(VALUE self, VALUE rb_verts);
 VALUE C_Point_to_screen(VALUE self, VALUE rb_center);
 VALUE C_Point_to_texture(VALUE self, VALUE rb_size);
 VALUE C_Point_apply_matrix(VALUE self, VALUE rb_matrix);

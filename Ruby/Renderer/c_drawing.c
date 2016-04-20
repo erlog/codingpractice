@@ -5,7 +5,7 @@
 #include "c_optimization_main.h"
 #include "c_point.h"
 
-bool should_not_draw_triangle(Point* a, Point* b, Point* c) {
+inline bool should_not_draw_triangle(Point* a, Point* b, Point* c) {
     int area = (int)( (a->x*b->y) + (b->x*c->y) +
                     (c->x*a->y) - (a->y*b->x) -
                     (b->y*c->x) - (c->y*a->x) );
@@ -15,7 +15,7 @@ bool should_not_draw_triangle(Point* a, Point* b, Point* c) {
 }
 
 
-Point* compute_triangle_d(Point* a, Point* b, Point* c) {
+inline Point* compute_triangle_d(Point* a, Point* b, Point* c) {
     //for splitting triangles into 2 flat-bottomed triangles
     Point* result; result = ALLOC(Point);
     result->x = floor(a->x + ( (b->y - a->y) / (c->y - a->y) ) * (c->x - a->x));
@@ -24,7 +24,7 @@ Point* compute_triangle_d(Point* a, Point* b, Point* c) {
     return result;
 }
 
-double compute_x(Point* src, Point* dest, double y) {
+inline double compute_x(Point* src, Point* dest, double y) {
     //finds the x value for a given y value that lies between 2 points
     if(y == dest->y) { return dest->x; }; if(y == src->y) { return src->x; }
     double amt = (y - src->y)/(dest->y - src->y);
