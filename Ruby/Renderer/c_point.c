@@ -33,7 +33,7 @@ double scalar_product(Point* point_a, Point* point_b) {
 }
 
 void normalize(Point* point) {
-    double length = sqrt( pow(point->x,2) +
+    float length = sqrtf( pow(point->x,2) +
                     pow(point->y,2) +
                     pow(point->z,2) );
     point->x /= length; point->y /= length; point->z /= length;
@@ -176,7 +176,7 @@ VALUE C_Point_to_cartesian_screen(VALUE self, VALUE rb_verts) {
     Point* new_point; new_point = ALLOC(Point);
     new_point->x = roundf((a->x * bary->x) + (b->x * bary->y) + (c->x * bary->z));
     new_point->y = roundf((a->y * bary->x) + (b->y * bary->y) + (c->y * bary->z));
-    new_point->z = roundf((a->z * bary->x) + (b->z * bary->y) + (c->z * bary->z));
+    new_point->z = (a->z * bary->x) + (b->z * bary->y) + (c->z * bary->z);
 
     return Data_Wrap_Struct(rb_class_of(self), NULL, deallocate_struct, new_point);
 }
@@ -187,7 +187,7 @@ VALUE C_Point_to_screen(VALUE self, VALUE rb_center) {
 
     point->x = roundf(center->x + (point->x * center->x));
     point->y = roundf(center->y + (point->y * center->y));
-    point->z = (center->z + (point->z * center->z));
+    point->z = center->z + (point->z * center->z);
     return self;
 }
 
@@ -203,11 +203,11 @@ VALUE C_Point_to_texture(VALUE self, VALUE rb_size) {
 VALUE C_Point_apply_matrix(VALUE self, VALUE rb_matrix) {
     Point* point; Data_Get_Struct(self, Point, point);
     Matrix* matrix_struct; Data_Get_Struct(rb_matrix, Matrix, matrix_struct);
-    double* matrix = matrix_struct->m;
-    double x = (matrix[0] * point->x) + (matrix[1] * point->y) + (matrix[2] * point->z) + matrix[3];
-    double y = (matrix[4] * point->x) + (matrix[5] * point->y) + (matrix[6] * point->z) + matrix[7];
-    double z = (matrix[8] * point->x) + (matrix[9] * point->y) + (matrix[10] * point->z) + matrix[11];
-    double d = (matrix[12] * point->x) + (matrix[13] * point->y) + (matrix[14] * point->z) + matrix[15];
+    double* m = matrix_struct->m;
+    double x = (m[0] * point->x) + (m[1] * point->y) + (m[2] * point->z) + m[3];
+    double y = (m[4] * point->x) + (m[5] * point->y) + (m[6] * point->z) + m[7];
+    double z = (m[8] * point->x) + (m[9] * point->y) + (m[10] * point->z) + m[11];
+    double d = (m[12] * point->x) + (m[13] * point->y) + (m[14] * point->z) + m[15];
     point->x = x/d; point->y = y/d; point->z = z/d;
     return self;
 }
@@ -263,7 +263,7 @@ VALUE C_Point_compute_reflection(VALUE self, VALUE rb_light_direction) {
 VALUE C_Point_equals(VALUE self, VALUE rb_other) {
     Point* point; Data_Get_Struct(self, Point, point);
     Point* other; Data_Get_Struct(rb_other, Point, other);
-    if( (point->x == other->x) && (point->y == other->y) || (point->z == other->z) ) {
+    if( (point->x == other->x) && (point->y == other->y) && (point->z == other->z) ) {
         return Qtrue;
     }
 

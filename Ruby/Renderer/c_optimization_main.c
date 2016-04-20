@@ -69,7 +69,7 @@ void Init_c_optimization() {
     rb_define_method(C_Point, "==", C_Point_equals, 1);
     rb_define_alias(C_Point, "eql?", "==");
     rb_define_method(C_Point, "-", C_Point_minus, 1);
-    rb_define_method(C_Point, "+", C_Point_minus, 1);
+    rb_define_method(C_Point, "+", C_Point_plus, 1);
     rb_define_method(C_Point, "normalize!", C_Point_normalize, 0);
     rb_define_method(C_Point, "round!", C_Point_round, 0);
     rb_define_method(C_Point, "to_barycentric!", C_Point_to_barycentric, 1);

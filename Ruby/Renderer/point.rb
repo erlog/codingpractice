@@ -3,6 +3,26 @@ require_relative 'c_optimization'; include C_Optimization
 class Point
     attr_reader :id
 
+    def rgb
+        point = self.normalize
+        r = (point.x*127) + 128
+        g = (point.y*127) + 128
+        b = (point.z*127) + 128
+        return Pixel.new(r, g, b)
+    end
+
+    def u
+        return self.x
+    end
+
+    def v
+        return self.y
+    end
+
+    def self.from_array(xyz)
+        return Point.new(xyz[0], xyz[1], xyz[2])
+    end
+
     def to_s
         return "Point.new(#{self.x}, #{self.y}, #{self.z})"
     end

@@ -44,18 +44,16 @@ def compute_face_tb(face) #tangent/bitangent
     q1 = b.v - a.v; q2 = c.v - a.v
     s1t1 = b.uv - a.uv; s2t2 = c.uv - a.uv
     if s1t1 == s2t2 #otherwise we get NaN trying to divide infinity
-        s1t1 = Point.new(1, 0, 0)
-        s2t2 = Point.new(0, 1, 0)
+        s1t1 = Point.new(1.0, 0.0, 0.0)
+        s2t2 = Point.new(0.0, 1.0, 0.0)
     end
-    st_matrix = Matrix[ [s2t2.y, -1*s1t1.y],
-                        [-1*s2t2.x, s1t1.x] ]
+    st_matrix = Matrix[ [s2t2.v, -1*s1t1.v],
+                        [-1*s2t2.u, s1t1.u] ]
     q_matrix = Matrix[ [q1.x, q1.y, q1.z],
                        [q2.x, q2.y, q2.z] ]
-    tb_matrix = (st_matrix * q_matrix)/(s1t1.x*s2t2.y - s1t1.y*s2t2.x)
-    x,y,z = tb_matrix.row(0).to_a
-    t = Point.new(x,y,z).normalize!
-    x,y,z = tb_matrix.row(1).to_a
-    b = Point.new(x,y,z).normalize!
+    tb_matrix = (st_matrix * q_matrix)/(s1t1.u*s2t2.v - s1t1.v*s2t2.u)
+    t = Point.from_array(tb_matrix.row(0)).normalize
+    b = Point.from_array(tb_matrix.row(1)).normalize
     return [t,b]
 end
 
