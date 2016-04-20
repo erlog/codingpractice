@@ -4,6 +4,14 @@
 //Ruby Class C Struct
 typedef struct c_point { double x; double y; double z; } Point;
 
+//Generic Functions
+void print_point(Point* point);
+int line_length(Point* src, Point* dest);
+void lerp(Point* src, Point* dest, Point* result, double amt);
+Point* cross_product(Point* point_a, Point* point_b);
+double scalar_product(Point* point_a, Point* point_b);
+void normalize(Point* point);
+
 //Class Methods
 VALUE C_Point_allocate(VALUE klass);
 VALUE C_Point_dup(VALUE self);
@@ -31,11 +39,5 @@ VALUE C_Point_compute_reflection(VALUE self, VALUE rb_light_direction);
 VALUE C_Point_equals(VALUE self, VALUE rb_other);
 VALUE C_Point_contains_negative(VALUE self);
 VALUE C_Point_compare(VALUE self, VALUE rb_other);
-
-//Generic Functions
-void print_point(Point* point);
-Point* cross_product(Point* point_a, Point* point_b);
-double scalar_product(Point* point_a, Point* point_b);
-void normalize(Point* point);
 
 #endif

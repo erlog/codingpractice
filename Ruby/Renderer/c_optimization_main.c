@@ -1,4 +1,5 @@
 #include "ruby.h"
+
 #include "c_optimization_main.h"
 #include "c_point.h"
 #include "c_drawing.h"
@@ -30,6 +31,12 @@ VALUE C_Matrix_initialize(VALUE self, VALUE rb_array) {
         matrix->m[i] = NUM2DBL(rb_ary_entry(rb_array, i));
     }
     return self;
+}
+
+void sort_doubles(double* a, double* b) {
+    double backup = *a;
+    if (*a > *b) { *a = *b; *b = backup; }
+    return;
 }
 
 void Init_c_optimization() {

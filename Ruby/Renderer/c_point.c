@@ -1,10 +1,22 @@
 #include "ruby.h"
 #include "stdbool.h"
-#include "c_optimization_main.h"
+
 #include "c_point.h"
+#include "c_optimization_main.h"
 
 void set_point(Point* point, double x, double y, double z) {
     point->x = x; point->y = y; point->z = z;
+    return;
+}
+
+int line_length(Point* src, Point* dest) {
+    return (int)sqrt(powf(dest->x - src->x,2) + powf(dest->y - src->y,2));
+}
+
+void lerp(Point* src, Point* dest, Point* result, double amt) {
+    result->x = src->x + ( (dest->x - src->x) * amt );
+    result->y = src->y + ( (dest->y - src->y) * amt );
+    result->z = src->z + ( (dest->z - src->z) * amt );
     return;
 }
 

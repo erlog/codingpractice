@@ -1,18 +1,9 @@
 #include "ruby.h"
 #include "stdbool.h"
+
+#include "c_drawing.h"
 #include "c_optimization_main.h"
 #include "c_point.h"
-
-int line_length(Point* src, Point* dest) {
-    return (int)sqrt(powf(dest->x - src->x,2) + powf(dest->y - src->y,2));
-}
-
-void lerp(Point* src, Point* dest, Point* result, double amt) {
-    result->x = src->x + ( (dest->x - src->x) * amt );
-    result->y = src->y + ( (dest->y - src->y) * amt );
-    result->z = src->z + ( (dest->z - src->z) * amt );
-    return;
-}
 
 bool should_not_draw_triangle(Point* a, Point* b, Point* c) {
     int area = (int)( (a->x*b->y) + (b->x*c->y) +
@@ -23,9 +14,6 @@ bool should_not_draw_triangle(Point* a, Point* b, Point* c) {
     return false;
 }
 
-double return_lesser(double a, double b) { if(a < b) { return a; } return b; }
-
-double return_greater(double a, double b) { if(a > b) { return a; } return b; }
 
 Point* compute_triangle_d(Point* a, Point* b, Point* c) {
     //for splitting triangles into 2 flat-bottomed triangles
@@ -83,12 +71,13 @@ VALUE C_triangle(VALUE self, VALUE rb_verts) {
 
     Point* d = compute_triangle_d(a, b, c);
     Point* cart; cart = ALLOC(Point);
-    double x; double y; double x_one; double x_two; double min_x; double max_x;
+    double x; double y;
+    double min_x; double max_x;
 
     //draw top half of triangle
     for(y = b->y; y <= a->y; y++) {
-        x_one = compute_x(a, b, y); x_two = compute_x(a, d, y);
-        min_x = return_lesser(x_one, x_two); max_x = return_greater(x_one, x_two);
+        min_x = compute_x(a, b, y); max_x = compute_x(a, d, y);
+        sort_doubles(&min_x, &max_x);
         for(x = min_x; x <= max_x; x++) {
             set_point(cart, x, y, 1);
             cartesian_to_barycentric(cart, bary, a, b, c);
@@ -98,8 +87,8 @@ VALUE C_triangle(VALUE self, VALUE rb_verts) {
 
     //draw bottom half of triangle
     for(y = c->y; y <= b->y; y++) {
-        x_one = compute_x(c, b, y); x_two = compute_x(c, d, y);
-        min_x = return_lesser(x_one, x_two); max_x = return_greater(x_one, x_two);
+        min_x = compute_x(c, b, y); max_x = compute_x(c, d, y);
+        sort_doubles(&min_x, &max_x);
         for(x = min_x; x <= max_x; x++) {
             set_point(cart, x, y, 1);
             cartesian_to_barycentric(cart, bary, a, b, c);
