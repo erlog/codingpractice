@@ -88,10 +88,10 @@ def render_model(bitmap, object, texture, normalmap, specmap)
 end
 
 bitmap = Bitmap.new(ScreenWidth, ScreenHeight)
-object = Wavefront.from_file("african_head.obj")
-texture = load_texture("african_head_diffuse.png")
-normalmap = TangentSpaceNormalMap.new("african_head_nm_tangent.png")
-specmap = SpecularMap.new("african_head_spec.png")
+object = Wavefront.from_file("floor.obj")
+texture = load_texture("floor_diffuse.png")
+normalmap = TangentSpaceNormalMap.new("floor_nm_tangent.png")
+specmap = SpecularMap.new("floor_spec.png")
 log("Rendering model")
 if Profile
     RubyProf.start
