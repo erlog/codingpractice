@@ -69,22 +69,25 @@ void Init_c_optimization() {
     rb_define_method(C_Point, "z=", C_Point_z_set, 1);
     rb_define_method(C_Point, "==", C_Point_equals, 1);
     rb_define_alias(C_Point, "eql?", "==");
+    rb_define_alias(C_Point, "u", "x");
+    rb_define_alias(C_Point, "v", "y");
     rb_define_method(C_Point, "-", C_Point_minus, 1);
     rb_define_method(C_Point, "+", C_Point_plus, 1);
     rb_define_method(C_Point, "normalize!", C_Point_normalize, 0);
     rb_define_method(C_Point, "round!", C_Point_round, 0);
     rb_define_method(C_Point, "to_barycentric!", C_Point_to_barycentric, 1);
+    rb_define_method(C_Point, "to_barycentric_clip!", C_Point_to_barycentric_clip, 1);
     rb_define_method(C_Point, "to_cartesian!", C_Point_to_cartesian, 1);
     rb_define_method(C_Point, "to_cartesian_screen", C_Point_to_cartesian_screen, 1);
     rb_define_method(C_Point, "to_screen!", C_Point_to_screen, 1);
-    rb_define_method(C_Point, "to_texture!", C_Point_to_texture, 1);
+    rb_define_method(C_Point, "to_texture", C_Point_to_texture, 2);
     rb_define_method(C_Point, "apply_matrix!", C_Point_apply_matrix, 1);
-    rb_define_method(C_Point, "apply_tangent_matrix!", C_Point_apply_tangent_matrix, 1);
     rb_define_method(C_Point, "scale_by_factor!", C_Point_scale_by_factor, 1);
     rb_define_method(C_Point, "cross_product!", C_Point_cross_product, 1);
     rb_define_method(C_Point, "scalar_product", C_Point_scalar_product, 1);
     rb_define_method(C_Point, "<=>", C_Point_compare, 1);
     rb_define_method(C_Point, "contains_negative?", C_Point_contains_negative, 0);
-    rb_define_method(C_Point, "compute_reflection!", C_Point_compute_reflection, 1);
+    rb_define_method(C_Point, "compute_reflection", C_Point_compute_reflection, 2);
+    rb_define_method(C_Point, "to_normal", C_Point_to_normal, 5);
 }
 

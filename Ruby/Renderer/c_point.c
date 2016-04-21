@@ -9,6 +9,7 @@ void set_point(Point* point, double x, double y, double z) {
     return;
 }
 
+
 int line_length(Point* src, Point* dest) {
     return (int)sqrt(powf(dest->x - src->x,2) + powf(dest->y - src->y,2)) + 1;
 }
@@ -53,6 +54,24 @@ void cartesian_to_barycentric(Point* cart, Point* result,
     result->x = 1.0 - ((vec_u->x + vec_u->y) / vec_u->z);
     result->y = vec_u->y / vec_u->z;
     result->z = vec_u->x / vec_u->z;
+    return;
+}
+
+void barycentric_to_cartesian(Point* bary, Point* result,
+                                                Point* a, Point* b, Point* c) {
+    double x = (a->x * bary->x) + (b->x * bary->y) + (c->x * bary->z);
+    double y = (a->y * bary->x) + (b->y * bary->y) + (c->y * bary->z);
+    double z = (a->z * bary->x) + (b->z * bary->y) + (c->z * bary->z);
+    result->x = x; result->y = y; result->z = z;
+    return;
+}
+
+void apply_matrix(Point* point, double* m) {
+    double x = (m[0] * point->x) + (m[1] * point->y) + (m[2] * point->z) + m[3];
+    double y = (m[4] * point->x) + (m[5] * point->y) + (m[6] * point->z) + m[7];
+    double z = (m[8] * point->x) + (m[9] * point->y) + (m[10] * point->z) + m[11];
+    double q = (m[12] * point->x) + (m[13] * point->y) + (m[14] * point->z) + m[15];
+    point->x = x/q; point->y = y/q; point->z = z/q; point->q = q;
     return;
 }
 
@@ -150,34 +169,47 @@ VALUE C_Point_round(VALUE self) {
 
 VALUE C_Point_to_barycentric(VALUE self, VALUE rb_verts) {
     Point* cart; Data_Get_Struct(self, Point, cart);
-    Point* a; Data_Get_Struct(rb_ary_entry(rb_verts, 0), Point, a);
-    Point* b; Data_Get_Struct(rb_ary_entry(rb_verts, 1), Point, b);
-    Point* c; Data_Get_Struct(rb_ary_entry(rb_verts, 2), Point, c);
+    Point* a; Point* b; Point* c;
+    Data_Get_Struct(rb_ary_entry(rb_verts, 0), Point, a);
+    Data_Get_Struct(rb_ary_entry(rb_verts, 1), Point, b);
+    Data_Get_Struct(rb_ary_entry(rb_verts, 2), Point, c);
 
     cartesian_to_barycentric(cart, cart, a, b, c);
     return self;
 }
 
+VALUE C_Point_to_barycentric_clip(VALUE self, VALUE rb_verts) {
+    Point* bary; Data_Get_Struct(self, Point, bary);
+    Point* a; Point* b; Point* c;
+    Data_Get_Struct(rb_ary_entry(rb_verts, 0), Point, a);
+    Data_Get_Struct(rb_ary_entry(rb_verts, 1), Point, b);
+    Data_Get_Struct(rb_ary_entry(rb_verts, 2), Point, c);
+
+    double x = bary->x/a->q; double y = bary->y/b->q; double z = bary->z/c->q;
+    double total = x + y + z;
+    bary->x = x/total; bary->y = y/total; bary->z = z/total;
+    return self;
+}
+
 VALUE C_Point_to_cartesian(VALUE self, VALUE rb_verts) {
     Point* bary; Data_Get_Struct(self, Point, bary);
-    Point* a; Data_Get_Struct(rb_ary_entry(rb_verts, 0), Point, a);
-    Point* b; Data_Get_Struct(rb_ary_entry(rb_verts, 1), Point, b);
-    Point* c; Data_Get_Struct(rb_ary_entry(rb_verts, 2), Point, c);
+    Point* a; Point* b; Point* c;
+    Data_Get_Struct(rb_ary_entry(rb_verts, 0), Point, a);
+    Data_Get_Struct(rb_ary_entry(rb_verts, 1), Point, b);
+    Data_Get_Struct(rb_ary_entry(rb_verts, 2), Point, c);
 
-    double x = (a->x * bary->x) + (b->x * bary->y) + (c->x * bary->z);
-    double y = (a->y * bary->x) + (b->y * bary->y) + (c->y * bary->z);
-    double z = (a->z * bary->x) + (b->z * bary->y) + (c->z * bary->z);
-    bary->x = x; bary->y = y; bary->z = z;
+    barycentric_to_cartesian(bary, bary, a, b, c);
     return self;
 }
 
 VALUE C_Point_to_cartesian_screen(VALUE self, VALUE rb_verts) {
     Point* bary; Data_Get_Struct(self, Point, bary);
-    Point* a; Data_Get_Struct(rb_ary_entry(rb_verts, 0), Point, a);
-    Point* b; Data_Get_Struct(rb_ary_entry(rb_verts, 1), Point, b);
-    Point* c; Data_Get_Struct(rb_ary_entry(rb_verts, 2), Point, c);
-
+    Point* a; Point* b; Point* c;
+    Data_Get_Struct(rb_ary_entry(rb_verts, 0), Point, a);
+    Data_Get_Struct(rb_ary_entry(rb_verts, 1), Point, b);
+    Data_Get_Struct(rb_ary_entry(rb_verts, 2), Point, c);
     Point* new_point; new_point = ALLOC(Point);
+
     new_point->x = roundf((a->x * bary->x) + (b->x * bary->y) + (c->x * bary->z));
     new_point->y = roundf((a->y * bary->x) + (b->y * bary->y) + (c->y * bary->z));
     new_point->z = (a->z * bary->x) + (b->z * bary->y) + (c->z * bary->z);
@@ -195,38 +227,70 @@ VALUE C_Point_to_screen(VALUE self, VALUE rb_center) {
     return self;
 }
 
-VALUE C_Point_to_texture(VALUE self, VALUE rb_size) {
+VALUE C_Point_to_texture(VALUE self, VALUE rb_verts, VALUE rb_size) {
     Point* point; Data_Get_Struct(self, Point, point);
     Point* size; Data_Get_Struct(rb_size, Point, size);
+    Point* a; Point* b; Point* c;
+    Data_Get_Struct(rb_ary_entry(rb_verts, 0), Point, a);
+    Data_Get_Struct(rb_ary_entry(rb_verts, 1), Point, b);
+    Data_Get_Struct(rb_ary_entry(rb_verts, 2), Point, c);
 
-    point->x = roundf(point->x * size->x);
-    point->y = roundf(point->y * size->y);
-    return self;
+    Point* new_point; new_point = ALLOC(Point);
+    barycentric_to_cartesian(point, new_point, a, b, c);
+    new_point->x = roundf(new_point->x * size->x);
+    new_point->y = roundf(new_point->y * size->y);
+    new_point->z = point->z;
+    return Data_Wrap_Struct(rb_class_of(self), NULL, deallocate_struct, new_point);
+}
+
+VALUE C_Point_to_normal(VALUE self, VALUE rb_normal_matrix, VALUE rb_tangent_normal,
+                        VALUE rb_tangents, VALUE rb_bitangents, VALUE rb_normals) {
+    Point* point; Data_Get_Struct(self, Point, point);
+    Point* tangent_normal; Data_Get_Struct(rb_tangent_normal, Point, tangent_normal);
+    Point* a; Point* b; Point* c;
+
+    Matrix* matrix_struct;
+    Data_Get_Struct(rb_normal_matrix, Matrix, matrix_struct);
+    double* matrix = matrix_struct->m;
+
+    Data_Get_Struct(rb_ary_entry(rb_tangents, 0), Point, a);
+    Data_Get_Struct(rb_ary_entry(rb_tangents, 1), Point, b);
+    Data_Get_Struct(rb_ary_entry(rb_tangents, 2), Point, c);
+    Point* tangent; tangent = ALLOC(Point);
+    barycentric_to_cartesian(point, tangent, a, b, c);
+
+    Data_Get_Struct(rb_ary_entry(rb_bitangents, 0), Point, a);
+    Data_Get_Struct(rb_ary_entry(rb_bitangents, 1), Point, b);
+    Data_Get_Struct(rb_ary_entry(rb_bitangents, 2), Point, c);
+    Point* bitangent; bitangent = ALLOC(Point);
+    barycentric_to_cartesian(point, bitangent, a, b, c);
+
+    Data_Get_Struct(rb_ary_entry(rb_normals, 0), Point, a);
+    Data_Get_Struct(rb_ary_entry(rb_normals, 1), Point, b);
+    Data_Get_Struct(rb_ary_entry(rb_normals, 2), Point, c);
+    Point* normal; normal = ALLOC(Point);
+    barycentric_to_cartesian(point, normal, a, b, c);
+
+    Point* result; result = ALLOC(Point);
+    result->x = (tangent->x * tangent_normal->x) +
+                (bitangent->x * tangent_normal->y) +
+                (normal->x * tangent_normal->z);
+    result->y = (tangent->y * tangent_normal->x) +
+                (bitangent->y * tangent_normal->y) +
+                (normal->y * tangent_normal->z);
+    result->z = (tangent->z * tangent_normal->x) +
+                (bitangent->z * tangent_normal->y) +
+                (normal->z * tangent_normal->z);
+
+    apply_matrix(result, matrix);
+    normalize(result);
+    return Data_Wrap_Struct(rb_class_of(self), NULL, deallocate_struct, result);
 }
 
 VALUE C_Point_apply_matrix(VALUE self, VALUE rb_matrix) {
     Point* point; Data_Get_Struct(self, Point, point);
     Matrix* matrix_struct; Data_Get_Struct(rb_matrix, Matrix, matrix_struct);
-    double* m = matrix_struct->m;
-    double x = (m[0] * point->x) + (m[1] * point->y) + (m[2] * point->z) + m[3];
-    double y = (m[4] * point->x) + (m[5] * point->y) + (m[6] * point->z) + m[7];
-    double z = (m[8] * point->x) + (m[9] * point->y) + (m[10] * point->z) + m[11];
-    double q = (m[12] * point->x) + (m[13] * point->y) + (m[14] * point->z) + m[15];
-    point->x = x/q; point->y = y/q; point->z = z/q; point->q = q;
-    return self;
-}
-
-VALUE C_Point_apply_tangent_matrix(VALUE self, VALUE rb_tbn) {
-    Point* point; Data_Get_Struct(self, Point, point);
-    Point* tangent; Data_Get_Struct(rb_ary_entry(rb_tbn, 0), Point, tangent);
-    Point* bitangent; Data_Get_Struct(rb_ary_entry(rb_tbn, 1), Point, bitangent);
-    Point* normal; Data_Get_Struct(rb_ary_entry(rb_tbn, 2), Point, normal);
-
-    double x = (tangent->x * point->x) + (bitangent->x * point->y) + (normal->x * point->z);
-    double y = (tangent->y * point->x) + (bitangent->y * point->y) + (normal->y * point->z);
-    double z = (tangent->z * point->x) + (bitangent->z * point->y) + (normal->z * point->z);
-
-    point->x = x; point->y = y; point->z = z;
+    double* m = matrix_struct->m; apply_matrix(point, m);
     return self;
 }
 
@@ -252,16 +316,20 @@ VALUE C_Point_scalar_product(VALUE self, VALUE rb_other) {
     return DBL2NUM(result);
 }
 
-VALUE C_Point_compute_reflection(VALUE self, VALUE rb_light_direction) {
+VALUE C_Point_compute_reflection(VALUE self, VALUE rb_light_direction,
+                                                VALUE rb_camera_direction) {
     Point* point; Data_Get_Struct(self, Point, point);
     Point* light_direction; Data_Get_Struct(rb_light_direction, Point, light_direction);
+    Point* camera_direction; Data_Get_Struct(rb_camera_direction, Point, camera_direction);
+    Point* new_point; new_point = ALLOC(Point);
 
     double factor = scalar_product(point, light_direction) * -2;
-    point->x = (point->x * factor) + light_direction->x;
-    point->y = (point->y * factor) + light_direction->y;
-    point->z = (point->z * factor) + light_direction->z;
-    normalize(point);
-    return self;
+    new_point->x = (point->x * factor) + light_direction->x;
+    new_point->y = (point->y * factor) + light_direction->y;
+    new_point->z = (point->z * factor) + light_direction->z;
+    normalize(new_point);
+    double reflectivity = scalar_product(new_point, camera_direction) * -1;
+    return DBL2NUM(reflectivity);
 }
 
 VALUE C_Point_equals(VALUE self, VALUE rb_other) {

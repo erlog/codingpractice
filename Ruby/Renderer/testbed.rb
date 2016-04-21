@@ -9,12 +9,6 @@ width = 384
 height = 384
 screen_center = Point.new((width/2)-1, (height/2)-1, 255)
 
-test = Z_Buffer.new(width, height);
-puts test.should_draw?(Point.new(100.0, 100.0, 1337.0));
-puts test.should_draw?(Point.new(100.0, 100.0, 1225.0));
-puts test.should_draw?(Point.new(100.0, 100.0, 1449.0));
-exit
-
 def random_tri(size)
     a = Point.new(rand(size), rand(size), rand(size))
     b = Point.new(rand(size), rand(size), rand(size))

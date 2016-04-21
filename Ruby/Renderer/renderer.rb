@@ -7,8 +7,8 @@ require_relative 'c_optimization'; include C_Optimization
 require 'ruby-prof'
 
 Profile = (ARGV[0] == "-profile")
-ScreenWidth = 320
-ScreenHeight = 240
+ScreenWidth = 384
+ScreenHeight = 384
 
 Start_Time = Time.now
 
@@ -52,18 +52,15 @@ def render_model(bitmap, object, texture, normalmap, specmap)
             if z_buffer.should_draw?(screen_coord)
                 barycentric.to_barycentric_clip!(verts) #for perspective-aware uv interpolation
                 #get the color from the texture
-                texture_coord = barycentric.to_cartesian(uvs).to_texture!(texture_size)
+                texture_coord = barycentric.to_texture(uvs, texture_size)
                 color = texture.get_pixel(texture_coord)
                 #compute diffuse light intensity from tangent normal
-                tbn = [ barycentric.to_cartesian(tangents),
-                        barycentric.to_cartesian(bitangents),
-                        barycentric.to_cartesian(normals) ]
-                tangent_normal = normalmap.get_normal(texture_coord).dup
-                normal = tangent_normal.apply_tangent_matrix!(tbn).apply_matrix!(normal_matrix).normalize!
+                tangent_normal = normalmap.get_normal(texture_coord)
+                normal = barycentric.to_normal(normal_matrix, tangent_normal, tangents, bitangents, normals)
                 diffuse_intensity = clamp((normal.scalar_product(light_direction) * -1), 0, 1)
                 #compute specular highlight intensity
                 specular_power = specmap.get_specular(texture_coord)
-                reflection = normal.compute_reflection!(light_direction).scalar_product(camera_direction)*-1
+                reflection = normal.compute_reflection(light_direction, camera_direction)
                 reflection_intensity = clamp(reflection, 0, 1)**specular_power
                 #combine lighting information for shading
                 shaded_color = color.multiply(0.05 + 0.6*reflection_intensity + 0.75*diffuse_intensity)
@@ -76,7 +73,6 @@ def render_model(bitmap, object, texture, normalmap, specmap)
         write_bitmap(bitmap)
         raise e
     end
-    write_bitmap(bitmap)
     overdraw = (100.0 * z_buffer.drawn_pixels) / (total_pixels)
     log( "#{drawn_faces}/#{object.faces.length} faces drawn" )
     log( "#{total_pixels} points generated" )
@@ -88,10 +84,11 @@ def render_model(bitmap, object, texture, normalmap, specmap)
 end
 
 bitmap = Bitmap.new(ScreenWidth, ScreenHeight)
-object = Wavefront.from_file("african_head.obj")
-texture = load_texture("african_head_diffuse.png")
-normalmap = TangentSpaceNormalMap.new("african_head_nm_tangent.png")
-specmap = SpecularMap.new("african_head_spec.png")
+object_name = "african_head"
+object = Wavefront.from_file("objects/#{object_name}/object.obj")
+texture = load_texture("objects/#{object_name}/diffuse.png")
+normalmap = TangentSpaceNormalMap.new("objects/#{object_name}/nm_tangent.png")
+specmap = SpecularMap.new("objects/#{object_name}/spec.png")
 log("Rendering model")
 if Profile
     RubyProf.start
@@ -105,3 +102,4 @@ else
     render_model(bitmap, object, texture, normalmap, specmap)
 end
 
+write_bitmap(bitmap)

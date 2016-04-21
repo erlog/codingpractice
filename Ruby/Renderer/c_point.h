@@ -28,18 +28,21 @@ VALUE C_Point_plus(VALUE self, VALUE rb_other);
 VALUE C_Point_normalize(VALUE self);
 VALUE C_Point_round(VALUE self);
 VALUE C_Point_to_barycentric(VALUE self, VALUE rb_verts);
+VALUE C_Point_to_barycentric_clip(VALUE self, VALUE rb_verts);
 VALUE C_Point_to_cartesian(VALUE self, VALUE rb_verts);
 VALUE C_Point_to_cartesian_screen(VALUE self, VALUE rb_verts);
 VALUE C_Point_to_screen(VALUE self, VALUE rb_center);
-VALUE C_Point_to_texture(VALUE self, VALUE rb_size);
+VALUE C_Point_to_texture(VALUE self, VALUE rb_verts, VALUE rb_size);
 VALUE C_Point_apply_matrix(VALUE self, VALUE rb_matrix);
 VALUE C_Point_apply_tangent_matrix(VALUE self, VALUE rb_tbn);
 VALUE C_Point_scale_by_factor(VALUE self, VALUE value);
 VALUE C_Point_cross_product(VALUE self, VALUE rb_other);
 VALUE C_Point_scalar_product(VALUE self, VALUE rb_other);
-VALUE C_Point_compute_reflection(VALUE self, VALUE rb_light_direction);
+VALUE C_Point_compute_reflection(VALUE self, VALUE rb_light_direction, VALUE rb_camera_direction);
 VALUE C_Point_equals(VALUE self, VALUE rb_other);
 VALUE C_Point_contains_negative(VALUE self);
 VALUE C_Point_compare(VALUE self, VALUE rb_other);
+VALUE C_Point_to_normal(VALUE self, VALUE rb_normal_matrix, VALUE rb_tangent_normal,
+                        VALUE rb_tangents, VALUE rb_bitangents, VALUE rb_normals);
 
 #endif
