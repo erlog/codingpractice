@@ -63,6 +63,7 @@ void Init_c_optimization() {
     rb_define_method(C_Point, "x", C_Point_x, 0);
     rb_define_method(C_Point, "y", C_Point_y, 0);
     rb_define_method(C_Point, "z", C_Point_z, 0);
+    rb_define_method(C_Point, "q", C_Point_q, 0);
     rb_define_method(C_Point, "x=", C_Point_x_set, 1);
     rb_define_method(C_Point, "y=", C_Point_y_set, 1);
     rb_define_method(C_Point, "z=", C_Point_z_set, 1);

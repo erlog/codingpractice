@@ -51,6 +51,7 @@ def render_model(bitmap, object, texture, normalmap, specmap)
             #get the screen coordinate
             screen_coord = barycentric.to_cartesian_screen(verts)
             if z_buffer.should_draw?(screen_coord)
+                barycentric.to_barycentric_clip!(verts) #for perspective-aware uv interpolation
                 #get the color from the texture
                 texture_coord = barycentric.to_cartesian(uvs).to_texture!(texture_size)
                 color = texture.get_pixel(texture_coord)
@@ -88,10 +89,10 @@ def render_model(bitmap, object, texture, normalmap, specmap)
 end
 
 bitmap = Bitmap.new(ScreenWidth, ScreenHeight)
-object = Wavefront.from_file("floor.obj")
-texture = load_texture("floor_diffuse.png")
-normalmap = TangentSpaceNormalMap.new("floor_nm_tangent.png")
-specmap = SpecularMap.new("floor_spec.png")
+object = Wavefront.from_file("african_head.obj")
+texture = load_texture("african_head_diffuse.png")
+normalmap = TangentSpaceNormalMap.new("african_head_nm_tangent.png")
+specmap = SpecularMap.new("african_head_spec.png")
 log("Rendering model")
 if Profile
     RubyProf.start

@@ -86,6 +86,7 @@ VALUE C_Point_dup(VALUE self) {
 VALUE C_Point_initialize(VALUE self, VALUE x, VALUE y, VALUE z) {
     Point* point; Data_Get_Struct(self, Point, point);
     point->x = NUM2DBL(x); point->y = NUM2DBL(y); point->z = NUM2DBL(z);
+    point->q = 1;
     return self;
 }
 
@@ -97,6 +98,9 @@ VALUE C_Point_y(VALUE self) {
 }
 VALUE C_Point_z(VALUE self) {
     Point* point; Data_Get_Struct(self, Point, point); return DBL2NUM(point->z);
+}
+VALUE C_Point_q(VALUE self) {
+    Point* point; Data_Get_Struct(self, Point, point); return DBL2NUM(point->q);
 }
 
 VALUE C_Point_x_set(VALUE self, VALUE value) {
@@ -184,7 +188,6 @@ VALUE C_Point_to_cartesian_screen(VALUE self, VALUE rb_verts) {
 VALUE C_Point_to_screen(VALUE self, VALUE rb_center) {
     Point* point; Data_Get_Struct(self, Point, point);
     Point* center; Data_Get_Struct(rb_center, Point, center);
-
     point->x = roundf(center->x + (point->x * center->x));
     point->y = roundf(center->y + (point->y * center->y));
     point->z = center->z + (point->z * center->z);
@@ -207,8 +210,8 @@ VALUE C_Point_apply_matrix(VALUE self, VALUE rb_matrix) {
     double x = (m[0] * point->x) + (m[1] * point->y) + (m[2] * point->z) + m[3];
     double y = (m[4] * point->x) + (m[5] * point->y) + (m[6] * point->z) + m[7];
     double z = (m[8] * point->x) + (m[9] * point->y) + (m[10] * point->z) + m[11];
-    double d = (m[12] * point->x) + (m[13] * point->y) + (m[14] * point->z) + m[15];
-    point->x = x/d; point->y = y/d; point->z = z/d;
+    double q = (m[12] * point->x) + (m[13] * point->y) + (m[14] * point->z) + m[15];
+    point->x = x/q; point->y = y/q; point->z = z/q; point->q = q;
     return self;
 }
 
