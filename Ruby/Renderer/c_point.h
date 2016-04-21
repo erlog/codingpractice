@@ -2,7 +2,7 @@
 #define C_POINT_H
 
 //Ruby Class C Struct
-typedef struct c_point { double x; double y; double z; } Point;
+typedef struct c_point { double x; double y; double z; double q;} Point;
 
 //Generic Functions
 void print_point(Point* point);
@@ -19,6 +19,7 @@ VALUE C_Point_initialize(VALUE self, VALUE x, VALUE y, VALUE z);
 VALUE C_Point_x(VALUE self);
 VALUE C_Point_y(VALUE self);
 VALUE C_Point_z(VALUE self);
+VALUE C_Point_q(VALUE self);
 VALUE C_Point_x_set(VALUE self, VALUE value);
 VALUE C_Point_y_set(VALUE self, VALUE value);
 VALUE C_Point_z_set(VALUE self, VALUE value);

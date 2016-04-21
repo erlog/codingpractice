@@ -7,14 +7,13 @@ require_relative 'c_optimization'; include C_Optimization
 require 'ruby-prof'
 
 Profile = (ARGV[0] == "-profile")
-ScreenWidth = 384
-ScreenHeight = 384
+ScreenWidth = 320
+ScreenHeight = 240
 
 Start_Time = Time.now
 
 def render_model(bitmap, object, texture, normalmap, specmap)
     screen_center = Point.new((bitmap.width/2), (bitmap.height/2), 255)
-    screen_size = Point.new(bitmap.width - 1, bitmap.height - 1, 0)
 
     start_time = Time.now
 

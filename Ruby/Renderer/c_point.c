@@ -188,7 +188,8 @@ VALUE C_Point_to_cartesian_screen(VALUE self, VALUE rb_verts) {
 VALUE C_Point_to_screen(VALUE self, VALUE rb_center) {
     Point* point; Data_Get_Struct(self, Point, point);
     Point* center; Data_Get_Struct(rb_center, Point, center);
-    point->x = roundf(center->x + (point->x * center->x));
+    //using center->y both times gives us horiz+ rendering instead of vert-
+    point->x = roundf(center->x + (point->x * center->y));
     point->y = roundf(center->y + (point->y * center->y));
     point->z = center->z + (point->z * center->z);
     return self;
