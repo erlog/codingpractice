@@ -2,16 +2,16 @@
 #define C_OPTIMIZATION_MAIN_H
 
 //Ruby Modules and Classes
-VALUE C_Optimization;
-VALUE C_Point;
-VALUE C_Matrix;
-VALUE C_Bitmap;
-VALUE C_ZBuffer;
+extern VALUE C_Optimization;
+extern VALUE C_Point;
+extern VALUE C_Matrix;
+extern VALUE C_Bitmap;
+extern VALUE C_ZBuffer;
 
 //Ruby Constants
-VALUE RB_ZERO;
-VALUE RB_POS;
-VALUE RB_NEG;
+extern VALUE RB_ZERO;
+extern VALUE RB_POS;
+extern VALUE RB_NEG;
 
 //Generic Functions
 void Init_c_optimization();

@@ -9,6 +9,8 @@
 VALUE C_Optimization = Qnil;
 VALUE C_Point = Qnil;
 VALUE C_Matrix = Qnil;
+VALUE C_Bitmap = Qnil;
+VALUE C_ZBuffer = Qnil;
 
 //Ruby Constants
 VALUE RB_ZERO = INT2NUM(0);

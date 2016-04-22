@@ -10,7 +10,10 @@ int line_length(Point* src, Point* dest);
 void lerp(Point* src, Point* dest, Point* result, double amt);
 Point* cross_product(Point* point_a, Point* point_b);
 double scalar_product(Point* point_a, Point* point_b);
+void set_point(Point* point, double x, double y, double z);
 void normalize(Point* point);
+void cartesian_to_barycentric(Point* cart, Point* result,
+                                                Point* a, Point* b, Point* c);
 
 //Class Methods
 VALUE C_Point_allocate(VALUE klass);
