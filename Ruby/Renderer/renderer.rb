@@ -8,7 +8,7 @@ require 'ruby-prof'
 
 Profile = (ARGV[0] == "-profile")
 ScreenWidth = 384
-ScreenHeight = 256
+ScreenHeight = 384
 White = [255,255,255]
 Black = [0,0,0]
 Start_Time = Time.now
@@ -30,7 +30,6 @@ def render_model(bitmap, object, texture, normalmap, specmap)
 
     begin
     drawn_faces = 0
-    total_pixels = 0
 
     object.each_face do |face|
         normal = compute_face_normal(face).apply_matrix!(normal_matrix).scalar_product(camera_direction)
@@ -45,7 +44,6 @@ def render_model(bitmap, object, texture, normalmap, specmap)
         bitangents = face.map(&:bitangent)
 
         triangle(verts){ |barycentric|
-            total_pixels += 1
             #get the screen coordinate
             screen_coord = barycentric.to_cartesian_screen(verts)
             if z_buffer.should_draw?(screen_coord)
@@ -56,11 +54,11 @@ def render_model(bitmap, object, texture, normalmap, specmap)
                 #compute diffuse light intensity from tangent normal
                 tangent_normal = normalmap.get_normal(texture_coord)
                 normal = barycentric.to_normal(normal_matrix, tangent_normal, tangents, bitangents, normals)
-                diffuse_intensity = clamp((normal.scalar_product(light_direction) * -1), 0, 1)
+                diffuse_intensity = normal.scalar_product(light_direction)
                 #compute specular highlight intensity
                 specular_power = specmap.get_specular(texture_coord)
-                reflection = normal.compute_reflection(light_direction, camera_direction)
-                reflection_intensity = clamp(reflection, 0, 1)**specular_power
+                reflection_intensity = normal.compute_reflection(light_direction,
+                                            camera_direction, specular_power)
                 #combine lighting information for shading
                 factor = 0.05 + 0.6*reflection_intensity + 0.75*diffuse_intensity
                 shaded_color = color_multiply(color, factor)
@@ -73,6 +71,8 @@ def render_model(bitmap, object, texture, normalmap, specmap)
         write_bitmap(bitmap)
         raise e
     end
+    end_time = Time.now
+    total_pixels = z_buffer.occluded_pixels + z_buffer.oob_pixels + z_buffer.drawn_pixels
     overdraw = (100.0 * z_buffer.drawn_pixels) / (total_pixels)
     log( "#{drawn_faces}/#{object.faces.length} faces drawn" )
     log( "#{total_pixels} points generated" )
@@ -80,8 +80,8 @@ def render_model(bitmap, object, texture, normalmap, specmap)
     log( "  #{z_buffer.oob_pixels} pixels offscreen" )
     log( "  #{z_buffer.drawn_pixels} pixels drawn" )
     log( "#{overdraw.round(3)}% efficiency" )
-    log( (Time.now - start_time).round(3).to_s + " seconds taken")
-    log( (1.0/(Time.now - start_time)).round(3).to_s + " FPS")
+    log( (end_time - start_time).round(3).to_s + " seconds taken")
+    log( (1.0/(end_time - start_time)).round(3).to_s + " FPS")
 end
 
 bitmap = Bitmap.new(ScreenWidth, ScreenHeight, Black)

@@ -1,6 +1,9 @@
 #ifndef C_BITMAP_H
 #define C_BITMAP_H
 
+//generic functions
+VALUE color_multiply(VALUE self, VALUE rb_color_int, VALUE rb_factor);
+
 //Bitmap class
 typedef struct c_bitmap { int width; int height; int32_t* buffer; } Bitmap;
 void C_Bitmap_deallocate(void* my_struct);

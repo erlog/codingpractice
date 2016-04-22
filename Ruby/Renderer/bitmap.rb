@@ -1,74 +1,5 @@
 require 'oily_png'
 
-class RB_Bitmap
-    include Enumerable
-    attr_accessor :width
-    attr_accessor :height
-    attr_accessor :pixelarray
-
-	def initialize(width, height, rgb=[0,0,0])
-		@bitsperpixel = 24
-		@headersize = 14
-		@dibheadersize = 40
-		@dataoffset = @headersize + @dibheadersize
-		@width = width
-		@height = height
-		@pixeldatasize = (@width*@height*@bitsperpixel/8)
-		@filesize = @pixeldatasize + @headersize + @dibheadersize
-		@padding = generatepad()
-		@pixelarray = initializepixelarray(rgb)
-	end
-
-	def generateheader()
-		return ["BM", @filesize, 0, 0, @dataoffset].pack("A2Vv2V")
-	end
-
-	def generatedibheader
-		return [@dibheadersize, @width, @height, 1, @bitsperpixel, 0,
-	  		@pixeldatasize, 2835, 2835, 0, 0].pack("Vl<2v2V2l<2V2")
-	end
-
-	def generatepad
-		rowmod = (@width*@bitsperpixel/8) % 4
-		padlength = 4 - rowmod
-		return (padlength == 4) ?  "" : "\x0" * padlength
-	end
-
-	def initializepixelarray(rgb)
-		return Array.new(@height){ Array.new(@width){rgb.dup} }
-	end
-
-	def writetofile(path)
-		output = File.open(path, "w")
-		output << generateheader()
-		output << generatedibheader()
-		for row in @pixelarray
-			for rgb in row
-                output << rgb.reverse.pack("CCC")
-			end
-			output << @padding
-		end
-		output.close()
-	end
-
-    def set_pixel(point, rgb)
-        begin
-            @pixelarray[point.y][point.x] = rgb.dup
-        rescue IndexError
-            pass
-        end
-    end
-
-    def get_pixel(point)
-        begin
-            return @pixelarray[point.y][point.x]
-        rescue IndexError
-            pass
-        end
-    end
-
-end
-
 class TangentSpaceNormalMap
 	def initialize(filename)
         bitmap = load_texture(filename)
@@ -141,12 +72,9 @@ def load_texture(filename)
     bitmap = Bitmap.new(png.width, png.height, Black)
     coord = Point.new(0, png.height - 1, 0)
 
-    for int24 in png.pixels
-        int24 = int24 >> 8
-        b = int24 & 0xFF
-        g = (int24 >> 8) & 0xFF
-        r = (int24 >> 16) & 0xFF
-        bitmap.set_pixel(coord, [r,g,b])
+    for int32 in png.pixels
+        int24 = int32 >> 8;
+        bitmap.set_pixel(coord, int24)
 
         coord.x += 1
         if coord.x == width

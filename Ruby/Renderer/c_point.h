@@ -38,7 +38,8 @@ VALUE C_Point_apply_tangent_matrix(VALUE self, VALUE rb_tbn);
 VALUE C_Point_scale_by_factor(VALUE self, VALUE value);
 VALUE C_Point_cross_product(VALUE self, VALUE rb_other);
 VALUE C_Point_scalar_product(VALUE self, VALUE rb_other);
-VALUE C_Point_compute_reflection(VALUE self, VALUE rb_light_direction, VALUE rb_camera_direction);
+VALUE C_Point_compute_reflection(VALUE self, VALUE rb_light_direction,
+                        VALUE rb_camera_direction, VALUE rb_specular_power);
 VALUE C_Point_equals(VALUE self, VALUE rb_other);
 VALUE C_Point_contains_negative(VALUE self);
 VALUE C_Point_compare(VALUE self, VALUE rb_other);

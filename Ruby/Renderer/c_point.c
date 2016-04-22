@@ -318,19 +318,21 @@ VALUE C_Point_scalar_product(VALUE self, VALUE rb_other) {
 }
 
 VALUE C_Point_compute_reflection(VALUE self, VALUE rb_light_direction,
-                                                VALUE rb_camera_direction) {
+                        VALUE rb_camera_direction, VALUE rb_specular_power) {
     Point* point; Data_Get_Struct(self, Point, point);
     Point* light_direction; Data_Get_Struct(rb_light_direction, Point, light_direction);
     Point* camera_direction; Data_Get_Struct(rb_camera_direction, Point, camera_direction);
+    double specular_power = NUM2DBL(rb_specular_power);
     Point* new_point; new_point = ALLOC(Point);
+
 
     double factor = scalar_product(point, light_direction) * -2;
     new_point->x = (point->x * factor) + light_direction->x;
     new_point->y = (point->y * factor) + light_direction->y;
     new_point->z = (point->z * factor) + light_direction->z;
     normalize(new_point);
-    double reflectivity = scalar_product(new_point, camera_direction) * -1;
-    return DBL2NUM(reflectivity);
+    double reflectivity = clamp((scalar_product(new_point, camera_direction)*-1), 0.0, 1.0);
+    return DBL2NUM(pow(reflectivity, specular_power));
 }
 
 VALUE C_Point_equals(VALUE self, VALUE rb_other) {

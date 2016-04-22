@@ -12,12 +12,25 @@ inline void clamp_int(int* value, int min, int max) {
     return;
 }
 
+VALUE color_multiply(VALUE self, VALUE rb_color_int, VALUE rb_factor) {
+    int color = NUM2INT(rb_color_int);
+    double factor = NUM2DBL(rb_factor);
+    int b = color & 255; color >>= 8;
+    int g = color & 255; color >>= 8;
+    int r = color & 255; color = 0xFFFFFFFF;
+    r *= factor; g *= factor; b *= factor;
+    clamp_int(&r, 0, 255); clamp_int(&g, 0, 255); clamp_int(&b, 0, 255);
+    int32_t output = 0; r <<= 16; g <<= 8;
+    output += (int32_t)r; output += (int32_t)g; output += (int32_t)b;
+    return INT2NUM((int)output);
+}
+
 inline int32_t rb_color_to_bgr(VALUE rb_color) {
     int r = NUM2INT(rb_ary_entry(rb_color, 0));
     int g = NUM2INT(rb_ary_entry(rb_color, 1));
     int b = NUM2INT(rb_ary_entry(rb_color, 2));
     clamp_int(&r, 0, 255); clamp_int(&g, 0, 255); clamp_int(&b, 0, 255);
-    int32_t output = 255 << 24;
+    int32_t output = 0;
     r <<= 16; g <<= 8;
     output += (int32_t)r; output += (int32_t)g; output += (int32_t)b;
     return output;
@@ -114,9 +127,15 @@ VALUE C_Bitmap_write_to_file(VALUE self, VALUE rb_path) {
 VALUE C_Bitmap_set_pixel(VALUE self, VALUE rb_point, VALUE rb_color) {
     Bitmap* bitmap; Data_Get_Struct(self, Bitmap, bitmap);
     Point* point; Data_Get_Struct(rb_point, Point, point);
-    int32_t color = rb_color_to_bgr(rb_color);
+    int32_t color = (int32_t)NUM2INT(rb_color);
     bitmap->buffer[(int)point->y*bitmap->width + (int)point->x] = color;
     return self;
+}
+VALUE C_Bitmap_get_pixel(VALUE self, VALUE rb_point) {
+    Bitmap* bitmap; Data_Get_Struct(self, Bitmap, bitmap);
+    Point* point; Data_Get_Struct(rb_point, Point, point);
+    int32_t color = bitmap->buffer[(int)point->y*bitmap->width + (int)point->x];
+    return INT2NUM((int)color);
 }
 
 VALUE C_Bitmap_dimensions(VALUE self) {
@@ -132,12 +151,6 @@ VALUE C_Bitmap_height(VALUE self) {
     return INT2NUM(bitmap->height);
 }
 
-VALUE C_Bitmap_get_pixel(VALUE self, VALUE rb_point) {
-    Bitmap* bitmap; Data_Get_Struct(self, Bitmap, bitmap);
-    Point* point; Data_Get_Struct(rb_point, Point, point);
-    int32_t color = bitmap->buffer[(int)point->y*bitmap->width + (int)point->x];
-    return bgr_to_rb_color(color);
-}
 
 void deallocate_zbuffer(ZBuffer* zbuffer) {
     free(zbuffer->buffer);

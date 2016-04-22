@@ -40,7 +40,7 @@ void sort_doubles(double* a, double* b) {
     return;
 }
 
-inline double clamp(double value, double min, double max) {
+double clamp(double value, double min, double max) {
     if(value > max) { return max; }
     if(value < min) { return min; }
     return value;
@@ -49,6 +49,7 @@ inline double clamp(double value, double min, double max) {
 void Init_c_optimization() {
     C_Optimization = rb_define_module("C_Optimization");
     rb_define_module_function(C_Optimization, "triangle", C_triangle, 1);
+    rb_define_module_function(C_Optimization, "color_multiply", color_multiply, 2);
 
     C_Bitmap = rb_define_class_under(C_Optimization, "Bitmap", rb_cObject);
     rb_define_alloc_func(C_Bitmap, C_Bitmap_allocate);
@@ -103,7 +104,7 @@ void Init_c_optimization() {
     rb_define_method(C_Point, "scalar_product", C_Point_scalar_product, 1);
     rb_define_method(C_Point, "<=>", C_Point_compare, 1);
     rb_define_method(C_Point, "contains_negative?", C_Point_contains_negative, 0);
-    rb_define_method(C_Point, "compute_reflection", C_Point_compute_reflection, 2);
+    rb_define_method(C_Point, "compute_reflection", C_Point_compute_reflection, 3);
     rb_define_method(C_Point, "to_normal", C_Point_to_normal, 5);
 }
 
