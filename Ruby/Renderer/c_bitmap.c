@@ -187,7 +187,7 @@ VALUE C_ZBuffer_should_draw(VALUE self, VALUE rb_point) {
         zbuffer->oob_pixels += 1;
         return Qfalse; }
 
-    double value = zbuffer->buffer[(int)point->y*zbuffer->height + (int)point->x];
+    double value = zbuffer->buffer[(int)point->y*zbuffer->width + (int)point->x];
     if(point->z > value) {
         zbuffer->buffer[(int)point->y*zbuffer->width + (int)point->x] = point->z;
         zbuffer->drawn_pixels += 1;

@@ -8,7 +8,7 @@ require 'ruby-prof'
 
 Profile = (ARGV[0] == "-profile")
 ScreenWidth = 384
-ScreenHeight = 384
+ScreenHeight = 256
 White = [255,255,255]
 Black = [0,0,0]
 Start_Time = Time.now
