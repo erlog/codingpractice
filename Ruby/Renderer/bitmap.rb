@@ -13,9 +13,12 @@ class TangentSpaceNormalMap
             while x < width;
                 point.x = x;
                 rgb = bitmap.get_pixel(point);
-                point_x = (rgb[0]/127.5) - 1
-                point_y = (rgb[1]/127.5) - 1
-                point_z = (rgb[2]/127.5) - 1
+                b = rgb & 255; rgb >>= 8
+                g = rgb & 255; rgb >>= 8
+                r = rgb & 255;
+                point_x = (r/127.5) - 1
+                point_y = (g/127.5) - 1
+                point_z = (b/127.5) - 1
                 row << Point.new(point_x, point_y, point_z).normalize!
                 x += 1;
             end

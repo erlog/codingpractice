@@ -54,7 +54,7 @@ def render_model(bitmap, object, texture, normalmap, specmap)
                 #compute diffuse light intensity from tangent normal
                 tangent_normal = normalmap.get_normal(texture_coord)
                 normal = barycentric.to_normal(normal_matrix, tangent_normal, tangents, bitangents, normals)
-                diffuse_intensity = normal.scalar_product(light_direction)
+                diffuse_intensity = normal.scalar_product(light_direction)*-1
                 #compute specular highlight intensity
                 specular_power = specmap.get_specular(texture_coord)
                 reflection_intensity = normal.compute_reflection(light_direction,
