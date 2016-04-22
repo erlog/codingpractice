@@ -1,6 +1,6 @@
 require 'oily_png'
 
-class Bitmap
+class RB_Bitmap
     include Enumerable
     attr_accessor :width
     attr_accessor :height
@@ -72,15 +72,24 @@ end
 class TangentSpaceNormalMap
 	def initialize(filename)
         bitmap = load_texture(filename)
+        width,height = bitmap.dimensions
         log("Processing normal map")
 		@array = []
-        for row in bitmap.pixelarray
-            @array << row.map{|rgb|
-                x = (rgb[0]/127.5) - 1
-                y = (rgb[1]/127.5) - 1
-                z = (rgb[2]/127.5) - 1
-                Point.new(x, y, z).normalize!
-            }
+        point = Point.new(0, 0, 0);
+        x = 0; y = 0;
+        while y < height;
+            point.y = y; row = []
+            while x < width;
+                point.x = x;
+                rgb = bitmap.get_pixel(point);
+                point_x = (rgb[0]/127.5) - 1
+                point_y = (rgb[1]/127.5) - 1
+                point_z = (rgb[2]/127.5) - 1
+                row << Point.new(point_x, point_y, point_z).normalize!
+                x += 1;
+            end
+            x = 0; y += 1;
+            @array << row;
         end
 	end
 
@@ -96,13 +105,22 @@ end
 class SpecularMap
 	def initialize(filename)
         bitmap = load_texture(filename)
+        width,height = bitmap.dimensions
         log("Processing specular map")
 		@array = []
-        for row in bitmap.pixelarray
+        point = Point.new(0, 0, 0);
+        x = 0; y = 0;
+        while y < height;
+            point.y = y; row = []
+            while x < width;
+                point.x = x;
+                rgb = bitmap.get_pixel(point);
             #TODO: Figure out what to do here for real instead of cargo-culting
-            @array << row.map{ |rgb|
-                clamp((1-rgb[0]/255)*100, 1, 24)
-            }
+                row << clamp((1-rgb[0]/255)*100, 1, 24)
+                x += 1;
+            end
+            x = 0; y += 1;
+            @array << row;
         end
 	end
 
@@ -120,7 +138,7 @@ def load_texture(filename)
     log("Loading texture: #{filename}")
     png = ChunkyPNG::Image.from_file(filename)
     width, height = png.width, png.height
-    bitmap = Bitmap.new(png.width, png.height)
+    bitmap = Bitmap.new(png.width, png.height, Black)
     coord = Point.new(0, png.height - 1, 0)
 
     for int24 in png.pixels

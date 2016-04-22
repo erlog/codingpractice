@@ -1,5 +1,5 @@
 require_relative 'point'
-require_relative 'bitmap'
+#require_relative 'bitmap'
 require_relative 'utilities'
 require_relative 'matrix_math'
 require 'matrix'
@@ -8,6 +8,10 @@ require_relative 'c_optimization'; include C_Optimization
 width = 384
 height = 384
 screen_center = Point.new((width/2)-1, (height/2)-1, 255)
+bitmap_a = Bitmap.new(width, height, [0,0,0])
+bitmap_a.set_point(screen_center, [255,255,255])
+write_bitmap(bitmap_a)
+exit
 
 def random_tri(size)
     a = Point.new(rand(size), rand(size), rand(size))

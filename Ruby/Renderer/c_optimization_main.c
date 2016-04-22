@@ -50,6 +50,16 @@ void Init_c_optimization() {
     C_Optimization = rb_define_module("C_Optimization");
     rb_define_module_function(C_Optimization, "triangle", C_triangle, 1);
 
+    C_Bitmap = rb_define_class_under(C_Optimization, "Bitmap", rb_cObject);
+    rb_define_alloc_func(C_Bitmap, C_Bitmap_allocate);
+    rb_define_method(C_Bitmap, "initialize", C_Bitmap_initialize, 3);
+    rb_define_method(C_Bitmap, "writetofile", C_Bitmap_write_to_file, 1);
+    rb_define_method(C_Bitmap, "set_pixel", C_Bitmap_set_pixel, 2);
+    rb_define_method(C_Bitmap, "get_pixel", C_Bitmap_get_pixel, 1);
+    rb_define_method(C_Bitmap, "dimensions", C_Bitmap_dimensions, 0);
+    rb_define_method(C_Bitmap, "width", C_Bitmap_width, 0);
+    rb_define_method(C_Bitmap, "height", C_Bitmap_height, 0);
+
     C_ZBuffer = rb_define_class_under(C_Optimization, "Z_Buffer", rb_cObject);
     rb_define_alloc_func(C_ZBuffer, C_ZBuffer_allocate);
     rb_define_method(C_ZBuffer, "initialize", C_ZBuffer_initialize, 2);

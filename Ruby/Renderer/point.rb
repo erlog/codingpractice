@@ -1,6 +1,9 @@
 require_relative 'c_optimization'; include C_Optimization
 
 class Point
+#these are debug and convenience methods for the point class that exists in
+#   c_point.c
+#
     attr_reader :id
 
     def rgb

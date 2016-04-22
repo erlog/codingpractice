@@ -9,7 +9,8 @@ require 'ruby-prof'
 Profile = (ARGV[0] == "-profile")
 ScreenWidth = 384
 ScreenHeight = 384
-
+White = [255,255,255]
+Black = [0,0,0]
 Start_Time = Time.now
 
 def render_model(bitmap, object, texture, normalmap, specmap)
@@ -79,10 +80,11 @@ def render_model(bitmap, object, texture, normalmap, specmap)
     log( "  #{z_buffer.oob_pixels} pixels offscreen" )
     log( "  #{z_buffer.drawn_pixels} pixels drawn" )
     log( "#{overdraw.round(3)}% efficiency" )
+    log( (Time.now - start_time).round(3).to_s + " seconds taken")
     log( (1.0/(Time.now - start_time)).round(3).to_s + " FPS")
 end
 
-bitmap = Bitmap.new(ScreenWidth, ScreenHeight)
+bitmap = Bitmap.new(ScreenWidth, ScreenHeight, Black)
 object_name = "african_head"
 object = Wavefront.from_file("objects/#{object_name}/object.obj")
 texture = load_texture("objects/#{object_name}/diffuse.png")
