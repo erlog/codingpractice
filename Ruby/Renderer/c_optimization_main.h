@@ -15,6 +15,7 @@ VALUE RB_NEG;
 //Generic Functions
 void Init_c_optimization();
 void sort_doubles(double* a, double* b);
+inline double clamp(double value, double min, double max);
 
 //Generic Class Methods
 void deallocate_struct(void* my_struct);

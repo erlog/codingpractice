@@ -8,7 +8,7 @@ class Point
         r = (point.x*127) + 128
         g = (point.y*127) + 128
         b = (point.z*127) + 128
-        return Pixel.new(r, g, b)
+        return [r, g, b]
     end
 
     def self.from_array(xyz)

@@ -103,9 +103,9 @@ end
 
 def face_to_screen(face, view_matrix, screen_center)
     face = face.dup
-    face[0].v = face[0].v.dup.apply_matrix(view_matrix).to_screen!(screen_center)
-    face[1].v = face[1].v.dup.apply_matrix(view_matrix).to_screen!(screen_center)
-    face[2].v = face[2].v.dup.apply_matrix(view_matrix).to_screen!(screen_center)
+    face[0].v = face[0].v.dup.apply_matrix!(view_matrix).to_screen!(screen_center)
+    face[1].v = face[1].v.dup.apply_matrix!(view_matrix).to_screen!(screen_center)
+    face[2].v = face[2].v.dup.apply_matrix!(view_matrix).to_screen!(screen_center)
     face = face.sort_by(&:v)
     return face
 end

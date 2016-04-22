@@ -40,6 +40,12 @@ void sort_doubles(double* a, double* b) {
     return;
 }
 
+inline double clamp(double value, double min, double max) {
+    if(value > max) { return max; }
+    if(value < min) { return min; }
+    return value;
+}
+
 void Init_c_optimization() {
     C_Optimization = rb_define_module("C_Optimization");
     rb_define_module_function(C_Optimization, "triangle", C_triangle, 1);

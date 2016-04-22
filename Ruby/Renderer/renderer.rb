@@ -26,7 +26,6 @@ def render_model(bitmap, object, texture, normalmap, specmap)
 
     camera_direction = Point.new(0, 0, -1)
     light_direction = Point.new(0, 0, -1)
-    ambient_light = Pixel.new(5,5,5)
 
     begin
     drawn_faces = 0
@@ -38,7 +37,6 @@ def render_model(bitmap, object, texture, normalmap, specmap)
         drawn_faces += 1
 
         face = face_to_screen(face, view_matrix, screen_center)
-
         verts = face.map(&:v)
         uvs = face.map(&:uv)
         normals = face.map(&:normal)
@@ -63,7 +61,8 @@ def render_model(bitmap, object, texture, normalmap, specmap)
                 reflection = normal.compute_reflection(light_direction, camera_direction)
                 reflection_intensity = clamp(reflection, 0, 1)**specular_power
                 #combine lighting information for shading
-                shaded_color = color.multiply(0.05 + 0.6*reflection_intensity + 0.75*diffuse_intensity)
+                factor = 0.05 + 0.6*reflection_intensity + 0.75*diffuse_intensity
+                shaded_color = color_multiply(color, factor)
                 #finally write our pixel
                 bitmap.set_pixel(screen_coord, shaded_color)
             end
@@ -80,7 +79,7 @@ def render_model(bitmap, object, texture, normalmap, specmap)
     log( "  #{z_buffer.oob_pixels} pixels offscreen" )
     log( "  #{z_buffer.drawn_pixels} pixels drawn" )
     log( "#{overdraw.round(3)}% efficiency" )
-    log( (Time.now - start_time).round(3).to_s + " seconds taken")
+    log( (1.0/(Time.now - start_time)).round(3).to_s + " FPS")
 end
 
 bitmap = Bitmap.new(ScreenWidth, ScreenHeight)

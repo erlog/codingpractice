@@ -36,11 +36,6 @@ VALUE C_triangle(VALUE self, VALUE rb_verts) {
     Point* b; Data_Get_Struct(rb_ary_entry(rb_verts, 1), Point, b);
     Point* c; Data_Get_Struct(rb_ary_entry(rb_verts, 2), Point, c);
 
-    //declare the reference triangle
-    Point* bary_a; bary_a = ALLOC(Point); set_point(bary_a, 1.0, 0.0, 0.0);
-    Point* bary_b; bary_b = ALLOC(Point); set_point(bary_b, 0.0, 1.0, 0.0);
-    Point* bary_c; bary_c = ALLOC(Point); set_point(bary_c, 0.0, 0.0, 1.0);
-
     //declare the point object we're yielding
     Point* bary; bary = ALLOC(Point);
     VALUE rb_bary = Data_Wrap_Struct(rb_class_of(rb_ary_entry(rb_verts, 0)),
@@ -51,26 +46,6 @@ VALUE C_triangle(VALUE self, VALUE rb_verts) {
     set_point(bary, 0.0, 1.0, 0.0); rb_yield(rb_bary);
     set_point(bary, 0.0, 0.0, 1.0); rb_yield(rb_bary);
 
-    int i;
-    int length;
-    int max;
-
-    //yield our wireframe
-    length = line_length(a, b); //we already yielded the vertex
-    max = length - 1;
-    for(i = max; i > 0; i--) {
-        lerp(bary_a, bary_b, bary, i/(float)length); rb_yield(rb_bary);
-    }
-    length = line_length(b, c); //we already yielded the vertex
-    max = length - 1;
-    for(i = max; i > 0; i--) {
-        lerp(bary_b, bary_c, bary, i/(float)length); rb_yield(rb_bary);
-    }
-    length = line_length(a, c); //we already yielded the vertex
-    max = length - 1;
-    for(i = max; i > 0; i--) {
-        lerp(bary_a, bary_c, bary, i/(float)length); rb_yield(rb_bary);
-    }
     if(should_not_draw_triangle(a, b, c)) { return Qnil; }
 
     Point* d = compute_triangle_d(a, b, c);
@@ -85,7 +60,7 @@ VALUE C_triangle(VALUE self, VALUE rb_verts) {
         for(x = min_x; x <= max_x; x++) {
             set_point(cart, x, y, 1);
             cartesian_to_barycentric(cart, bary, a, b, c);
-            if(does_not_contain_negative(bary)) { rb_yield(rb_bary); }
+            rb_yield(rb_bary);
         }
     }
 
@@ -96,7 +71,7 @@ VALUE C_triangle(VALUE self, VALUE rb_verts) {
         for(x = min_x; x <= max_x; x++) {
             set_point(cart, x, y, 1);
             cartesian_to_barycentric(cart, bary, a, b, c);
-            if(does_not_contain_negative(bary)) { rb_yield(rb_bary); }
+            rb_yield(rb_bary);
         }
     }
 

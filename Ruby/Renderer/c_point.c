@@ -43,17 +43,18 @@ void normalize(Point* point) {
 
 void cartesian_to_barycentric(Point* cart, Point* result,
                                                 Point* a, Point* b, Point* c) {
-    Point* vec_one;
-    vec_one = ALLOC(Point);
+    Point* vec_one; vec_one = ALLOC(Point);
     vec_one->x = c->x - a->x; vec_one->y = b->x - a->x; vec_one->z = a->x - cart->x;
-    Point* vec_two;
-    vec_two = ALLOC(Point);
+    Point* vec_two; vec_two = ALLOC(Point);
     vec_two->x = c->y - a->y; vec_two->y = b->y - a->y; vec_two->z = a->y - cart->y;
     Point* vec_u = cross_product(vec_one, vec_two);
 
-    result->x = 1.0 - ((vec_u->x + vec_u->y) / vec_u->z);
-    result->y = vec_u->y / vec_u->z;
-    result->z = vec_u->x / vec_u->z;
+    double x = clamp(1.0 - ((vec_u->x + vec_u->y) / vec_u->z), 0.0, 1.0);
+    double y = clamp(vec_u->y / vec_u->z, 0.0, 1.0);
+    double z = clamp(vec_u->x / vec_u->z, 0.0, 1.0);
+    double total = x + y + z;
+
+    result->x = x/total; result->y = y/total; result->z = z/total;
     return;
 }
 

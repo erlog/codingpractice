@@ -12,3 +12,10 @@ def clamp(value, min, max)
     return max if value > max
     return value
 end
+
+def color_multiply(rgb, factor)
+    r = clamp(rgb[0]*factor, 0, 255)
+    g = clamp(rgb[1]*factor, 0, 255)
+    b = clamp(rgb[2]*factor, 0, 255)
+    return [r,g,b]
+end
