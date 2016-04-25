@@ -12,6 +12,7 @@ VALUE C_Matrix = Qnil;
 VALUE C_Bitmap = Qnil;
 VALUE C_ZBuffer = Qnil;
 VALUE C_NormalMap = Qnil;
+VALUE C_SpecularMap = Qnil;
 
 //Ruby Constants
 VALUE RB_ZERO = INT2NUM(0);
@@ -76,6 +77,11 @@ void Init_c_optimization() {
     rb_define_alloc_func(C_NormalMap, C_NormalMap_allocate);
     rb_define_method(C_NormalMap, "initialize", C_NormalMap_initialize, 1);
     rb_define_method(C_NormalMap, "get_normal", C_NormalMap_get_normal, 1);
+
+    C_SpecularMap = rb_define_class_under(C_Optimization, "SpecularMap", rb_cObject);
+    rb_define_alloc_func(C_SpecularMap, C_SpecularMap_allocate);
+    rb_define_method(C_SpecularMap, "initialize", C_SpecularMap_initialize, 1);
+    rb_define_method(C_SpecularMap, "get_specular", C_SpecularMap_get_specular, 1);
 
     C_Matrix = rb_define_class_under(C_Optimization, "C_Matrix", rb_cObject);
     rb_define_alloc_func(C_Matrix, C_Matrix_allocate);

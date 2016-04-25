@@ -260,3 +260,45 @@ VALUE C_NormalMap_get_normal(VALUE self, VALUE rb_point) {
     result->x = normal->x; result->y = normal->y; result->z = normal->z;
     return Data_Wrap_Struct(rb_class_of(rb_point), NULL, deallocate_struct, result);
 }
+
+//SpecularMap
+void deallocate_specularmap(SpecularMap* specularmap) {
+    free(specularmap->buffer); xfree(specularmap); return;
+}
+
+VALUE C_SpecularMap_allocate(VALUE klass) {
+    SpecularMap* specularmap; specularmap = ALLOC(SpecularMap);
+    return Data_Wrap_Struct(klass, NULL, deallocate_specularmap, specularmap);
+}
+
+VALUE C_SpecularMap_initialize(VALUE self, VALUE rb_bitmap) {
+    SpecularMap* specularmap; Data_Get_Struct(self, SpecularMap, specularmap);
+    Bitmap* bitmap; Data_Get_Struct(rb_bitmap, Bitmap, bitmap);
+    int width = bitmap->width; int height = bitmap->height;
+    specularmap->width = width; specularmap->height = height;
+
+
+    double* buffer; buffer = malloc(sizeof(double)*width*height);
+    specularmap->buffer = buffer;
+
+    int x; int y;
+    int index; int b;
+    double specularity;
+
+    for(y = 0; y < height; y++) { for(x = 0; x < width; x++) {
+            index = y*width + x;
+            b = bitmap->buffer[index] & 255;
+            specularity = clamp((double)(1-b/255)*100, 1, 24);
+            specularmap->buffer[index] = specularity;
+    } }
+
+    return self;
+}
+
+VALUE C_SpecularMap_get_specular(VALUE self, VALUE rb_point) {
+    SpecularMap* specularmap; Data_Get_Struct(self, SpecularMap, specularmap);
+    Point* point; Data_Get_Struct(rb_point, Point, point);
+    double spec = specularmap->buffer[(int)point->y*specularmap->width +
+                                                                (int)point->x];
+    return DBL2NUM(spec);
+}

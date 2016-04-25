@@ -38,4 +38,11 @@ VALUE C_NormalMap_allocate(VALUE klass);
 VALUE C_NormalMap_initialize(VALUE self, VALUE rb_bitmap);
 VALUE C_NormalMap_get_normal(VALUE self, VALUE rb_point);
 
+//SpecularMap
+typedef struct c_specularmap { int width; int height; double* buffer; } SpecularMap;
+void deallocate_specularmap(SpecularMap* specularmap);
+VALUE C_SpecularMap_allocate(VALUE klass);
+VALUE C_SpecularMap_initialize(VALUE self, VALUE rb_bitmap);
+VALUE C_SpecularMap_get_specular(VALUE self, VALUE rb_point);
+
 #endif
