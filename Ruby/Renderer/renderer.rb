@@ -7,8 +7,8 @@ require_relative 'c_optimization'; include C_Optimization
 require 'ruby-prof'
 
 Profile = (ARGV[0] == "-profile")
-ScreenWidth = 384
-ScreenHeight = 384
+ScreenWidth = 2048
+ScreenHeight = 2048
 White = [255,255,255]
 Black = [0,0,0]
 Start_Time = Time.now
