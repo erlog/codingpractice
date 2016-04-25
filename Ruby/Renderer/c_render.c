@@ -6,25 +6,39 @@
 #include "c_point.h"
 #include "c_bitmap.h"
 
-VALUE render_model(VALUE self, VALUE rb_object,
+VALUE render_model(VALUE self, VALUE rb_faces,
                 VALUE rb_view_matrix, VALUE rb_normal_matrix,
                 VALUE rb_camera_direction, VALUE rb_light_direction,
                 VALUE rb_bitmap, VALUE rb_zbuffer,
                 VALUE rb_texture, VALUE rb_normalmap, VALUE rb_specmap) {
 
     Bitmap* bitmap; Data_Get_Struct(rb_bitmap, Bitmap, bitmap);
+    Bitmap* texture; Data_Get_Struct(rb_bitmap, Bitmap, bitmap);
+
+    Point* screen_center; screen_center = ALLOC(Point);
+    screen_center->x = (double)bitmap.width/2;
+    screen_center->y = (double)bitmap.height/2;
+    screen_center->z = 255.0;
+
+    Point* texture_size; texture_size = ALLOC(Point);
+    texture_size->x = (double)texture.width - 1;
+    texture_size->y = (double)texture.height - 1;
+    texture_size->z = 0.0;
+
 
 }
 
 /**
-def render_model_backup(bitmap, object, texture, normalmap, specmap)
+def render_model_backup(faces, view_matrix, normal_matrix,
+                    camera_direction, light_direction,
+                    bitmap, z_buffer, texture, normalmap, specmap)
+
     screen_center = Point.new((bitmap.width/2), (bitmap.height/2), 255)
+    texture_size = Point.new(texture.width - 1, texture.height - 1, 0)
 
-
-    object.each_face do |face|
+    faces.each do |face|
         normal = compute_face_normal(face).apply_matrix!(normal_matrix).scalar_product(camera_direction)
         next if normal > 0 #bail if the polygon isn't facing us
-        drawn_faces += 1
 
         face = face_to_screen(face, view_matrix, screen_center)
         verts = face.map(&:v)
@@ -44,7 +58,7 @@ def render_model_backup(bitmap, object, texture, normalmap, specmap)
                 #compute diffuse light intensity from tangent normal
                 tangent_normal = normalmap.get_normal(texture_coord)
                 normal = barycentric.to_normal(normal_matrix, tangent_normal, tangents, bitangents, normals)
-                diffuse_intensity = normal.scalar_product(light_direction)
+                diffuse_intensity = normal.scalar_product(light_direction) * -1
                 #compute specular highlight intensity
                 specular_power = specmap.get_specular(texture_coord)
                 reflection_intensity = normal.compute_reflection(light_direction,
@@ -55,7 +69,5 @@ def render_model_backup(bitmap, object, texture, normalmap, specmap)
                 #finally write our pixel
                 bitmap.set_pixel(screen_coord, shaded_color)
             end
-        }
-    end
-end
+
 **/

@@ -1,8 +1,7 @@
 require 'oily_png'
 
 class TangentSpaceNormalMap
-	def initialize(filename)
-        bitmap = load_texture(filename)
+	def initialize(bitmap)
         width,height = bitmap.dimensions
         log("Processing normal map")
 		@array = []
@@ -38,8 +37,7 @@ class TangentSpaceNormalMap
 end
 
 class SpecularMap
-	def initialize(filename)
-        bitmap = load_texture(filename)
+	def initialize(bitmap)
         width,height = bitmap.dimensions
         log("Processing specular map")
 		@array = []
@@ -73,7 +71,7 @@ def load_texture(filename)
     log("Loading texture: #{filename}")
     png = ChunkyPNG::Image.from_file(filename)
     width, height = png.width, png.height
-    bitmap = Bitmap.new(png.width, png.height, Black)
+    bitmap = Bitmap.new(png.width, png.height, [0,0,0])
     coord = Point.new(0, png.height - 1, 0)
 
     for int32 in png.pixels

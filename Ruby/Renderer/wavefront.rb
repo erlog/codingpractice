@@ -23,12 +23,7 @@ class Wavefront
         #average face tangent/bitangets to get t/b at individual vertices
         @tangents.map!{|group| group.inject(&:+).scale_by_factor(1.0/group.length) }
         @bitangents.map!{|group| group.inject(&:+).scale_by_factor(1.0/group.length) }
-    end
-
-    def each_face
-        for indexed_face in @faces
-            yield self.build_face(indexed_face)
-        end
+        @faces.map!{ |indexed_face| self.build_face(indexed_face) }
     end
 
     def build_face(indexed_face)

@@ -7,6 +7,7 @@ extern VALUE C_Point;
 extern VALUE C_Matrix;
 extern VALUE C_Bitmap;
 extern VALUE C_ZBuffer;
+extern VALUE C_NormalMap;
 
 //Ruby Constants
 extern VALUE RB_ZERO;

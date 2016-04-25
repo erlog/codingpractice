@@ -6,7 +6,7 @@ VALUE color_multiply(VALUE self, VALUE rb_color_int, VALUE rb_factor);
 
 //Bitmap class
 typedef struct c_bitmap { int width; int height; int32_t* buffer; } Bitmap;
-void C_Bitmap_deallocate(void* my_struct);
+void deallocate_bitmap(Bitmap* bitmap);
 VALUE C_Bitmap_allocate(VALUE klass);
 VALUE C_Bitmap_initialize(VALUE self, VALUE rb_width, VALUE rb_height, VALUE rb_color);
 VALUE C_Bitmap_set_pixel(VALUE self, VALUE rb_point, VALUE rb_color);
@@ -21,7 +21,7 @@ typedef struct c_zbuffer { int width; int height; double* buffer;
                            int drawn_pixels; int oob_pixels;
                            int occluded_pixels; } ZBuffer;
 
-void C_ZBuffer_deallocate(void* my_struct);
+void deallocate_zbuffer(ZBuffer* zbuffer);
 VALUE C_ZBuffer_allocate(VALUE klass);
 VALUE C_ZBuffer_initialize(VALUE self, VALUE rb_width, VALUE rb_height);
 VALUE C_ZBuffer_set_point(VALUE self, VALUE rb_point);
@@ -30,5 +30,12 @@ VALUE C_ZBuffer_drawn_pixels(VALUE self);
 VALUE C_ZBuffer_oob_pixels(VALUE self);
 VALUE C_ZBuffer_occluded_pixels(VALUE self);
 VALUE C_ZBuffer_should_draw(VALUE self, VALUE rb_point);
+
+//TangentSpaceNormalMap
+typedef struct c_normalmap { int width; int height; Point* buffer; } NormalMap;
+void deallocate_normalmap(NormalMap* normalmap);
+VALUE C_NormalMap_allocate(VALUE klass);
+VALUE C_NormalMap_initialize(VALUE self, VALUE rb_bitmap);
+VALUE C_NormalMap_get_normal(VALUE self, VALUE rb_point);
 
 #endif

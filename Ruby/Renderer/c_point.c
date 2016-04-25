@@ -240,7 +240,7 @@ VALUE C_Point_to_texture(VALUE self, VALUE rb_verts, VALUE rb_size) {
     barycentric_to_cartesian(point, new_point, a, b, c);
     new_point->x = roundf(new_point->x * size->x);
     new_point->y = roundf(new_point->y * size->y);
-    new_point->z = point->z;
+    new_point->z = 0.0;
     return Data_Wrap_Struct(rb_class_of(self), NULL, deallocate_struct, new_point);
 }
 

@@ -43,10 +43,9 @@ inline VALUE bgr_to_rb_color(int32_t bgr) {
     return rb_ary_new3(3, INT2NUM(r), INT2NUM(g), INT2NUM(b));
 }
 
+//C_Bitmap
 void deallocate_bitmap(Bitmap* bitmap) {
-    free(bitmap->buffer);
-    xfree(bitmap);
-    return;
+    free(bitmap->buffer); xfree(bitmap); return;
 }
 
 VALUE C_Bitmap_allocate(VALUE klass) {
@@ -153,11 +152,10 @@ VALUE C_Bitmap_height(VALUE self) {
 
 
 void deallocate_zbuffer(ZBuffer* zbuffer) {
-    free(zbuffer->buffer);
-    xfree(zbuffer);
-    return;
+    free(zbuffer->buffer); xfree(zbuffer); return;
 }
 
+//C_ZBuffer
 VALUE C_ZBuffer_allocate(VALUE klass) {
     ZBuffer* zbuffer; zbuffer = ALLOC(ZBuffer);
     return Data_Wrap_Struct(klass, NULL, deallocate_zbuffer, zbuffer);
@@ -209,4 +207,56 @@ VALUE C_ZBuffer_should_draw(VALUE self, VALUE rb_point) {
 
     zbuffer->occluded_pixels += 1;
     return Qfalse;
+}
+
+//C_TangentSpaceNormalMap
+void deallocate_normalmap(NormalMap* normalmap) {
+    free(normalmap->buffer); xfree(normalmap); return;
+}
+
+VALUE C_NormalMap_allocate(VALUE klass) {
+    NormalMap* normalmap; normalmap = ALLOC(NormalMap);
+    return Data_Wrap_Struct(klass, NULL, deallocate_normalmap, normalmap);
+}
+
+VALUE C_NormalMap_initialize(VALUE self, VALUE rb_bitmap) {
+    NormalMap* normalmap; Data_Get_Struct(self, NormalMap, normalmap);
+    Bitmap* bitmap; Data_Get_Struct(rb_bitmap, Bitmap, bitmap);
+    int width = bitmap->width; int height = bitmap->height;
+    normalmap->width = width; normalmap->height = height;
+
+
+    Point* buffer; buffer = malloc(sizeof(Point)*width*height);
+    normalmap->buffer = buffer;
+
+    int x; int y;
+    int index;
+    int32_t color;
+    int r; int g; int b;
+
+    for(y = 0; y < height; y++) { for(x = 0; x < width; x++) {
+            index = y*width + x;
+            color = bitmap->buffer[index];
+            b = color & 255; color >>= 8;
+            g = color & 255; color >>= 8;
+            r = color & 255;
+            Point* normal; normal = ALLOC(Point);
+            normal->x = (double)(r/127.5) - 1;
+            normal->y = (double)(g/127.5) - 1;
+            normal->z = (double)(b/127.5) - 1;
+            normalize(normal);
+            normalmap->buffer[index] = *normal;
+    } }
+
+    return self;
+}
+
+VALUE C_NormalMap_get_normal(VALUE self, VALUE rb_point) {
+    NormalMap* normalmap; Data_Get_Struct(self, NormalMap, normalmap);
+    Point* point; Data_Get_Struct(rb_point, Point, point);
+
+    Point* normal = &normalmap->buffer[(int)(point->y*normalmap->width + point->x)];
+    Point* result; result = ALLOC(Point);
+    result->x = normal->x; result->y = normal->y; result->z = normal->z;
+    return Data_Wrap_Struct(rb_class_of(rb_point), NULL, deallocate_struct, result);
 }
