@@ -12,11 +12,15 @@ class TangentSpaceNormalMap
             point.y = y; row = []
             while x < width;
                 point.x = x;
-                rgb = bitmap.get_pixel(point);
-                point_x = (rgb[0]/127.5) - 1
-                point_y = (rgb[1]/127.5) - 1
-                point_z = (rgb[2]/127.5) - 1
-                row << Point.new(point_x, point_y, point_z).normalize!
+                color = bitmap.get_pixel(point);
+                b = color & 255; color = color >> 8;
+                g = color & 255; color = color >> 8;
+                r = color & 255;
+                point_x = (r/127.5) - 1
+                point_y = (g/127.5) - 1
+                point_z = (b/127.5) - 1
+                normal = Point.new(point_x, point_y, point_z).normalize!
+                row << normal
                 x += 1;
             end
             x = 0; y += 1;
@@ -45,9 +49,9 @@ class SpecularMap
             point.y = y; row = []
             while x < width;
                 point.x = x;
-                rgb = bitmap.get_pixel(point);
+                color = bitmap.get_pixel(point) & 255;
             #TODO: Figure out what to do here for real instead of cargo-culting
-                row << clamp((1-rgb[0]/255)*100, 1, 24)
+                row << clamp((1-color/255)*100, 1, 24)
                 x += 1;
             end
             x = 0; y += 1;

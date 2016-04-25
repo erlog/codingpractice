@@ -63,7 +63,7 @@ VALUE C_Bitmap_initialize(VALUE self, VALUE rb_width, VALUE rb_height, VALUE rb_
     int32_t color = rb_color_to_bgr(rb_color);
     int x; int y;
     for(y = 0; y < height; y++) { for(x = 0; x < width; x++) {
-            buffer[y*height + x] = color;
+            buffer[y*width + x] = color;
     } }
 
     return self;
