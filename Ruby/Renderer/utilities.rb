@@ -9,10 +9,12 @@ def write_bitmap(bitmap)
         bitmap.writetofile("output/renderer - " + Time.now.to_s[0..-7] + ".bmp")
 end
 
-def clamp(value, min, max)
-    return min if value < min
-    return max if value > max
-    return value
+def load_object(object_name)
+    object = Wavefront.from_file("objects/#{object_name}/object.obj")
+    texture = load_texture("objects/#{object_name}/diffuse.png")
+    normalmap = NormalMap.new(load_texture("objects/#{object_name}/nm_tangent.png"))
+    specmap = SpecularMap.new(load_texture("objects/#{object_name}/spec.png"))
+    return [object, texture, normalmap, specmap]
 end
 
 def load_texture(filename)
