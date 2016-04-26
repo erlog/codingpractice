@@ -12,6 +12,7 @@ inline void clamp_int(int* value, int min, int max) {
     return;
 }
 
+
 VALUE color_multiply(VALUE self, VALUE rb_color_int, VALUE rb_factor) {
     int color = NUM2INT(rb_color_int);
     double factor = NUM2DBL(rb_factor);
