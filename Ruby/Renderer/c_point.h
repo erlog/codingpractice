@@ -1,19 +1,27 @@
 #ifndef C_POINT_H
 #define C_POINT_H
 
-//Ruby Class C Struct
-typedef struct c_point { double x; double y; double z; double q;} Point;
-
 //Generic Functions
 void print_point(Point* point);
+Point* new_point(double x, double y, double z);
 int line_length(Point* src, Point* dest);
+void apply_matrix(Point* point, double* m);
+void point_to_screen(Point* point, Point* center);
 void lerp(Point* src, Point* dest, Point* result, double amt);
 Point* cross_product(Point* point_a, Point* point_b);
 double scalar_product(Point* point_a, Point* point_b);
 void set_point(Point* point, double x, double y, double z);
 void normalize(Point* point);
+void convert_tangent_normal(Point* tangent_normal, Point* barycentric,
+            Point* result, double* matrix, Vertex* a, Vertex* b, Vertex* c);
 void cartesian_to_barycentric(Point* cart, Point* result,
                                                 Point* a, Point* b, Point* c);
+void barycentric_to_cartesian(Point* bary, Point* result,
+                                                Point* a, Point* b, Point* c);
+void Point_clone(Point* point, Point* new_point);
+double compute_reflection(Point* normal, Point* light_direction,
+                        Point* camera_direction, double specular_power);
+void to_barycentric_clip(Point* bary, Point* a_v, Point* b_v, Point* c_v);
 
 //Class Methods
 VALUE C_Point_allocate(VALUE klass);

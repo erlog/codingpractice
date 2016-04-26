@@ -12,9 +12,7 @@ inline void clamp_int(int* value, int min, int max) {
     return;
 }
 
-VALUE color_multiply(VALUE self, VALUE rb_color_int, VALUE rb_factor) {
-    int color = NUM2INT(rb_color_int);
-    double factor = NUM2DBL(rb_factor);
+inline int32_t color_multiply(int32_t color, double factor) {
     int b = color & 255; color >>= 8;
     int g = color & 255; color >>= 8;
     int r = color & 255; color = 0xFFFFFFFF;
@@ -22,7 +20,38 @@ VALUE color_multiply(VALUE self, VALUE rb_color_int, VALUE rb_factor) {
     clamp_int(&r, 0, 255); clamp_int(&g, 0, 255); clamp_int(&b, 0, 255);
     int32_t output = 0; r <<= 16; g <<= 8;
     output += (int32_t)r; output += (int32_t)g; output += (int32_t)b;
-    return INT2NUM((int)output);
+    return output;
+}
+
+VALUE C_color_multiply(VALUE self, VALUE rb_color_int, VALUE rb_factor) {
+    int32_t color = (int32_t)NUM2INT(rb_color_int);
+    double factor = NUM2DBL(rb_factor);
+    return INT2NUM((int)color_multiply(color, factor));
+}
+
+int32_t bitmap_get_pixel(Bitmap* bitmap, Point* point) {
+    return bitmap->buffer[(int)point->y*bitmap->width + (int)point->x];
+}
+
+void bitmap_set_pixel(Bitmap* bitmap, Point* point, int32_t color) {
+    bitmap->buffer[(int)point->y*bitmap->width + (int)point->x] = color;
+}
+
+bool zbuffer_should_draw(ZBuffer* zbuffer, Point* point) {
+    if( (point->x < 0) || (point->x >= zbuffer->width) ||
+        (point->y < 0) || (point->y >= zbuffer->height) ) {
+        zbuffer->oob_pixels += 1;
+        return false; }
+
+    double value = zbuffer->buffer[(int)point->y*zbuffer->width + (int)point->x];
+    if(point->z > value) {
+        zbuffer->buffer[(int)point->y*zbuffer->width + (int)point->x] = point->z;
+        zbuffer->drawn_pixels += 1;
+        return true;
+    }
+
+    zbuffer->occluded_pixels += 1;
+    return false;
 }
 
 inline int32_t rb_color_to_bgr(VALUE rb_color) {
@@ -32,6 +61,12 @@ inline int32_t rb_color_to_bgr(VALUE rb_color) {
     clamp_int(&r, 0, 255); clamp_int(&g, 0, 255); clamp_int(&b, 0, 255);
     int32_t output = 0;
     r <<= 16; g <<= 8;
+    output += (int32_t)r; output += (int32_t)g; output += (int32_t)b;
+    return output;
+}
+
+inline int32_t color_to_bgr(int r, int g, int b) {
+    int32_t output = 0; r <<= 16; g <<= 8;
     output += (int32_t)r; output += (int32_t)g; output += (int32_t)b;
     return output;
 }
@@ -127,7 +162,7 @@ VALUE C_Bitmap_set_pixel(VALUE self, VALUE rb_point, VALUE rb_color) {
     Bitmap* bitmap; Data_Get_Struct(self, Bitmap, bitmap);
     Point* point; Data_Get_Struct(rb_point, Point, point);
     int32_t color = (int32_t)NUM2INT(rb_color);
-    bitmap->buffer[(int)point->y*bitmap->width + (int)point->x] = color;
+    bitmap_set_pixel(bitmap, point, color);
     return self;
 }
 VALUE C_Bitmap_get_pixel(VALUE self, VALUE rb_point) {
@@ -192,20 +227,7 @@ VALUE C_ZBuffer_occluded_pixels(VALUE self) {
 VALUE C_ZBuffer_should_draw(VALUE self, VALUE rb_point) {
     ZBuffer* zbuffer; Data_Get_Struct(self, ZBuffer, zbuffer);
     Point* point; Data_Get_Struct(rb_point, Point, point);
-
-    if( (point->x < 0) || (point->x >= zbuffer->width) ||
-        (point->y < 0) || (point->y >= zbuffer->height) ) {
-        zbuffer->oob_pixels += 1;
-        return Qfalse; }
-
-    double value = zbuffer->buffer[(int)point->y*zbuffer->width + (int)point->x];
-    if(point->z > value) {
-        zbuffer->buffer[(int)point->y*zbuffer->width + (int)point->x] = point->z;
-        zbuffer->drawn_pixels += 1;
-        return Qtrue;
-    }
-
-    zbuffer->occluded_pixels += 1;
+    if(zbuffer_should_draw(zbuffer, point)) { return Qtrue; }
     return Qfalse;
 }
 
@@ -251,11 +273,16 @@ VALUE C_NormalMap_initialize(VALUE self, VALUE rb_bitmap) {
     return self;
 }
 
+inline Point* get_normal(NormalMap* normalmap, Point* point) {
+    return &normalmap->buffer[(int)(point->y*normalmap->width + point->x)];
+}
+
 VALUE C_NormalMap_get_normal(VALUE self, VALUE rb_point) {
     NormalMap* normalmap; Data_Get_Struct(self, NormalMap, normalmap);
     Point* point; Data_Get_Struct(rb_point, Point, point);
 
-    Point* normal = &normalmap->buffer[(int)(point->y*normalmap->width + point->x)];
+    Point* normal = get_normal(normalmap, point);
+    //return a copy instead of the actual
     Point* result; result = ALLOC(Point);
     result->x = normal->x; result->y = normal->y; result->z = normal->z;
     return Data_Wrap_Struct(rb_class_of(rb_point), NULL, deallocate_struct, result);
@@ -295,10 +322,13 @@ VALUE C_SpecularMap_initialize(VALUE self, VALUE rb_bitmap) {
     return self;
 }
 
+inline double get_specular(SpecularMap* specularmap, Point* point) {
+    return specularmap->buffer[(int)point->y*specularmap->width + (int)point->x];
+}
+
 VALUE C_SpecularMap_get_specular(VALUE self, VALUE rb_point) {
     SpecularMap* specularmap; Data_Get_Struct(self, SpecularMap, specularmap);
     Point* point; Data_Get_Struct(rb_point, Point, point);
-    double spec = specularmap->buffer[(int)point->y*specularmap->width +
-                                                                (int)point->x];
+    double spec = get_specular(specularmap, point);
     return DBL2NUM(spec);
 }

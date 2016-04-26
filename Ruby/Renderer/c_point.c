@@ -1,8 +1,84 @@
 #include "ruby.h"
 #include "stdbool.h"
 
-#include "c_point.h"
 #include "c_optimization_main.h"
+#include "c_point.h"
+
+Point* new_point(double x, double y, double z) {
+    Point* result; result = ALLOC(Point);
+    result->x = x; result->y = y; result->z = z;
+    return result;
+}
+
+void to_barycentric_clip(Point* bary, Point* a_v, Point* b_v, Point* c_v) {
+    double x = bary->x/a_v->q;
+    double y = bary->y/b_v->q;
+    double z = bary->z/c_v->q;
+    double total = x + y + z;
+    bary->x = x/total;
+    bary->y = y/total;
+    bary->z = z/total;
+    return;
+}
+
+double compute_reflection(Point* normal, Point* light_direction,
+                        Point* camera_direction, double specular_power) {
+    Point* new_point; new_point = ALLOC(Point);
+    double factor = scalar_product(normal, light_direction) * -2;
+    new_point->x = (normal->x * factor) + normal->x;
+    new_point->y = (normal->y * factor) + normal->y;
+    new_point->z = (normal->z * factor) + normal->z;
+    normalize(new_point);
+    double reflectivity = clamp((scalar_product(new_point, camera_direction)*-1), 0.0, 1.0);
+    xfree(new_point);
+    return pow(reflectivity, specular_power);
+}
+
+void convert_tangent_normal(Point* tangent_normal, Point* barycentric,
+            Point* result, double* matrix, Vertex* a, Vertex* b, Vertex* c) {
+    Point* tangent; tangent = ALLOC(Point);
+    Point* bitangent; bitangent = ALLOC(Point);
+    Point* normal; normal = ALLOC(Point);
+
+    barycentric_to_cartesian(barycentric, tangent,
+                                        a->tangent, b->tangent, c->tangent);
+    barycentric_to_cartesian(barycentric, bitangent,
+                                    a->bitangent, b->bitangent, c->bitangent);
+    barycentric_to_cartesian(barycentric, normal,
+                                        a->normal, b->normal, c->normal);
+    result->x = (tangent->x * tangent_normal->x) +
+                (bitangent->x * tangent_normal->y) +
+                (normal->x * tangent_normal->z);
+    result->y = (tangent->y * tangent_normal->x) +
+                (bitangent->y * tangent_normal->y) +
+                (normal->y * tangent_normal->z);
+    result->z = (tangent->z * tangent_normal->x) +
+                (bitangent->z * tangent_normal->y) +
+                (normal->z * tangent_normal->z);
+
+    apply_matrix(result, matrix);
+    normalize(result);
+
+    xfree(tangent);
+    xfree(bitangent);
+    xfree(normal);
+}
+
+void point_to_screen(Point* point, Point* center) {
+    point->x = roundf(center->x + (point->x * center->y));
+    point->y = roundf(center->y + (point->y * center->y));
+    point->z = center->z + (point->z * center->z);
+    return;
+}
+
+void point_to_texture(Point* point, Point* result, Point* texture_size,
+                                                Point* a, Point* b, Point* c) {
+    barycentric_to_cartesian(point, result, a, b, c);
+    result->x = roundf(result->x * texture_size->x);
+    result->y = roundf(result->y * texture_size->y);
+    result->z = 0.0;
+    return;
+}
 
 void set_point(Point* point, double x, double y, double z) {
     point->x = x; point->y = y; point->z = z;
@@ -22,7 +98,7 @@ void lerp(Point* src, Point* dest, Point* result, double amt) {
 }
 
 void print_point(Point* point) {
-    printf("C_Point: PointObject.new(%f, %f, %f)\r\n", point->x, point->y, point->z);
+    printf("C_Point: Point(%f, %f, %f, %f)\r\n", point->x, point->y, point->z, point->q);
     return;
 }
 
@@ -96,10 +172,15 @@ VALUE C_Point_allocate(VALUE klass) {
     return Data_Wrap_Struct(klass, NULL, deallocate_struct, point);
 }
 
+void Point_clone(Point* point, Point* new_point) {
+    new_point->x = point->x; new_point->y = point->y; new_point->z = point->z;
+    return;
+}
+
 VALUE C_Point_dup(VALUE self) {
     Point* point; Data_Get_Struct(self, Point, point);
     Point* new_point; new_point = ALLOC(Point);
-    new_point->x = point->x; new_point->y = point->y; new_point->z = point->z;
+    Point_clone(point, new_point);
     return Data_Wrap_Struct(rb_class_of(self), NULL, deallocate_struct, new_point);
 }
 
@@ -186,9 +267,7 @@ VALUE C_Point_to_barycentric_clip(VALUE self, VALUE rb_verts) {
     Data_Get_Struct(rb_ary_entry(rb_verts, 1), Point, b);
     Data_Get_Struct(rb_ary_entry(rb_verts, 2), Point, c);
 
-    double x = bary->x/a->q; double y = bary->y/b->q; double z = bary->z/c->q;
-    double total = x + y + z;
-    bary->x = x/total; bary->y = y/total; bary->z = z/total;
+    to_barycentric_clip(bary, a, b, c);
     return self;
 }
 
@@ -222,9 +301,7 @@ VALUE C_Point_to_screen(VALUE self, VALUE rb_center) {
     Point* point; Data_Get_Struct(self, Point, point);
     Point* center; Data_Get_Struct(rb_center, Point, center);
     //using center->y both times gives us horiz+ rendering instead of vert-
-    point->x = roundf(center->x + (point->x * center->y));
-    point->y = roundf(center->y + (point->y * center->y));
-    point->z = center->z + (point->z * center->z);
+    point_to_screen(point, center);
     return self;
 }
 
@@ -237,10 +314,7 @@ VALUE C_Point_to_texture(VALUE self, VALUE rb_verts, VALUE rb_size) {
     Data_Get_Struct(rb_ary_entry(rb_verts, 2), Point, c);
 
     Point* new_point; new_point = ALLOC(Point);
-    barycentric_to_cartesian(point, new_point, a, b, c);
-    new_point->x = roundf(new_point->x * size->x);
-    new_point->y = roundf(new_point->y * size->y);
-    new_point->z = 0.0;
+    point_to_texture(point, new_point, size, a, b, c);
     return Data_Wrap_Struct(rb_class_of(self), NULL, deallocate_struct, new_point);
 }
 
@@ -323,16 +397,11 @@ VALUE C_Point_compute_reflection(VALUE self, VALUE rb_light_direction,
     Point* light_direction; Data_Get_Struct(rb_light_direction, Point, light_direction);
     Point* camera_direction; Data_Get_Struct(rb_camera_direction, Point, camera_direction);
     double specular_power = NUM2DBL(rb_specular_power);
-    Point* new_point; new_point = ALLOC(Point);
 
+    double reflectivity =
+    compute_reflection(point, light_direction, camera_direction, specular_power);
 
-    double factor = scalar_product(point, light_direction) * -2;
-    new_point->x = (point->x * factor) + light_direction->x;
-    new_point->y = (point->y * factor) + light_direction->y;
-    new_point->z = (point->z * factor) + light_direction->z;
-    normalize(new_point);
-    double reflectivity = clamp((scalar_product(new_point, camera_direction)*-1), 0.0, 1.0);
-    return DBL2NUM(pow(reflectivity, specular_power));
+    return DBL2NUM(reflectivity);
 }
 
 VALUE C_Point_equals(VALUE self, VALUE rb_other) {

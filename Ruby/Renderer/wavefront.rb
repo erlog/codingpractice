@@ -1,3 +1,12 @@
+class Rb_Vertex
+    #Shim class to load indexed vertex information in before processing and
+    #sending to C_Vertex TODO: factor this out to an array maybe
+    attr_accessor :v; attr_accessor :uv; attr_accessor :normal;
+    def initialize(geometric_vertex, texture_coordinate, normal)
+        @v = geometric_vertex; @uv = texture_coordinate; @normal = normal;
+    end
+end
+
 class Wavefront
     attr_reader :faces
 
@@ -11,7 +20,13 @@ class Wavefront
         #compute tangents/bitangents for tangent space normal mapping
         for indexed_face in faces
             vertex_indices = indexed_face.map{ |vertex| vertex.v }
-            face = self.build_face(indexed_face)
+            face = indexed_face.map{ |vertex|
+                    vertex = vertex.dup
+                    vertex.v = @vertices[vertex.v]
+                    vertex.uv = @uvs[vertex.uv]
+                    vertex.normal = @normals[vertex.normal]
+                    vertex
+                    }
             tangent, bitangent = compute_face_tb(face)
             for index in vertex_indices
                 @tangents[index] << tangent
@@ -23,6 +38,8 @@ class Wavefront
         #average face tangent/bitangets to get t/b at individual vertices
         @tangents.map!{|group| group.inject(&:+).scale_by_factor(1.0/group.length) }
         @bitangents.map!{|group| group.inject(&:+).scale_by_factor(1.0/group.length) }
+
+        #Send everything over to C
         @faces.map!{ |indexed_face| self.build_face(indexed_face) }
     end
 
@@ -36,8 +53,7 @@ class Wavefront
         normal = @normals[vertex.normal]
         tangent = @tangents[vertex.v]
         bitangent = @bitangents[vertex.v]
-
-        return Vertex.new(v, uv, normal, tangent, bitangent)
+        return C_Vertex.new(v, uv, normal, tangent, bitangent)
     end
 
 	def self.from_file(file_path)
@@ -61,39 +77,17 @@ class Wavefront
 
             elsif parts[0] == "f"
                 v, vt, vn = parts[1].split("/").map{ |index| index.to_i - 1}
-                a = Vertex.new(v, vt, vn)
+                a = Rb_Vertex.new(v, vt, vn)
                 v, vt, vn = parts[2].split("/").map{ |index| index.to_i - 1}
-                b = Vertex.new(v, vt, vn)
+                b = Rb_Vertex.new(v, vt, vn)
                 v, vt, vn = parts[3].split("/").map{ |index| index.to_i - 1}
-                c = Vertex.new(v, vt, vn)
+                c = Rb_Vertex.new(v, vt, vn)
                 faces << [a, b, c]
             end
         end
 
         return Wavefront.new(faces, vertices, uvs, normals)
     end
-end
-
-class Vertex
-    attr_accessor :v
-    attr_reader :uv
-    attr_reader :normal
-    attr_reader :tangent
-    attr_reader :bitangent
-
-    def initialize(geometric_vertex, texture_coordinate, normal, bitangent = nil, tangent = nil)
-        @v = geometric_vertex
-        @uv = texture_coordinate
-        @normal = normal
-        @tangent = tangent
-        @bitangent = bitangent
-        @screen_v = nil
-    end
-end
-
-def compute_face_normal(face)
-    a, b, c = face
-    return ((b.v - a.v).cross_product(c.v - a.v)).normalize!
 end
 
 def face_to_screen(face, view_matrix, screen_center)
@@ -104,3 +98,9 @@ def face_to_screen(face, view_matrix, screen_center)
     face = face.sort_by(&:v)
     return face
 end
+
+def compute_face_normal(face)
+    a, b, c = face
+    return ((b.v - a.v).cross_product(c.v - a.v)).normalize!
+end
+
