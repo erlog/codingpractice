@@ -6,6 +6,67 @@
 #include "c_point.h"
 #include "c_bitmap.h"
 
+bool should_draw_face(Point* a_v, Point* b_v, Point* c_v,
+                            double* normal_matrix, Point* camera_direction) {
+    Point* left; left = ALLOC(Point);
+    left->x = b_v->x - a_v->x;
+    left->y = b_v->y - a_v->y;
+    left->z = b_v->z - a_v->z;
+
+    Point* right; right = ALLOC(Point);
+    right->x = c_v->x - a_v->x;
+    right->y = c_v->y - a_v->y;
+    right->z = c_v->z - a_v->z;
+
+    Point* normal = cross_product(left, right); normalize(normal);
+    apply_matrix(normal, normal_matrix);
+    double result = scalar_product(normal, camera_direction);
+
+    xfree(left); xfree(right); xfree(normal);
+    if(result < 0) { return true; } //this means the polygon isn't facing us
+    return false;
+}
+
+void sort_vertices(Vertex** a, Vertex** b, Vertex** c) {
+    Vertex* extra;
+    if((*c)->screen_v->y > (*b)->screen_v->y) {
+        extra = *b; *b = *c; *c = extra;
+    }
+    if(((*c)->screen_v->y == (*b)->screen_v->y) &&
+                                    ((*c)->screen_v->x < (*b)->screen_v->x)) {
+        extra = *b; *b = *c; *c = extra;
+    }
+    if((*b)->screen_v->y > (*a)->screen_v->y) {
+        extra = *a; *a = *b; *b = extra;
+    }
+    if(((*b)->screen_v->y == (*a)->screen_v->y) &&
+                                    ((*b)->screen_v->x < (*a)->screen_v->x)) {
+        extra = *a; *a = *b; *b = extra;
+    }
+    if((*c)->screen_v->y > (*b)->screen_v->y) {
+        extra = *b; *b = *c; *c = extra;
+    }
+    if(((*c)->screen_v->y == (*b)->screen_v->y) &&
+                                    ((*c)->screen_v->x < (*b)->screen_v->x)) {
+        extra = *b; *b = *c; *c = extra;
+    }
+    return;
+}
+
+inline void face_to_screen(Vertex* a, Vertex* b, Vertex* c,
+                                double* view_matrix, Point* screen_center) {
+    Point_clone(a->v, a->screen_v);
+    Point_clone(b->v, b->screen_v);
+    Point_clone(c->v, c->screen_v);
+    apply_matrix(a->screen_v, view_matrix);
+    apply_matrix(b->screen_v, view_matrix);
+    apply_matrix(c->screen_v, view_matrix);
+    point_to_screen(a->screen_v, screen_center);
+    point_to_screen(b->screen_v, screen_center);
+    point_to_screen(c->screen_v, screen_center);
+    return;
+}
+
 VALUE render_model(VALUE self, VALUE rb_faces,
                 VALUE rb_view_matrix, VALUE rb_normal_matrix,
                 VALUE rb_camera_direction, VALUE rb_light_direction,
@@ -13,61 +74,90 @@ VALUE render_model(VALUE self, VALUE rb_faces,
                 VALUE rb_texture, VALUE rb_normalmap, VALUE rb_specmap) {
 
     Bitmap* bitmap; Data_Get_Struct(rb_bitmap, Bitmap, bitmap);
-    Bitmap* texture; Data_Get_Struct(rb_bitmap, Bitmap, bitmap);
+    Bitmap* texture; Data_Get_Struct(rb_texture, Bitmap, texture);
+    ZBuffer* zbuffer; Data_Get_Struct(rb_zbuffer, ZBuffer, zbuffer);
+    NormalMap* normalmap; Data_Get_Struct(rb_normalmap, NormalMap, normalmap);
+    SpecularMap* specmap; Data_Get_Struct(rb_specmap, SpecularMap, specmap);
 
-    Point* screen_center; screen_center = ALLOC(Point);
-    screen_center->x = (double)bitmap.width/2;
-    screen_center->y = (double)bitmap.height/2;
-    screen_center->z = 255.0;
+    Matrix* matrix_struct;
+    Data_Get_Struct(rb_view_matrix, Matrix, matrix_struct);
+    double* view_matrix = matrix_struct->m;
+    Data_Get_Struct(rb_normal_matrix, Matrix, matrix_struct);
+    double* normal_matrix = matrix_struct->m;
 
-    Point* texture_size; texture_size = ALLOC(Point);
-    texture_size->x = (double)texture.width - 1;
-    texture_size->y = (double)texture.height - 1;
-    texture_size->z = 0.0;
+    Point* camera_direction; Data_Get_Struct(rb_camera_direction, Point, camera_direction);
+    Point* light_direction; Data_Get_Struct(rb_light_direction, Point, light_direction);
+
+    Point* screen_center =
+        new_point((double)(bitmap->width/2),(double)(bitmap->height/2), 255.0);
+    Point* texture_size =
+        new_point((double)(texture->width-1),(double)(texture->height-1), 0.0);
 
 
+    int number_of_faces = RARRAY_LEN(rb_faces);
+    int drawn_faces = 0;
+    int number_of_points;
+    int face_i; int point_i;
+    int32_t color = color_to_bgr(255, 255, 255);
+    VALUE face;
+    Vertex* a; Vertex* b; Vertex* c;
+    Point* bary;
+    Point* screen_coord; screen_coord = ALLOC(Point);
+    Point* texture_coord; texture_coord = ALLOC(Point);
+    Point* tangent_normal;
+    Point* normal; normal = ALLOC(Point);
+    Point* point_list;
+    double diffuse_intensity;
+    double specular_power;
+    double reflectivity;
+    double factor;
+
+    for(face_i = 0; face_i < number_of_faces; face_i++) {
+        face = rb_ary_entry(rb_faces, face_i);
+        Data_Get_Struct(rb_ary_entry(face, 0), Vertex, a);
+        Data_Get_Struct(rb_ary_entry(face, 1), Vertex, b);
+        Data_Get_Struct(rb_ary_entry(face, 2), Vertex, c);
+        if(should_draw_face(a->v, b->v, c->v, normal_matrix,
+                                                        camera_direction)) {
+            drawn_faces++;
+            //project face to screen
+            face_to_screen(a, b, c, view_matrix, screen_center);
+            sort_vertices(&a, &b, &c);
+
+            number_of_points = triangle(&point_list, a->screen_v,
+                                                    b->screen_v, c->screen_v);
+            for(point_i = 0; point_i < number_of_points; point_i++) {
+                bary = &point_list[point_i];
+                barycentric_to_cartesian(bary, screen_coord, a->screen_v,
+                                                    b->screen_v, c->screen_v);
+                screen_coord->x = roundf(screen_coord->x);
+                screen_coord->y = roundf(screen_coord->y);
+                //convert to clip coordinates
+                to_barycentric_clip(bary, a->screen_v, b->screen_v, c->screen_v);
+
+                if(zbuffer_should_draw(zbuffer, screen_coord)) {
+                    point_to_texture(bary, texture_coord, texture_size,
+                                                        a->uv, b->uv, c->uv);
+                    //compute diffuse from tangent normal
+                    tangent_normal = get_normal(normalmap, texture_coord);
+                    convert_tangent_normal(tangent_normal, bary,
+                                            normal, normal_matrix, a, b, c);
+                    diffuse_intensity = scalar_product(normal,
+                                                        light_direction) * -1;
+                    //compute specularity
+                    specular_power = get_specular(specmap, texture_coord);
+                    reflectivity = compute_reflection(normal, light_direction,
+                                            camera_direction, specular_power);
+                    //light our pixel with the information
+                    color = bitmap_get_pixel(texture, texture_coord);
+                    factor = 0.05 + 0.6*reflectivity + 0.75*diffuse_intensity;
+                    color = color_multiply(color, factor);
+                    bitmap_set_pixel(bitmap, screen_coord, color);
+                }
+            }
+
+            free(point_list);
+        }
+    }
+    return INT2NUM(drawn_faces);
 }
-
-/**
-def render_model_backup(faces, view_matrix, normal_matrix,
-                    camera_direction, light_direction,
-                    bitmap, z_buffer, texture, normalmap, specmap)
-
-    screen_center = Point.new((bitmap.width/2), (bitmap.height/2), 255)
-    texture_size = Point.new(texture.width - 1, texture.height - 1, 0)
-
-    faces.each do |face|
-        normal = compute_face_normal(face).apply_matrix!(normal_matrix).scalar_product(camera_direction)
-        next if normal > 0 #bail if the polygon isn't facing us
-
-        face = face_to_screen(face, view_matrix, screen_center)
-        verts = face.map(&:v)
-        uvs = face.map(&:uv)
-        normals = face.map(&:normal)
-        tangents = face.map(&:tangent)
-        bitangents = face.map(&:bitangent)
-
-        triangle(verts){ |barycentric|
-            #get the screen coordinate
-            screen_coord = barycentric.to_cartesian_screen(verts)
-            if z_buffer.should_draw?(screen_coord)
-                barycentric.to_barycentric_clip!(verts) #for perspective-aware uv interpolation
-                #get the color from the texture
-                texture_coord = barycentric.to_texture(uvs, texture_size)
-                color = texture.get_pixel(texture_coord)
-                #compute diffuse light intensity from tangent normal
-                tangent_normal = normalmap.get_normal(texture_coord)
-                normal = barycentric.to_normal(normal_matrix, tangent_normal, tangents, bitangents, normals)
-                diffuse_intensity = normal.scalar_product(light_direction) * -1
-                #compute specular highlight intensity
-                specular_power = specmap.get_specular(texture_coord)
-                reflection_intensity = normal.compute_reflection(light_direction,
-                                            camera_direction, specular_power)
-                #combine lighting information for shading
-                factor = 0.05 + 0.6*reflection_intensity + 0.75*diffuse_intensity
-                shaded_color = color_multiply(color, factor)
-                #finally write our pixel
-                bitmap.set_pixel(screen_coord, shaded_color)
-            end
-
-**/

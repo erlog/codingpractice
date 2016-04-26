@@ -4,11 +4,13 @@
 #include "c_point.h"
 #include "c_drawing.h"
 #include "c_bitmap.h"
+#include "c_render.h"
 
 //Ruby Modules and Classes
 VALUE C_Optimization = Qnil;
 VALUE C_Point = Qnil;
 VALUE C_Matrix = Qnil;
+VALUE C_Vertex = Qnil;
 VALUE C_Bitmap = Qnil;
 VALUE C_ZBuffer = Qnil;
 VALUE C_NormalMap = Qnil;
@@ -38,6 +40,56 @@ VALUE C_Matrix_initialize(VALUE self, VALUE rb_array) {
     return self;
 }
 
+VALUE C_Vertex_allocate(VALUE klass) {
+    //TODO: I think these might not be being deallocated correctly
+    Vertex* vertex; vertex = ALLOC(Vertex);
+    return Data_Wrap_Struct(klass, NULL, deallocate_struct, vertex);
+}
+
+VALUE C_Vertex_initialize(VALUE self, VALUE rb_v, VALUE rb_uv,
+                       VALUE rb_normal, VALUE rb_tangent, VALUE rb_bitangent) {
+    Vertex* vertex; Data_Get_Struct(self, Vertex, vertex);
+    Data_Get_Struct(rb_v, Point, vertex->v);
+    Data_Get_Struct(rb_uv, Point, vertex->uv);
+    Data_Get_Struct(rb_normal, Point, vertex->normal);
+    Data_Get_Struct(rb_tangent, Point, vertex->tangent);
+    Data_Get_Struct(rb_bitangent, Point, vertex->bitangent);
+
+    //initialize screen_v
+    Point* new_point; new_point = ALLOC(Point); set_point(new_point, 0.0, 0.0, 0.0);
+    vertex->screen_v = new_point;
+    return self;
+}
+VALUE C_Vertex_v(VALUE self) {
+    Vertex* vertex; Data_Get_Struct(self, Vertex, vertex);
+    return Data_Wrap_Struct(C_Point, NULL, deallocate_struct, vertex->v);
+}
+VALUE C_Vertex_uv(VALUE self) {
+    Vertex* vertex; Data_Get_Struct(self, Vertex, vertex);
+    return Data_Wrap_Struct(C_Point, NULL, deallocate_struct, vertex->uv);
+}
+VALUE C_Vertex_normal(VALUE self) {
+    Vertex* vertex; Data_Get_Struct(self, Vertex, vertex);
+    return Data_Wrap_Struct(C_Point, NULL, deallocate_struct, vertex->normal);
+}
+VALUE C_Vertex_tangent(VALUE self) {
+    Vertex* vertex; Data_Get_Struct(self, Vertex, vertex);
+    return Data_Wrap_Struct(C_Point, NULL, deallocate_struct, vertex->tangent);
+}
+VALUE C_Vertex_bitangent(VALUE self) {
+    Vertex* vertex; Data_Get_Struct(self, Vertex, vertex);
+    return Data_Wrap_Struct(C_Point, NULL, deallocate_struct, vertex->bitangent);
+}
+
+VALUE C_Vertex_set_v(VALUE self, VALUE rb_point) {
+    Vertex* vertex; Data_Get_Struct(self, Vertex, vertex);
+    Point* point; Data_Get_Struct(rb_point, Point, point);
+    vertex->v->x = point->x;
+    vertex->v->y = point->y;
+    vertex->v->z = point->z;
+    return self;
+}
+
 void sort_doubles(double* a, double* b) {
     double backup = *a;
     if (*a > *b) { *a = *b; *b = backup; }
@@ -53,7 +105,8 @@ double clamp(double value, double min, double max) {
 void Init_c_optimization() {
     C_Optimization = rb_define_module("C_Optimization");
     rb_define_module_function(C_Optimization, "triangle", C_triangle, 1);
-    rb_define_module_function(C_Optimization, "color_multiply", color_multiply, 2);
+    rb_define_module_function(C_Optimization, "color_multiply", C_color_multiply, 2);
+    rb_define_module_function(C_Optimization, "render_model", render_model, 10);
 
     C_Bitmap = rb_define_class_under(C_Optimization, "Bitmap", rb_cObject);
     rb_define_alloc_func(C_Bitmap, C_Bitmap_allocate);
@@ -86,6 +139,16 @@ void Init_c_optimization() {
     C_Matrix = rb_define_class_under(C_Optimization, "C_Matrix", rb_cObject);
     rb_define_alloc_func(C_Matrix, C_Matrix_allocate);
     rb_define_method(C_Matrix, "initialize", C_Matrix_initialize, 1);
+
+    C_Vertex = rb_define_class_under(C_Optimization, "C_Vertex", rb_cObject);
+    rb_define_alloc_func(C_Vertex, C_Vertex_allocate);
+    rb_define_method(C_Vertex, "initialize", C_Vertex_initialize, 5);
+    rb_define_method(C_Vertex, "v", C_Vertex_v, 0);
+    rb_define_method(C_Vertex, "v=", C_Vertex_set_v, 1);
+    rb_define_method(C_Vertex, "uv", C_Vertex_uv, 0);
+    rb_define_method(C_Vertex, "normal", C_Vertex_normal, 0);
+    rb_define_method(C_Vertex, "bitangent", C_Vertex_tangent, 0);
+    rb_define_method(C_Vertex, "tangent", C_Vertex_bitangent, 0);
 
     C_Point = rb_define_class_under(C_Optimization, "Point", rb_cObject);
     rb_define_alloc_func(C_Point, C_Point_allocate);
