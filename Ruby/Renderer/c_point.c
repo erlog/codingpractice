@@ -2,6 +2,7 @@
 #include "stdbool.h"
 
 #include "c_optimization_main.h"
+#include "c_wavefront.h"
 #include "c_point.h"
 
 Point* new_point(double x, double y, double z) {

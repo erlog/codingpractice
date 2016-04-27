@@ -23,11 +23,6 @@ VALUE C_Bitmap_height(VALUE self);
 int32_t bitmap_get_pixel(Bitmap* bitmap, Point* point);
 void bitmap_set_pixel(Bitmap* bitmap, Point* point, int32_t color);
 
-//ZBuffer class with some stuff included for debug purposes
-typedef struct c_zbuffer { int width; int height; double* buffer;
-                           int drawn_pixels; int oob_pixels;
-                           int occluded_pixels; } ZBuffer;
-
 void deallocate_zbuffer(ZBuffer* zbuffer);
 VALUE C_ZBuffer_allocate(VALUE klass);
 VALUE C_ZBuffer_initialize(VALUE self, VALUE rb_width, VALUE rb_height);

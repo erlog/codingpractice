@@ -1,6 +1,15 @@
 #ifndef C_OPTIMIZATION_MAIN_H
 #define C_OPTIMIZATION_MAIN_H
 
+//Project Structs
+typedef struct c_point { double x; double y; double z; double q;} Point;
+typedef struct c_matrix { double m[16]; } Matrix;
+typedef struct c_vertex { Point* v; Point* screen_v; Point* uv;
+                    Point* normal; Point* tangent; Point* bitangent;} Vertex;
+typedef struct c_zbuffer { int width; int height; double* buffer;
+                           int drawn_pixels; int oob_pixels;
+                           int occluded_pixels; } ZBuffer;
+
 //Ruby Modules and Classes
 extern VALUE C_Optimization;
 extern VALUE C_Point;
@@ -22,10 +31,5 @@ double clamp(double value, double min, double max);
 //Generic Class Methods
 void deallocate_struct(void* my_struct);
 
-//Structs
-typedef struct c_matrix { double m[16]; } Matrix;
-typedef struct c_point { double x; double y; double z; double q;} Point;
-typedef struct c_vertex { Point* v; Point* screen_v; Point* uv;
-                    Point* normal; Point* tangent; Point* bitangent;} Vertex;
 
 #endif
