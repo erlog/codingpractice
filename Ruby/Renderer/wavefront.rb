@@ -1,6 +1,6 @@
-class Rb_Vertex
+class Indexed_Vertex
     #Shim class to load indexed vertex information in before processing and
-    #sending to C_Vertex TODO: factor this out to an array maybe
+    #sending to C_Vertex which requires proper Point* objects instead of ints
     attr_accessor :v; attr_accessor :uv; attr_accessor :normal;
     def initialize(geometric_vertex, texture_coordinate, normal)
         @v = geometric_vertex; @uv = texture_coordinate; @normal = normal;
@@ -77,11 +77,11 @@ class Wavefront
 
             elsif parts[0] == "f"
                 v, vt, vn = parts[1].split("/").map{ |index| index.to_i - 1}
-                a = Rb_Vertex.new(v, vt, vn)
+                a = Indexed_Vertex.new(v, vt, vn)
                 v, vt, vn = parts[2].split("/").map{ |index| index.to_i - 1}
-                b = Rb_Vertex.new(v, vt, vn)
+                b = Indexed_Vertex.new(v, vt, vn)
                 v, vt, vn = parts[3].split("/").map{ |index| index.to_i - 1}
-                c = Rb_Vertex.new(v, vt, vn)
+                c = Indexed_Vertex.new(v, vt, vn)
                 faces << [a, b, c]
             end
         end

@@ -18,9 +18,9 @@ light_direction = Point.new(0, 0, -1)
 bitmap = Bitmap.new(ScreenWidth, ScreenHeight, [0,0,0])
 z_buffer = Z_Buffer.new(bitmap.width, bitmap.height)
 objects = []
-objects << load_object("floor");
+#objects << load_object("floor");
 objects << load_object("african_head");
-puts objects
+
 log("Rendering models")
 drawn_faces = 0; total_faces = 0;
 start_time = Time.now

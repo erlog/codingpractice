@@ -62,6 +62,7 @@ void convert_tangent_normal(Point* tangent_normal, Point* barycentric,
     xfree(tangent);
     xfree(bitangent);
     xfree(normal);
+    return;
 }
 
 void point_to_screen(Point* point, Point* center) {
@@ -131,6 +132,8 @@ void cartesian_to_barycentric(Point* cart, Point* result,
     double total = x + y + z;
 
     result->x = x/total; result->y = y/total; result->z = z/total;
+    xfree(vec_one);
+    xfree(vec_two);
     return;
 }
 
@@ -187,7 +190,7 @@ VALUE C_Point_dup(VALUE self) {
 VALUE C_Point_initialize(VALUE self, VALUE x, VALUE y, VALUE z) {
     Point* point; Data_Get_Struct(self, Point, point);
     point->x = NUM2DBL(x); point->y = NUM2DBL(y); point->z = NUM2DBL(z);
-    point->q = 1;
+    point->q = 1.0;
     return self;
 }
 
@@ -359,6 +362,9 @@ VALUE C_Point_to_normal(VALUE self, VALUE rb_normal_matrix, VALUE rb_tangent_nor
 
     apply_matrix(result, matrix);
     normalize(result);
+    xfree(tangent);
+    xfree(bitangent);
+    xfree(normal);
     return Data_Wrap_Struct(rb_class_of(self), NULL, deallocate_struct, result);
 }
 

@@ -155,9 +155,13 @@ VALUE render_model(VALUE self, VALUE rb_faces,
                     bitmap_set_pixel(bitmap, screen_coord, color);
                 }
             }
-
             free(point_list);
         }
     }
+    xfree(screen_center);
+    xfree(texture_size);
+    xfree(normal);
+    xfree(screen_coord);
+    xfree(texture_coord);
     return INT2NUM(drawn_faces);
 }

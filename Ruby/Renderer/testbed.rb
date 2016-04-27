@@ -1,3 +1,5 @@
+#File for testing specific functions, mostly junk code
+
 require_relative 'point'
 #require_relative 'bitmap'
 require_relative 'utilities'
