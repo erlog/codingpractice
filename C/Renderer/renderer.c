@@ -5,17 +5,24 @@
 #include <time.h>
 //Other Libraries
 #include <SDL2/SDL.h>
+#include <ruby.h>
 //Local Includes
 #include "renderer.h"
 #include "utilities.c"
 #include "bitmap.c"
 #include "point.c"
+#include "wavefront.c"
+#include "ruby_functions.c"
 
 int main() {
-    char timestring[128];
+    //Start Ruby
+    ruby_setup_render_environment();
+    load_model("floor");
+    //Create Backbuffer
     Color color = pack_color(0, 0, 255, 255);
     Bitmap* bitmap; bitmap = allocate_bitmap(384, 384, color);
-    bitmap_write_to_file(bitmap, debug_bitmap_output_string(timestring));
+    char timestring[128];
+    //bitmap_write_to_file(bitmap, debug_bitmap_output_string(timestring));
 
     //Initialize Window
     SDL_Window* window = SDL_CreateWindow("Renderer", SDL_WINDOWPOS_CENTERED,
@@ -36,7 +43,7 @@ int main() {
         SDL_Event event;
         SDL_WaitEvent(&event);
         if(event.type == SDL_QUIT) { break; }
-
+        break; //DEBUG
     }
     return 0;
 }
