@@ -30,10 +30,11 @@ int main() {
     ruby_init();
     ruby_init_loadpath();
 
+    VALUE thing = DBL2NUM(2.0);
     //Initialize Window
     SDL_Window* window = SDL_CreateWindow("Renderer", SDL_WINDOWPOS_CENTERED,
         SDL_WINDOWPOS_CENTERED, bitmap->width, bitmap->height, 0);
-    SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, 0);
+    SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_SOFTWARE);
     SDL_RenderClear(renderer);
     SDL_RenderPresent(renderer);
 
@@ -43,7 +44,9 @@ int main() {
         bitmap->height);
 
     SDL_Event event;
+
     uint32_t last_update = 0;
+    uint32_t start_time = SDL_GetTicks();
     uint32_t current_time;
     point->x = 0.0; point->y = 0.0;
     while(true) {
@@ -58,12 +61,16 @@ int main() {
                 return 0;
                 break;
         } }
-        if( ((current_time - last_update) > 33.3) &
-            (point->x < bitmap->width) & (point->y < bitmap->height) ) {
+        //if( ((current_time - last_update) > 32) &
+        if( (point->x < bitmap->width) & (point->y < bitmap->height) ) {
             bitmap_set_pixel(bitmap, point, color);
             point->x += 1.0; point->y += 1.0;
             update_screen(renderer, texture, bitmap);
             last_update = current_time;
+        }
+        if(point->x > bitmap->height-1) {
+            printf("FPS: %f\n", 1000/((SDL_GetTicks() - start_time)/384.0));
+            return 0;
         }
     }
 }
