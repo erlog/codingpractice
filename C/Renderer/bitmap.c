@@ -13,6 +13,11 @@ inline Color color_multiply(Color color, double factor) {
     return color;
 }
 
+void color_print(Color color) {
+    printf("Color: (r-%i, g-%i, b-%i, a-%i)\n",
+        color.rgba.r, color.rgba.g, color.rgba.b, color.rgba.a);
+    return;
+}
 
 Color pack_color(uint8_t r, uint8_t g, uint8_t b, uint8_t a) {
     Color clr; clr.rgba.r = r; clr.rgba.g = g; clr.rgba.b = b; clr.rgba.a = a;
@@ -29,7 +34,8 @@ Bitmap* allocate_bitmap(int width, int height, Color color) {
     Bitmap* bitmap; bitmap = malloc(sizeof(Bitmap));
     Color* buffer; buffer = malloc(sizeof(Color)*width*height);
     bitmap->width = width; bitmap->height = height; bitmap->buffer = buffer;
-    bitmap->bytes_per_pixel = sizeof(uint32_t);
+    bitmap->bytes_per_pixel = sizeof(Color);
+    bitmap->bytes_per_row = bitmap->width * bitmap->bytes_per_pixel;
     int x; int y;
     for(y = 0; y < height; y++) { for(x = 0; x < width; x++) {
             buffer[y*width + x] = color;
@@ -43,6 +49,7 @@ Color bitmap_get_pixel(Bitmap* bitmap, Point* point) {
 
 void bitmap_set_pixel(Bitmap* bitmap, Point* point, Color color) {
     bitmap->buffer[(int)point->y*bitmap->width + (int)point->x] = color;
+    return;
 }
 
 void bitmap_write_to_file(Bitmap* bitmap, char* path) {

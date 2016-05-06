@@ -6,6 +6,6 @@ char* debug_bitmap_output_string(char* string) {
     return string;
 }
 
-char* object_file_path(char* file_path, char* object_name) {
+void object_file_path(char* file_path, char* object_name) {
     sprintf(file_path, "objects/%s/object.obj", object_name);
 }
