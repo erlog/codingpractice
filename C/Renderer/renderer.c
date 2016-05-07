@@ -8,9 +8,11 @@
 #include <ruby.h>
 //Local Includes
 #include "renderer.h"
+#include "ruby_functions.c"
 #include "utilities.c"
 #include "point.c"
 #include "bitmap.c"
+#include "wavefront.c"
 
 void update_screen(SDL_Renderer* renderer, SDL_Texture* texture, Bitmap* bitmap) {
     SDL_UpdateTexture(texture, 0, bitmap->buffer, bitmap->bytes_per_row);
@@ -21,16 +23,16 @@ void update_screen(SDL_Renderer* renderer, SDL_Texture* texture, Bitmap* bitmap)
 int main() {
     char timestring[128];
     Color color = pack_color(255, 255, 255, 255);
+    //Create Backbuffer
     Point* point = allocate_point(100.0, 100.0, 0, 0);
     Bitmap* bitmap = allocate_bitmap(384, 384, color);
     color = pack_color(0,0,0,255);
     //bitmap_write_to_file(bitmap, debug_bitmap_output_string(timestring));
 
-    //Initialize Ruby
-    ruby_init();
-    ruby_init_loadpath();
+    //Start Ruby
+    ruby_setup_render_environment();
+    //load_model("floor");
 
-    VALUE thing = DBL2NUM(2.0);
     //Initialize Window
     SDL_Window* window = SDL_CreateWindow("Renderer", SDL_WINDOWPOS_CENTERED,
         SDL_WINDOWPOS_CENTERED, bitmap->width, bitmap->height, 0);
