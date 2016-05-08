@@ -2,7 +2,7 @@
 #define RENDERER_H
 
 typedef union c_color { uint32_t bytes;
-    struct { uint8_t r; uint8_t g; uint8_t b; uint8_t a;} rgba; } Color;
+    struct { uint8_t a; uint8_t b; uint8_t g; uint8_t r;} rgba; } Color;
 typedef struct c_bitmap { int width; int height; Color* buffer;
     int bytes_per_pixel; int bytes_per_row; } Bitmap;
 typedef struct c_point { float x; float y; float z; float q;} Point;

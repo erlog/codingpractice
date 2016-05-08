@@ -1,27 +1,27 @@
 //Color Functions
-void clamp_channel(uint8_t* value, uint8_t min, uint8_t max) {
-    if(*value < min) { *value = min; }
-    if(*value > max) { *value = max; }
-    return;
-}
-
-Color color_multiply(Color color, float factor) {
-    color.rgba.r *= factor; color.rgba.g *= factor; color.rgba.b *= factor;
-    clamp_channel(&color.rgba.r, 0, 255);
-    clamp_channel(&color.rgba.g, 0, 255);
-    clamp_channel(&color.rgba.b, 0, 255);
-    return color;
-}
-
 void color_print(Color color) {
     printf("Color: (r-%i, g-%i, b-%i, a-%i)\n",
         color.rgba.r, color.rgba.g, color.rgba.b, color.rgba.a);
     return;
 }
 
+void clamp_channel(uint8_t* value, uint8_t min, uint8_t max) {
+    if(*value < min) { *value = min; }
+    if(*value > max) { *value = max; }
+    return;
+}
+
 Color pack_color(uint8_t r, uint8_t g, uint8_t b, uint8_t a) {
     Color clr; clr.rgba.r = r; clr.rgba.g = g; clr.rgba.b = b; clr.rgba.a = a;
     return clr;
+}
+
+Color color_multiply(Color color, float factor) {
+    uint8_t r = (uint8_t)(color.rgba.r * factor);
+    uint8_t g = (uint8_t)(color.rgba.g * factor);
+    uint8_t b = (uint8_t)(color.rgba.b * factor);
+    Color result = pack_color(r, g, b, color.rgba.a);
+    return result;
 }
 
 //Bitmap Functions
@@ -79,6 +79,7 @@ VALUE C_Bitmap_set_pixel(VALUE self, VALUE rb_point, VALUE rb_color) {
     Bitmap* bitmap; Data_Get_Struct(self, Bitmap, bitmap);
     Point* point; Data_Get_Struct(rb_point, Point, point);
     Color color; color.bytes = (uint32_t)NUM2UINT(rb_color);
+
     bitmap_set_pixel(bitmap, point, color);
     return self;
 }
@@ -124,10 +125,11 @@ void bitmap_write_to_file(Bitmap* bitmap, char* path) {
     int y; int x; int i; Color color;
     int padlength = (4 - ((width * bytes_per_pixel) % 4)) % 4;
     for(y=0; y<height; y++) {
-        //write first 3 bytes of pixel data(rgb minus alpha)
+        //write last 3 bytes of pixel data(rgb minus alpha)
         for(x=0; x<width; x++) {
             color = bitmap->buffer[y*width + x];
-            fwrite(&color, 3, 1, output);
+            uint32_t chopped = color.bytes >> 8;
+            fwrite(&chopped, 3, 1, output);
         }
         //write padding
         for(i=0; i<padlength; i++) {

@@ -35,6 +35,7 @@ int main() {
     //Create Backbuffer
     Point* point = allocate_point(100.0, 100.0, 0, 0);
     Color color = pack_color(0, 0, 0, 255);
+    color_print(color);
     Bitmap* bitmap = allocate_bitmap(384, 384, color);
 
     //Initialize Window
@@ -46,7 +47,7 @@ int main() {
 
     //Initialize Backbuffer
     SDL_Texture *screen_texture = SDL_CreateTexture(renderer,
-        SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, bitmap->width,
+        SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, bitmap->width,
         bitmap->height);
 
     SDL_Event event;
@@ -65,6 +66,7 @@ int main() {
     ZBuffer* zbuffer = allocate_zbuffer(384, 384);
     VALUE rb_faces; Bitmap* texture; NormalMap* normalmap; SpecularMap* specmap;
     load_model("african_head", &rb_faces, &texture, &normalmap, &specmap);
+    //load_model("floor", &rb_faces, &texture, &normalmap, &specmap);
     int drawn_faces = render_model(rb_faces, view_matrix, normal_matrix,
         camera_direction, light_direction, bitmap, zbuffer, texture,
         normalmap, specmap);

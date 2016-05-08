@@ -239,6 +239,7 @@ int render_model(VALUE rb_faces,
                                             normal, normal_matrix, a, b, c);
                     diffuse_intensity = scalar_product(normal,
                                                         light_direction) * -1;
+                    diffuse_intensity = clamp_float(diffuse_intensity, 0.0, 1.0);
                     //compute specularity
                     specular_power = get_specular(specmap, texture_coord);
                     reflectivity = compute_reflection(normal, light_direction,
@@ -247,6 +248,12 @@ int render_model(VALUE rb_faces,
                     color = bitmap_get_pixel(texture, texture_coord);
                     factor = 0.05 + 0.6*reflectivity + 0.75*diffuse_intensity;
                     color = color_multiply(color, factor);
+                    if( (color.rgba.r == 255) & (color.rgba.g == 255) & (color.rgba.b == 255)) {
+                        printf("%f\n", factor);
+                        printf("%f\n", reflectivity);
+                        printf("%f\n", diffuse_intensity);
+                        color_print(color);
+                    }
                     bitmap_set_pixel(bitmap, screen_coord, color);
                 }
             }
