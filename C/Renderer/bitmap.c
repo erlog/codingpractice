@@ -26,8 +26,7 @@ Color color_multiply(Color color, float factor) {
 
 //Bitmap Functions
 void deallocate_bitmap(Bitmap* bitmap) {
-    //TODO: this doesn't free properly
-    free(bitmap->buffer); free(bitmap); return;
+    xfree(bitmap->buffer); xfree(bitmap); return;
 }
 
 VALUE C_Bitmap_allocate(VALUE klass) {

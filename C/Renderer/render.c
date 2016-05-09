@@ -170,7 +170,7 @@ void face_to_screen(Vertex* a, Vertex* b, Vertex* c,
 }
 
 //TODO: write a face struct so I can get rid of the Ruby calls here
-int render_model(VALUE rb_faces,
+void render_model(Faces* faces,
                 float* view_matrix, float* normal_matrix,
                 Point* camera_direction, Point* light_direction,
                 Bitmap* bitmap, ZBuffer* zbuffer,
@@ -181,12 +181,10 @@ int render_model(VALUE rb_faces,
     Point* texture_size =
         allocate_point((float)(texture->width-1),(float)(texture->height-1), 0.0, 0.0);
 
-    int number_of_faces = RARRAY_LEN(rb_faces);
-    int drawn_faces = 0;
     int number_of_points;
     int face_i; int point_i;
     Color color = pack_color(255, 255, 255, 255);
-    VALUE face;
+    Face* face;
     Vertex* a; Vertex* b; Vertex* c;
     Point* bary;
     Point* screen_coord; screen_coord = ALLOC(Point);
@@ -199,16 +197,12 @@ int render_model(VALUE rb_faces,
     float reflectivity;
     float factor;
 
-    for(face_i = 0; face_i < number_of_faces; face_i++) {
-        face = rb_ary_entry(rb_faces, face_i);
-        Data_Get_Struct(rb_ary_entry(face, 0), Vertex, a);
-        Data_Get_Struct(rb_ary_entry(face, 1), Vertex, b);
-        Data_Get_Struct(rb_ary_entry(face, 2), Vertex, c);
-
+    for(face_i = 0; face_i < faces->length; face_i++) {
+        face = &faces->array[face_i];
+        a = face->a; b = face->b; c = face->c;
 
         if(should_draw_face(a->v, b->v, c->v, normal_matrix,
                                                         camera_direction)) {
-            drawn_faces++;
             //project face to screen
             face_to_screen(a, b, c, view_matrix, screen_center);
             sort_vertices(&a, &b, &c);
@@ -228,7 +222,8 @@ int render_model(VALUE rb_faces,
                 if(zbuffer_should_draw(zbuffer, screen_coord)) {
                     point_to_texture(bary, texture_coord, texture_size,
                                                         a->uv, b->uv, c->uv);
-                    //compute diffuse from tangent normal
+                    /*
+                    compute diffuse from tangent normal
                     tangent_normal = get_normal(normalmap, texture_coord);
                     convert_tangent_normal(tangent_normal, bary,
                                             normal, normal_matrix, a, b, c);
@@ -240,9 +235,10 @@ int render_model(VALUE rb_faces,
                     reflectivity = compute_reflection(normal, light_direction,
                                             camera_direction, specular_power);
                     //light our pixel with the information
-                    color = bitmap_get_pixel(texture, texture_coord);
                     factor = 0.05 + 0.6*reflectivity + 0.75*diffuse_intensity;
                     color = color_multiply(color, factor);
+                    */
+                    color = bitmap_get_pixel(texture, texture_coord);
                     bitmap_set_pixel(bitmap, screen_coord, color);
                 }
             }
@@ -255,34 +251,6 @@ int render_model(VALUE rb_faces,
     xfree(screen_coord);
     xfree(texture_coord);
 
-    return(drawn_faces);
+    return;
 }
 
-//TODO: Is this dead code?
-VALUE rb_render_model(VALUE self, VALUE rb_faces,
-                VALUE rb_view_matrix, VALUE rb_normal_matrix,
-                VALUE rb_camera_direction, VALUE rb_light_direction,
-                VALUE rb_bitmap, VALUE rb_zbuffer,
-                VALUE rb_texture, VALUE rb_normalmap, VALUE rb_specmap) {
-
-    Bitmap* bitmap; Data_Get_Struct(rb_bitmap, Bitmap, bitmap);
-    Bitmap* texture; Data_Get_Struct(rb_texture, Bitmap, texture);
-    ZBuffer* zbuffer; Data_Get_Struct(rb_zbuffer, ZBuffer, zbuffer);
-    NormalMap* normalmap; Data_Get_Struct(rb_normalmap, NormalMap, normalmap);
-    SpecularMap* specmap; Data_Get_Struct(rb_specmap, SpecularMap, specmap);
-
-    Matrix* matrix_struct;
-    Data_Get_Struct(rb_view_matrix, Matrix, matrix_struct);
-    float* view_matrix = matrix_struct->m;
-    Data_Get_Struct(rb_normal_matrix, Matrix, matrix_struct);
-    float* normal_matrix = matrix_struct->m;
-
-    Point* camera_direction; Data_Get_Struct(rb_camera_direction, Point, camera_direction);
-    Point* light_direction; Data_Get_Struct(rb_light_direction, Point, light_direction);
-
-    int drawn_faces = render_model(rb_faces, view_matrix, normal_matrix,
-        camera_direction, light_direction, bitmap, zbuffer, texture, normalmap,
-        specmap);
-
-    return INT2NUM(drawn_faces);
-}

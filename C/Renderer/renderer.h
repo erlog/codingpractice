@@ -14,6 +14,7 @@ typedef struct c_zbuffer { int width; int height; float* buffer;
 typedef struct c_normalmap { int width; int height; Point* buffer; } NormalMap;
 typedef struct c_specularmap { int width; int height; float* buffer; } SpecularMap;
 typedef struct c_face { Vertex* a; Vertex* b; Vertex* c;} Face;
+typedef struct c_faces { Face* array; int length; } Faces;
 typedef struct c_matrix { float* m; } Matrix;
 
 #endif

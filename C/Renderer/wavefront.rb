@@ -90,7 +90,8 @@ class Wavefront
     end
 
     def build_face(indexed_face)
-        return indexed_face.map{ |vertex| self.build_vertex(vertex) }
+        return C_Face.new( self.build_vertex(indexed_face[0]),
+            self.build_vertex(indexed_face[1]), self.build_vertex(indexed_face[2]))
     end
 
     def build_vertex(vertex)

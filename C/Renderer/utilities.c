@@ -11,12 +11,22 @@ void compute_matrices(float x, float y, float z, float projection,
     return;
 }
 
-void load_model(char* model_name, VALUE* rb_faces, Bitmap** texture,
+void load_model(char* model_name, Faces* faces, Bitmap** texture,
     NormalMap** normalmap, SpecularMap** specmap) {
 
     VALUE object_name = rb_str_new_cstr(model_name);
     VALUE rb_result = rb_funcall(rb_cObject, rb_intern("load_object"), 1, object_name);
-    *rb_faces = rb_ary_entry(rb_result, 0);
+
+    VALUE rb_faces = rb_ary_entry(rb_result, 0);
+    int number_of_faces = RARRAY_LEN(rb_faces);
+    faces->array = malloc(sizeof(Face)*number_of_faces);
+    faces->length = number_of_faces;
+    int i;
+    Face* face;
+    for(i = 0; i < number_of_faces; i++) {
+        Data_Get_Struct(rb_ary_entry(rb_faces, i), Face, face);
+        faces->array[i] = *face;
+    }
     Data_Get_Struct(rb_ary_entry(rb_result, 1), Bitmap, *texture);
     Data_Get_Struct(rb_ary_entry(rb_result, 2), NormalMap, *normalmap);
     Data_Get_Struct(rb_ary_entry(rb_result, 3), SpecularMap, *specmap);

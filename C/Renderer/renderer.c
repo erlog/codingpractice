@@ -17,8 +17,6 @@
 #include "render.c"
 #include "ruby_functions.c"
 
-
-
 uint32_t current_time() {
     return SDL_GetTicks();
 }
@@ -36,7 +34,6 @@ int main() {
     //Create Backbuffer
     Point* point = allocate_point(100.0, 100.0, 0, 0);
     Color color = pack_color(0, 0, 0, 255);
-    color_print(color);
     Bitmap* bitmap = allocate_bitmap(384, 384, color);
 
     //Initialize Window
@@ -62,15 +59,14 @@ int main() {
     Point* light_direction = allocate_point(0.0, 0.0, -1.0, 0.0);
     float* view_matrix; float* normal_matrix;
     ZBuffer* zbuffer = allocate_zbuffer(384, 384);
-    VALUE rb_faces; Bitmap* texture; NormalMap* normalmap; SpecularMap* specmap;
-    load_model("african_head", &rb_faces, &texture, &normalmap, &specmap);
+    Faces faces; Bitmap* texture; NormalMap* normalmap; SpecularMap* specmap;
+    load_model("african_head", &faces, &texture, &normalmap, &specmap);
     debug_bitmap_output(bitmap);
 
     uint32_t last_update = 0;
     uint32_t start_time = current_time();
     int frames_drawn = 0;
     uint32_t now;
-    int drawn_faces;
 
     while(true) {
         now = current_time();
@@ -96,11 +92,10 @@ int main() {
             zbuffer_clear(zbuffer);
             compute_matrices(matrix_args->x, matrix_args->y, matrix_args->z,
                 matrix_args->q, &view_matrix, &normal_matrix);
-            drawn_faces = render_model(rb_faces, view_matrix, normal_matrix,
+            render_model(&faces, view_matrix, normal_matrix,
                 camera_direction, light_direction, bitmap, zbuffer, texture,
                 normalmap, specmap);
-            matrix_args->y -= 0.25;
-            if(matrix_args->y == -360.0) { matrix_args->y = 0; }
+            matrix_args->y = (((now-start_time)%20000)/20000.0)*360.0;
             update_screen(renderer, screen_texture, bitmap);
             last_update = now;
             frames_drawn++;

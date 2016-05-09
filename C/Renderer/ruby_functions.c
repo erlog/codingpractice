@@ -4,6 +4,20 @@ void deallocate_struct(void* my_struct) {
     return;
 }
 
+VALUE C_Face_allocate(VALUE klass) {
+    Face* face; face = ALLOC(Face);
+    return Data_Wrap_Struct(klass, NULL, deallocate_struct, face);
+}
+
+VALUE C_Face_initialize(VALUE self, VALUE vertex_a, VALUE vertex_b,
+    VALUE vertex_c) {
+    Face* face; Data_Get_Struct(self, Face, face);
+    Data_Get_Struct(vertex_a, Vertex, face->a);
+    Data_Get_Struct(vertex_b, Vertex, face->b);
+    Data_Get_Struct(vertex_c, Vertex, face->c);
+    return self;
+}
+
 //C_Matrix
 VALUE C_Matrix_allocate(VALUE klass) {
     Matrix* matrix; matrix = ALLOC(Matrix);
@@ -99,8 +113,6 @@ void ruby_setup_render_environment() {
     ruby_script("renderer");
     ruby_init_loadpath();
 
-    rb_define_global_function("render_model", rb_render_model, 10);
-
     VALUE C_Point = rb_define_class("Point", rb_cObject);
     rb_define_alloc_func(C_Point, C_Point_allocate);
     rb_define_method(C_Point, "initialize", C_Point_initialize, 3);
@@ -140,6 +152,10 @@ void ruby_setup_render_environment() {
     VALUE C_Matrix = rb_define_class("C_Matrix", rb_cObject);
     rb_define_alloc_func(C_Matrix, C_Matrix_allocate);
     rb_define_method(C_Matrix, "initialize", C_Matrix_initialize, 1);
+
+    VALUE C_Face = rb_define_class("C_Face", rb_cObject);
+    rb_define_alloc_func(C_Face, C_Face_allocate);
+    rb_define_method(C_Face, "initialize", C_Face_initialize, 3);
 
     rb_require("./main.rb");
 }
