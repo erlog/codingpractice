@@ -116,7 +116,7 @@ float compute_reflection(Point* normal, Point* light_direction,
     normalize(new_point);
     float reflectivity = clamp_float((scalar_product(new_point, camera_direction)*-1), 0.0, 1.0);
     xfree(new_point);
-    return powf(reflectivity, specular_power);
+    return pow(reflectivity, specular_power);
 }
 
 void convert_tangent_normal(Point* tangent_normal, Point* barycentric,

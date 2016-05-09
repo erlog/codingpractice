@@ -115,21 +115,16 @@ int triangle(Point** point_list, Point* a, Point* b, Point* c) {
 
 bool should_draw_face(Point* a_v, Point* b_v, Point* c_v,
                             float* normal_matrix, Point* camera_direction) {
-    Point* left; left = ALLOC(Point);
-    left->x = b_v->x - a_v->x;
-    left->y = b_v->y - a_v->y;
-    left->z = b_v->z - a_v->z;
+    Point left;
+    Point right;
+    point_set(&left, b_v->x - a_v->x, b_v->y - a_v->y, b_v->z - a_v->z, 1.0);
+    point_set(&right, c_v->x - a_v->x, c_v->y - a_v->y, c_v->z - a_v->z, 1.0);
 
-    Point* right; right = ALLOC(Point);
-    right->x = c_v->x - a_v->x;
-    right->y = c_v->y - a_v->y;
-    right->z = c_v->z - a_v->z;
-
-    Point* normal = cross_product(left, right); normalize(normal);
+    Point* normal = cross_product(&left, &right); normalize(normal);
     apply_matrix(normal, normal_matrix);
     float result = scalar_product(normal, camera_direction);
 
-    xfree(left); xfree(right); xfree(normal);
+    xfree(normal);
     if(result < 0) { return true; } //this means the polygon isn't facing us
     return false;
 }
@@ -186,7 +181,6 @@ int render_model(VALUE rb_faces,
     Point* texture_size =
         allocate_point((float)(texture->width-1),(float)(texture->height-1), 0.0, 0.0);
 
-
     int number_of_faces = RARRAY_LEN(rb_faces);
     int drawn_faces = 0;
     int number_of_points;
@@ -210,6 +204,7 @@ int render_model(VALUE rb_faces,
         Data_Get_Struct(rb_ary_entry(face, 0), Vertex, a);
         Data_Get_Struct(rb_ary_entry(face, 1), Vertex, b);
         Data_Get_Struct(rb_ary_entry(face, 2), Vertex, c);
+
 
         if(should_draw_face(a->v, b->v, c->v, normal_matrix,
                                                         camera_direction)) {
@@ -248,12 +243,6 @@ int render_model(VALUE rb_faces,
                     color = bitmap_get_pixel(texture, texture_coord);
                     factor = 0.05 + 0.6*reflectivity + 0.75*diffuse_intensity;
                     color = color_multiply(color, factor);
-                    if( (color.rgba.r == 255) & (color.rgba.g == 255) & (color.rgba.b == 255)) {
-                        printf("%f\n", factor);
-                        printf("%f\n", reflectivity);
-                        printf("%f\n", diffuse_intensity);
-                        color_print(color);
-                    }
                     bitmap_set_pixel(bitmap, screen_coord, color);
                 }
             }

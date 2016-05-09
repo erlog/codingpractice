@@ -35,6 +35,13 @@ VALUE C_Bitmap_allocate(VALUE klass) {
     return Data_Wrap_Struct(klass, NULL, deallocate_bitmap, bitmap);
 }
 
+void bitmap_clear(Bitmap* bitmap, Color color) {
+    int x; int y;
+    for(y = 0; y < bitmap->height; y++) { for(x = 0; x < bitmap->width; x++) {
+            bitmap->buffer[y*bitmap->width + x] = color;
+    } }
+}
+
 VALUE C_Bitmap_initialize(VALUE self, VALUE rb_width, VALUE rb_height, VALUE rb_color) {
     Bitmap* bitmap; Data_Get_Struct(self, Bitmap, bitmap);
     int width = NUM2INT(rb_width); int height = NUM2INT(rb_height);
@@ -45,10 +52,7 @@ VALUE C_Bitmap_initialize(VALUE self, VALUE rb_width, VALUE rb_height, VALUE rb_
     bitmap->bytes_per_pixel = sizeof(Color);
     bitmap->bytes_per_row = bitmap->width * bitmap->bytes_per_pixel;
 
-    int x; int y;
-    for(y = 0; y < height; y++) { for(x = 0; x < width; x++) {
-            buffer[y*width + x] = color;
-    } }
+    bitmap_clear(bitmap, color);
 
     return self;
 }
@@ -59,10 +63,7 @@ Bitmap* allocate_bitmap(int width, int height, Color color) {
     bitmap->width = width; bitmap->height = height; bitmap->buffer = buffer;
     bitmap->bytes_per_pixel = sizeof(Color);
     bitmap->bytes_per_row = bitmap->width * bitmap->bytes_per_pixel;
-    int x; int y;
-    for(y = 0; y < height; y++) { for(x = 0; x < width; x++) {
-            buffer[y*width + x] = color;
-    } }
+    bitmap_clear(bitmap, color);
     return bitmap;
 }
 
@@ -158,6 +159,14 @@ VALUE C_ZBuffer_allocate(VALUE klass) {
     return Data_Wrap_Struct(klass, NULL, deallocate_zbuffer, zbuffer);
 }
 
+void zbuffer_clear(ZBuffer* zbuffer) {
+    int x; int y;
+    for(y = 0; y < zbuffer->height; y++) { for(x = 0; x < zbuffer->width; x++) {
+            zbuffer->buffer[y*zbuffer->width + x] = -DBL_MAX;
+        } }
+    return;
+}
+
 VALUE C_ZBuffer_initialize(VALUE self, VALUE rb_width, VALUE rb_height) {
     ZBuffer* zbuffer; Data_Get_Struct(self, ZBuffer, zbuffer);
     int width = NUM2INT(rb_width); int height = NUM2INT(rb_height);
@@ -165,10 +174,7 @@ VALUE C_ZBuffer_initialize(VALUE self, VALUE rb_width, VALUE rb_height) {
     zbuffer->width = width; zbuffer->height = height; zbuffer->buffer = buffer;
     zbuffer->drawn_pixels = 0; zbuffer->oob_pixels = 0; zbuffer->occluded_pixels = 0;
 
-    int x; int y;
-    for(y = 0; y < height; y++) { for(x = 0; x < width; x++) {
-            buffer[y*width + x] = -DBL_MAX;
-        } }
+    zbuffer_clear(zbuffer);
 
     return self;
 }
@@ -180,10 +186,7 @@ ZBuffer* allocate_zbuffer(int width, int height) {
     zbuffer->width = width; zbuffer->height = height; zbuffer->buffer = buffer;
     zbuffer->drawn_pixels = 0; zbuffer->oob_pixels = 0; zbuffer->occluded_pixels = 0;
 
-    int x; int y;
-    for(y = 0; y < height; y++) { for(x = 0; x < width; x++) {
-            buffer[y*width + x] = -DBL_MAX;
-        } }
+    zbuffer_clear(zbuffer);
 
     return zbuffer;
 }
