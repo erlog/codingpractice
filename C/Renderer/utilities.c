@@ -1,35 +1,44 @@
-//Small functions with no dependencies that don't fit anywhere else
-void compute_matrices(float x, float y, float z, float projection,
-    float** view_matrix, float** normal_matrix) {
-    VALUE rb_result = rb_funcall(rb_cObject, rb_intern("compute_matrices"), 4,
-        DBL2NUM(x), DBL2NUM(y), DBL2NUM(z), DBL2NUM(projection));
-    Matrix* matrix_struct;
-    Data_Get_Struct(rb_ary_entry(rb_result, 0), Matrix, matrix_struct);
-    *view_matrix = matrix_struct->m;
-    Data_Get_Struct(rb_ary_entry(rb_result, 1), Matrix, matrix_struct);
-    *normal_matrix = matrix_struct->m;
-    return;
+//Small functions that don't fit anywhere else with minimal dependencies
+char* construct_asset_path(char* object_name, char* filename) {
+    int asset_path_length = strlen(AssetFolderPath) + strlen(object_name) +
+        strlen(filename) + 1;
+    char* asset_path = malloc(sizeof(char)*asset_path_length);
+    sprintf(asset_path, "%s/%s/%s", AssetFolderPath, object_name, filename);
+    return asset_path;
 }
 
-void load_model(char* model_name, Faces* faces, Bitmap** texture,
-    NormalMap** normalmap, SpecularMap** specmap) {
+void message_log(char* message) {
+    printf("Log: %s\n", message);
+}
 
-    VALUE object_name = rb_str_new_cstr(model_name);
-    VALUE rb_result = rb_funcall(rb_cObject, rb_intern("load_object"), 1, object_name);
+bool load_texture(char* object_name, Texture* texture) {
+    texture->asset_path = construct_asset_path(object_name, "diffuse.png");
+    //Load PNG
+    unsigned width; unsigned height;
+    if(lodepng_decode32_file(&texture->buffer, &width, &height,
+        texture->asset_path)) { message_log("Error loading PNG"); return false;}
+    //Register our texture with OpenGL
+    //TODO: error handling
+    texture->width = (GLsizei)width; texture->height = (GLsizei)height;
+    glGenTextures(1, &texture->texture_id);
+    glBindTexture(GL_TEXTURE_2D, texture->texture_id);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texture->width, texture->height, 0,
+         GL_RGBA, GL_UNSIGNED_BYTE, texture->buffer);
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+    glBindTexture(GL_TEXTURE_2D, 0); //unbind the texture
+    return true;
+}
 
-    VALUE rb_faces = rb_ary_entry(rb_result, 0);
-    int number_of_faces = RARRAY_LEN(rb_faces);
-    faces->array = malloc(sizeof(Face)*number_of_faces);
-    faces->length = number_of_faces;
-    int i;
-    Face* face;
-    for(i = 0; i < number_of_faces; i++) {
-        Data_Get_Struct(rb_ary_entry(rb_faces, i), Face, face);
-        faces->array[i] = *face;
+void load_object(Object* object) {
+    object->texture = malloc(sizeof(Texture));
+    if(!load_texture(object->object_name, object->texture)) {
+        message_log("Error loading texture");
     }
-    Data_Get_Struct(rb_ary_entry(rb_result, 1), Bitmap, *texture);
-    Data_Get_Struct(rb_ary_entry(rb_result, 2), NormalMap, *normalmap);
-    Data_Get_Struct(rb_ary_entry(rb_result, 3), SpecularMap, *specmap);
+    object->model = malloc(sizeof(Model));
+    if(!load_model(object->object_name, object->model)) {
+        message_log("Error loading model");
+    }
     return;
 }
 

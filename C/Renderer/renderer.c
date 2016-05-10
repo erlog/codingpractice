@@ -1,3 +1,6 @@
+//Globals
+char* AssetFolderPath = "objects";
+
 //C Standard Library
 #include <stdio.h>
 #include <stdlib.h>
@@ -12,18 +15,17 @@
 #include "lodepng.c"
 //Local Includes
 #include "renderer.h"
-#include "utilities.c"
-#include "point.c"
-#include "bitmap.c"
 #include "wavefront.c"
-#include "render.c"
+#include "utilities.c"
 #include "ruby_functions.c"
+
 
 uint32_t current_time() {
     return SDL_GetTicks();
 }
 
 int main() {
+
     //Start Ruby
     ruby_setup_render_environment();
 
@@ -44,39 +46,19 @@ int main() {
     glEnable(GL_DEPTH_TEST);
     glRotatef(180.0,0.0,1.0,0.0);
 
+    //Load objects
+    Object object; object.object_name = "african_head"; load_object(&object);
+
     SDL_Event event;
 
     VALUE rb_update_func = rb_intern("ruby_update");
-
-    /*Setup Renderer
-    Point* matrix_args = allocate_point(0.0, 0.0, 0.0, 5.0);
-    Point* camera_direction = allocate_point(0.0, 0.0, -1.0, 0.0);
-    Point* light_direction = allocate_point(0.0, 0.0, -1.0, 0.0);
-    float* view_matrix; float* normal_matrix;
-    ZBuffer* zbuffer = allocate_zbuffer(384, 384);
-    debug_bitmap_output(bitmap);
-    */
-    Faces faces; Bitmap* old_texture; NormalMap* normalmap; SpecularMap* specmap;
-    load_model("african_head", &faces, &old_texture, &normalmap, &specmap);
-
-    //create an OpenGL Texture
-    GLuint texture_id = 0;
-    uint8_t* pixels;
-    uint32_t width;
-    uint32_t height;
-    char* filename = "objects/african_head/diffuse.png";
-    lodepng_decode32_file(&pixels, &width, &height, filename);
-    glGenTextures(1, &texture_id);
-    glBindTexture(GL_TEXTURE_2D, texture_id);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0,
-         GL_RGBA, GL_UNSIGNED_BYTE, pixels);
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
 
     uint32_t last_update = 0;
     uint32_t start_time = current_time();
     int frames_drawn = 0;
     uint32_t now;
+
+    GLubyte* screenshot = malloc(sizeof(GLubyte)*3*384*384);
 
     while(true) {
         now = current_time();
@@ -86,7 +68,8 @@ int main() {
                 break;
 
             case SDL_QUIT:
-                ruby_cleanup(0);
+                glReadPixels(0, 0, 384, 384, GL_RGB, GL_UNSIGNED_BYTE, screenshot);
+                lodepng_encode24_file("test.png", (const unsigned char*)screenshot, 384, 384);
                 float fps = ((float)(now-start_time)/frames_drawn);
                 fps = 1000.0/fps;
                 printf("%f FPS", fps);
@@ -96,33 +79,23 @@ int main() {
 
         //TODO: is there a better way to control our framerate?
         if( (now - last_update) > 32 ) {
-            /*rb_funcall(rb_cObject, rb_update_func, 0, NULL);
-            bitmap_clear(bitmap, color);
-            zbuffer_clear(zbuffer);
-            compute_matrices(matrix_args->x, matrix_args->y, matrix_args->z,
-                matrix_args->q, &view_matrix, &normal_matrix);
-            render_model(&faces, view_matrix, normal_matrix,
-                camera_direction, light_direction, bitmap, zbuffer, texture,
-                normalmap, specmap);
-            matrix_args->y = (((now-start_time)%20000)/20000.0)*360.0;
-            */
+            //rb_funcall(rb_cObject, rb_update_func, 0, NULL);
+
             //draw stuff
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             glRotatef(0.2f,0.0f,1.0f,0.0f);
-            glColor3f(1.0f,1.0f,1.0f);
-
+            //glColor3f(1.0f,1.0f,1.0f);
+            glBindTexture(GL_TEXTURE_2D, object.texture->texture_id);
             glBegin( GL_TRIANGLES );
             int face_i;
-            Point* v;
-            Point* uv;
-            Face* face;
-            for(face_i = 0; face_i < faces.length; face_i++) {
-                face = &faces.array[face_i];
-                v = face->a->v; uv = face->a->uv;
+            for(face_i = 0; face_i < object.model->face_count; face_i++) {
+                Face* face = &object.model->faces[face_i];
+                Point* v; Point* uv;
+                v = &face->a.v; uv = &face->a.uv;
                 glTexCoord2f(uv->x, 1.0 - uv->y); glVertex3f( v->x, v->y, v->z );
-                v = face->b->v; uv = face->b->uv;
+                v = &face->b.v; uv = &face->b.uv;
                 glTexCoord2f(uv->x, 1.0 - uv->y); glVertex3f( v->x, v->y, v->z );
-                v = face->c->v; uv = face->c->uv;
+                v = &face->c.v; uv = &face->c.uv;
                 glTexCoord2f(uv->x, 1.0 - uv->y); glVertex3f( v->x, v->y, v->z );
             }
             glEnd();
@@ -131,4 +104,5 @@ int main() {
             frames_drawn++;
         }
     }
+
 }

@@ -1,21 +1,19 @@
 #ifndef RENDERER_H
 #define RENDERER_H
 
-typedef union c_color { uint32_t bytes;
-    struct { uint8_t a; uint8_t b; uint8_t g; uint8_t r;} rgba; } Color;
-typedef struct c_bitmap { int width; int height; Color* buffer;
-    int bytes_per_pixel; int bytes_per_row; } Bitmap;
-typedef struct c_point { float x; float y; float z; float q;} Point;
-typedef struct c_vertex { Point* v; Point* screen_v; Point* uv;
-                    Point* normal; Point* tangent; Point* bitangent;} Vertex;
-typedef struct c_zbuffer { int width; int height; float* buffer;
-                           int drawn_pixels; int oob_pixels;
-                           int occluded_pixels; } ZBuffer;
-typedef struct c_normalmap { int width; int height; Point* buffer; } NormalMap;
-typedef struct c_specularmap { int width; int height; float* buffer; } SpecularMap;
-typedef struct c_face { Vertex* a; Vertex* b; Vertex* c;} Face;
-typedef struct c_faces { Face* array; int length; } Faces;
-typedef struct c_matrix { float* m; } Matrix;
+//Structs
+typedef struct c_texture { char* asset_path; GLuint texture_id; GLsizei width;
+    int height; uint8_t* buffer; } Texture;
+typedef struct c_point { int id; GLfloat x; GLfloat y; GLfloat z; GLfloat q; } Point;
+typedef struct c_vertex { Point v; Point uv; Point n;} Vertex;
+typedef struct c_face { Vertex a; Vertex b; Vertex c;} Face;
+typedef struct c_model { char* asset_path; int face_count; Face* faces;} Model;
+//TODO: write code to free an object from memory
+typedef struct c_object { char* object_name; Model* model; Texture* texture; } Object;
+
+//generic utility functions
+char* construct_asset_path(char* object_name, char* filename);
+void message_log(char* message);
 
 #endif
 

@@ -1,10 +1,18 @@
 begin
-    require 'rubygems'
-    require_relative 'matrix_math'
-    require_relative 'utilities'
     require_relative 'wavefront'
+
     GC.disable
     Start_Time = Time.now
+
+    def log(string)
+        elapsed = (Time.now - Start_Time).round(3)
+        puts "#{elapsed}: #{string}"
+    end
+
+    def load_object(object_name)
+        object = Wavefront.from_file("objects/#{object_name}/object.obj")
+        return object.faces
+    end
 
     def ruby_update()
         puts("hello");
