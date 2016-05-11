@@ -109,22 +109,45 @@ int main() {
             //draw stuff
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             glUseProgram(object.shader_program);
+
+            //Bind diffuse texture
             GLint uniform_location = glGetUniformLocation(object.shader_program,
                 "diffuse");
-            glUniform1i(uniform_location, GL_TEXTURE0);
+            glUniform1i(uniform_location, 0);
             glActiveTexture(GL_TEXTURE0);
             glBindTexture(GL_TEXTURE_2D, object.texture->texture_id);
+
+            //Bind normal map
+            uniform_location = glGetUniformLocation(object.shader_program,
+                "normal");
+            glUniform1i(uniform_location, 1);
+            glActiveTexture(GL_TEXTURE1);
+            glBindTexture(GL_TEXTURE_2D, object.normal_map->texture_id);
+
+            //Bind specular map
+            uniform_location = glGetUniformLocation(object.shader_program,
+                "specular");
+            glUniform1i(uniform_location, 2);
+            glActiveTexture(GL_TEXTURE2);
+            glBindTexture(GL_TEXTURE_2D, object.specular_map->texture_id);
+
             glBegin( GL_TRIANGLES );
             int face_i;
             for(face_i = 0; face_i < object.model->face_count; face_i++) {
                 Face* face = &object.model->faces[face_i];
-                Point* v; Point* uv;
-                v = &face->a.v; uv = &face->a.uv;
-                glTexCoord2f(uv->x, uv->y); glVertex3f( v->x, v->y, v->z );
-                v = &face->b.v; uv = &face->b.uv;
-                glTexCoord2f(uv->x, uv->y); glVertex3f( v->x, v->y, v->z );
-                v = &face->c.v; uv = &face->c.uv;
-                glTexCoord2f(uv->x, uv->y); glVertex3f( v->x, v->y, v->z );
+                Point* v; Point* uv; Point* n;
+                v = &face->a.v; uv = &face->a.uv; n = &face->a.n;
+                glTexCoord2f( uv->x, uv->y );
+                glNormal3f( n->x, n->y, n->z );
+                glVertex3f( v->x, v->y, v->z );
+                v = &face->b.v; uv = &face->b.uv; n = &face->b.n;
+                glTexCoord2f( uv->x, uv->y );
+                glNormal3f( n->x, n->y, n->z );
+                glVertex3f( v->x, v->y, v->z );
+                v = &face->c.v; uv = &face->c.uv; n = &face->c.n;
+                glTexCoord2f( uv->x, uv->y );
+                glNormal3f( n->x, n->y, n->z );
+                glVertex3f( v->x, v->y, v->z );
             }
             glEnd();
             SDL_GL_SwapWindow(window);

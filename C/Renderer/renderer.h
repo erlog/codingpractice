@@ -11,7 +11,7 @@ typedef struct c_face { Vertex a; Vertex b; Vertex c;} Face;
 typedef struct c_model { char* asset_path; int face_count; Face* faces;} Model;
 //TODO: write code to free an object from memory
 typedef struct c_object { char* object_name; Model* model; Texture* texture;
-    GLuint shader_program; } Object;
+    Texture* normal_map; Texture* specular_map; GLuint shader_program; } Object;
 
 //generic utility functions
 char* construct_asset_path(char* object_name, char* filename);

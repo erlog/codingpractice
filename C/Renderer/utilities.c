@@ -70,8 +70,8 @@ bool load_shader(char* shader_path, GLuint* shader_id, GLenum shader_type) {
 }
 
 
-bool load_texture(char* object_name, Texture* texture) {
-    texture->asset_path = construct_asset_path(object_name, "diffuse.png");
+bool load_texture(char* object_name, char* filename, Texture* texture) {
+    texture->asset_path = construct_asset_path(object_name, filename);
 
     //Load PNG
     unsigned width; unsigned height;
@@ -102,8 +102,20 @@ bool load_texture(char* object_name, Texture* texture) {
 bool load_object(Object* object) {
     //Texture
     object->texture = malloc(sizeof(Texture));
-    if(!load_texture(object->object_name, object->texture)) {
+    if(!load_texture(object->object_name, "diffuse.png", object->texture)) {
         message_log("Error loading texture-", object->object_name);
+        return false;
+    }
+    //Normal Map
+    object->normal_map= malloc(sizeof(Texture));
+    if(!load_texture(object->object_name, "nm_tangent.png", object->normal_map)) {
+        message_log("Error loading normal map-", object->object_name);
+        return false;
+    }
+    //Specular Map
+    object->specular_map = malloc(sizeof(Texture));
+    if(!load_texture(object->object_name, "spec.png", object->specular_map)) {
+        message_log("Error loading specular map-", object->object_name);
         return false;
     }
     //Model
@@ -113,25 +125,25 @@ bool load_object(Object* object) {
         return false;
     }
     //Shaders
+    char* path;
     object->shader_program = glCreateProgram();
-    char* shader_path;
-    shader_path = construct_asset_path(object->object_name, "vertex.shader");
+    path = construct_asset_path(object->object_name, "vertex.shader");
     GLuint shader_id;
-    if(!load_shader(shader_path, &shader_id, GL_VERTEX_SHADER)) {
+    if(!load_shader(path, &shader_id, GL_VERTEX_SHADER)) {
         message_log("Error loading vertex shader-", object->object_name);
-        free(shader_path);
+        free(path);
         return false;
     }
     glAttachShader(object->shader_program, shader_id);
-    free(shader_path);
-    shader_path = construct_asset_path(object->object_name, "fragment.shader");
-    if(!load_shader(shader_path, &shader_id, GL_FRAGMENT_SHADER)) {
+    free(path);
+    path = construct_asset_path(object->object_name, "fragment.shader");
+    if(!load_shader(path, &shader_id, GL_FRAGMENT_SHADER)) {
         message_log("Error loading vertex shader-", object->object_name);
-        free(shader_path);
+        free(path);
         return false;
     }
     glAttachShader(object->shader_program, shader_id);
-    free(shader_path);
+    free(path);
 
     glLinkProgram(object->shader_program);
 
