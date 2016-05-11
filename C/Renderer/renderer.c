@@ -11,14 +11,17 @@
 #include <SDL_opengl.h>
 #include <ruby.h>
 #include "lodepng.c"
-//Globals
-char* AssetFolderPath = "objects";
-char* OutputFolderPath = "output";
-bool IsRunning = true;
-uint32_t StartTime = 0;
-uint32_t CurrentTime = 0;
-uint32_t LastUpdateTime = 0;
-uint32_t DeltaTime = 1000; //so we don't miss rendering the first frame
+//State Struct
+typedef struct c_state {
+    char* AssetFolderPath;
+    char* OutputFolderPath;
+    bool IsRunning;
+    uint32_t StartTime;
+    uint32_t CurrentTime;
+    uint32_t LastUpdateTime;
+    uint32_t DeltaTime;
+} State_Struct;
+State_Struct State;
 //Local Includes
 #include "renderer.h"
 #include "wavefront.c"
@@ -31,6 +34,13 @@ uint32_t current_time() {
 
 int main() {
     //INITIALIZATION- Failures here cause a hard exit
+    State.AssetFolderPath = "objects";
+    State.OutputFolderPath = "output";
+    State.IsRunning = true;
+    State.StartTime = 0;
+    State.CurrentTime = 0;
+    State.LastUpdateTime = 0;
+    State.DeltaTime = 0; //so we don't miss rendering the first frame
 
     //Initialize screen struct and buffer for taking screenshots
     Texture screen; screen.asset_path = "SCREEN";
@@ -82,28 +92,32 @@ int main() {
 
     //GAME INIT- Failures here may cause a proper smooth exit when necessary
     Object object; object.object_name = "african_head";
-    if(!load_object(&object)) { IsRunning = false; };
+    if(!load_object(&object)) { State.IsRunning = false; };
 
-    StartTime = current_time();
+    State.StartTime = current_time();
     int frames_drawn = 0;
 
     //MAIN LOOP- Failures here may cause a proper smooth exit when necessary
     message_log("Starting update loop.", "");
-    while(IsRunning) {
-        CurrentTime = current_time();
-        DeltaTime = CurrentTime - LastUpdateTime;
+    while(State.IsRunning) {
+        State.CurrentTime = current_time();
+        State.DeltaTime = State.CurrentTime - State.LastUpdateTime;
 
         while(SDL_PollEvent(&event)) { switch(event.type) {
             case SDL_WINDOWEVENT:
                 break;
 
+            case SDL_KEYDOWN:
+                if(event.key.keysym.sym == SDLK_ESCAPE) { State.IsRunning = false; }
+                break;
+
             case SDL_QUIT:
-                IsRunning = false;
+                State.IsRunning = false;
                 break;
         } }
 
         //TODO: is there a better way to control our framerate?
-        if( DeltaTime > 32 ) {
+        if( State.DeltaTime > 32 ) {
             //rb_funcall(rb_cObject, rb_update_func, 0, NULL);
             glRotatef(0.2f,0.0f,1.0f,0.0f);
             //draw stuff
@@ -151,13 +165,13 @@ int main() {
             }
             glEnd();
             SDL_GL_SwapWindow(window);
-            LastUpdateTime = CurrentTime;
+            State.LastUpdateTime = State.CurrentTime;
             frames_drawn++;
         }
     }
 
     take_screenshot(&screen);
-    float fps = 1000.0/((float)(CurrentTime-StartTime)/frames_drawn);
+    float fps = 1000.0/((float)(State.CurrentTime-State.StartTime)/frames_drawn);
     printf("%f FPS", fps); //TODO:use message log for this
     //ruby_cleanup(0);
     SDL_Quit();

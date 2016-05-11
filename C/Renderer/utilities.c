@@ -1,9 +1,9 @@
 //Small functions that don't fit anywhere else with minimal dependencies
 char* construct_asset_path(char* object_name, char* filename) {
-    int asset_path_length = strlen(AssetFolderPath) + strlen(object_name) +
+    int asset_path_length = strlen(State.AssetFolderPath) + strlen(object_name) +
         strlen(filename) + 3; //1 extra for null terminator + 2 for slashes
     char* asset_path = malloc(sizeof(char)*asset_path_length);
-    sprintf(asset_path, "%s/%s/%s", AssetFolderPath, object_name, filename);
+    sprintf(asset_path, "%s/%s/%s", State.AssetFolderPath, object_name, filename);
     return asset_path;
 }
 
@@ -29,7 +29,7 @@ bool read_entire_file(char* file_path, char** output_string) {
 }
 
 void message_log(char* message, char* predicate) {
-    printf("%.2f: %s %s\n", CurrentTime/1000.0, message, predicate);
+    printf("%.2f: %s %s\n", State.CurrentTime/1000.0, message, predicate);
 }
 
 void flip_texture(Texture* texture) {
@@ -155,7 +155,7 @@ void take_screenshot(Texture* screen) {
     char* datetime_string = get_datetime_string();
     int output_path_length = 255+strlen(datetime_string);
     char* output_path = malloc(sizeof(char)*output_path_length);
-    sprintf(output_path, "%s/renderer - %s.png", OutputFolderPath, datetime_string);
+    sprintf(output_path, "%s/renderer - %s.png", State.OutputFolderPath, datetime_string);
     message_log("Taking screenshot-", output_path);
 
     //write screenshot
