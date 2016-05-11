@@ -23,7 +23,9 @@ bool load_model(char* object_name, Model* model) {
     //Load file
     model->asset_path = construct_asset_path(object_name, "object.obj");
     char buffer[255]; FILE* file = fopen(model->asset_path, "r");
-    if(file == NULL) { message_log("Error loading file"); return false; }
+    if(file == NULL) {
+        message_log("Error loading file-", model->asset_path); return false;
+    }
 
     char* vertex_label = "v"; char* uv_label = "vt";
     char* normal_label = "vn"; char* face_label = "f";
