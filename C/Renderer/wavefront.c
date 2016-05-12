@@ -189,6 +189,8 @@ bool load_model(char* object_name, Model* model) {
         tangent = tangents[tangent_i];
         tangent.x /= uses; tangent.y /= uses; tangent.z /= uses;
         normalize(&tangent);
+        printf("%i\n", tangent_i);
+        point_print(&tangent);
         tangents[tangent_i] = tangent;
     }
 
