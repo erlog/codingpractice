@@ -89,12 +89,13 @@ bool load_texture(char* object_name, char* filename, Texture* texture) {
 
     //Register our texture with OpenGL
     //TODO: error handling
-    glGenTextures(1, &texture->texture_id);
-    glBindTexture(GL_TEXTURE_2D, texture->texture_id);
+    glGenTextures(1, &texture->id);
+    glBindTexture(GL_TEXTURE_2D, texture->id);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texture->width, texture->height, 0,
          GL_RGBA, GL_UNSIGNED_BYTE, texture->buffer);
     glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
     glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, 4.0f);
     glBindTexture(GL_TEXTURE_2D, 0); //unbind the texture
     return true;
 }
