@@ -7,7 +7,7 @@
 #include <math.h>
 //Other Libraries
 #include <GL/glew.h>
-#include <GL/glext.h>
+#include <glext.h>
 #include <SDL.h>
 #include <SDL_opengl.h>
 #include <ruby.h>

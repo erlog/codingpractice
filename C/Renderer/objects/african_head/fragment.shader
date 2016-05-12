@@ -18,7 +18,7 @@ vec4 color;
 void main() {
     //compute mapped normal in model space
     color = texture2D(normal, texture_coordinate);
-    vec3 tangent_normal = normalize(color.rgb*2.0f - 1.0f);
+    vec3 tangent_normal = normalize(color.rgb*2.0 - 1.0);
     vec3 local_bitangent = normalize(cross(local_normal, local_tangent));
     mapped_normal.x = (local_tangent.x * tangent_normal.x) +
         (local_bitangent.x * tangent_normal.y) +
@@ -35,23 +35,23 @@ void main() {
     normalize(mapped_normal);
 
     //compute diffuse intensity
-    light_direction = vec3(0.0f, 0.0f, 1.0f);
-    float diffuse_intensity = clamp(dot(light_direction, mapped_normal), 0.0f, 1.0f);
+    light_direction = vec3(0.0, 0.0, 1.0);
+    float diffuse_intensity = clamp(dot(light_direction, mapped_normal), 0.0, 1.0);
 
     //compute specular intensity
-    camera_direction = vec3(0.0f, 0.0f, 1.0f);
-    float factor = diffuse_intensity*-2.0f;
+    camera_direction = vec3(0.0, 0.0, 1.0);
+    float factor = diffuse_intensity*-2.0;
     vec3 reflection_vector = (mapped_normal * factor) + mapped_normal;
     normalize(reflection_vector);
     color = texture2D(specular, texture_coordinate);
-    float power = color.r*100.0f;
-    float reflectivity = clamp(dot(camera_direction, reflection_vector)*-1.0f, 0.0f, 1.0f);
+    float power = color.r*100.0;
+    float reflectivity = clamp(dot(camera_direction, reflection_vector)*-1.0, 0.0, 1.0);
     reflectivity = pow(reflectivity, power);
 
 
     //factor = 0.05 + 0.6*reflectivity + 0.75*diffuse_intensity;
-    float intensity = 0.05f + 0.6f*reflectivity + 0.75f*diffuse_intensity;
+    float intensity = 0.05 + 0.6*reflectivity + 0.75*diffuse_intensity;
     gl_FragColor = texture2D(diffuse, texture_coordinate) * intensity;
     vec3 t = local_tangent;
-    gl_FragColor = vec4(t.x, t.y, t.z, 1.0f);
+    gl_FragColor = vec4(t.x, t.y, t.z, 1.0);
 }
