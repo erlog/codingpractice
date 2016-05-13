@@ -25,6 +25,7 @@ typedef struct c_vertex {
     Point uv;   //Texture Coordinate
     Point n;    //Normal Vector
     Point t;    //Tangent Vector
+    Point b;    //Bitangent Vector
 } Vertex;
 
 typedef struct c_face {

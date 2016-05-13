@@ -141,13 +141,16 @@ bool load_model(char* object_name, Model* model) {
     Point q1; Point q2;
     Point s1t1; Point s2t2;
     Point tangent;
+    Point bitangent;
     Point* tangents = malloc(sizeof(Point)*model->vertex_count);
+    Point* bitangents = malloc(sizeof(Point)*model->vertex_count);
     int* tangent_uses = malloc(sizeof(int)*model->vertex_count);
 
     //initialize tangents
     int tangent_i;
     for(tangent_i = 0; tangent_i < model->vertex_count; tangent_i++) {
         set_point(&tangents[tangent_i], 0.0, 0.0, 0.0);
+        set_point(&bitangents[tangent_i], 0.0, 0.0, 0.0);
         tangent_uses[tangent_i] = 0;
     }
 
@@ -168,17 +171,27 @@ bool load_model(char* object_name, Model* model) {
         }
 
         GLfloat divisor = (s1t1.x*s2t2.y) - (s1t1.y*s2t2.x);
+
         tangent.x  = ((s2t2.y * q1.x) - (s1t1.y * q2.x)) / divisor;
         tangent.y  = ((s2t2.y * q1.y) - (s1t1.y * q2.y)) / divisor;
         tangent.z  = ((s2t2.y * q1.z) - (s1t1.y * q2.z)) / divisor;
-
         normalize(&tangent);
 
+        bitangent.x = ((s1t1.x * q2.x) - (s2t2.x*q1.x)) / divisor;
+        bitangent.y = ((s1t1.x * q2.y) - (s2t2.x*q1.y)) / divisor;
+        bitangent.z = ((s1t1.x * q2.z) - (s2t2.x*q1.z)) / divisor;
+        normalize(&bitangent);
+
         point_add(&tangents[a->v.id], &tangents[a->v.id], &tangent);
-        tangent_uses[a->v.id]++;
         point_add(&tangents[b->v.id], &tangents[b->v.id], &tangent);
-        tangent_uses[b->v.id]++;
         point_add(&tangents[c->v.id], &tangents[c->v.id], &tangent);
+
+        point_add(&bitangents[a->v.id], &bitangents[a->v.id], &bitangent);
+        point_add(&bitangents[b->v.id], &bitangents[b->v.id], &bitangent);
+        point_add(&bitangents[c->v.id], &bitangents[c->v.id], &bitangent);
+
+        tangent_uses[a->v.id]++;
+        tangent_uses[b->v.id]++;
         tangent_uses[c->v.id]++;
     }
 
@@ -186,22 +199,24 @@ bool load_model(char* object_name, Model* model) {
     int uses;
     for(tangent_i = 0; tangent_i < model->vertex_count; tangent_i++) {
         uses = tangent_uses[tangent_i];
-        tangent = tangents[tangent_i];
+        tangent = tangents[tangent_i]; bitangent = bitangents[tangent_i];
+
         tangent.x /= uses; tangent.y /= uses; tangent.z /= uses;
-        normalize(&tangent);
-        printf("%i\n", tangent_i);
-        point_print(&tangent);
-        tangents[tangent_i] = tangent;
+        bitangent.x /= uses; bitangent.y /= uses; bitangent.z /= uses;
+
+        normalize(&tangent); normalize(&bitangent);
+        tangents[tangent_i] = tangent; bitangents[tangent_i] = bitangent;
     }
 
     //assign tangents to vertices
     for(face_i = 0; face_i < model->face_count; face_i++) {
         a = &faces[face_i].a; b = &faces[face_i].b; c = &faces[face_i].c;
-        a->t = tangents[a->v.id];
-        b->t = tangents[b->v.id];
-        c->t = tangents[c->v.id];
+        a->t = tangents[a->v.id]; a->b = bitangents[a->v.id];
+        b->t = tangents[b->v.id]; b->b = bitangents[b->v.id];
+        c->t = tangents[c->v.id]; c->b = bitangents[c->v.id];
     }
 
     free(vertices); free(uvs); free(normals); free(tangents); free(tangent_uses);
+    free(bitangents);
     return true;
 }

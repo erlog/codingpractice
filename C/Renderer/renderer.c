@@ -7,7 +7,7 @@
 #include <math.h>
 //Other Libraries
 #include <GL/glew.h>
-#include <glext.h>
+#include <GL/glext.h>
 #include <SDL.h>
 #include <SDL_opengl.h>
 #include <ruby.h>
@@ -34,6 +34,17 @@ uint32_t current_time() {
     return SDL_GetTicks();
 }
 
+void send_vertex(Vertex* vertex, GLint t_loc, GLint b_loc, GLint n_loc) {
+    Point* v = &vertex->v; Point* uv = &vertex->uv;
+    Point* t = &vertex->t; Point* b = &vertex->b; Point* n = &vertex->n;
+
+    glVertexAttrib3f(t_loc, t->x, t->y, t->z);
+    glVertexAttrib3f(b_loc, b->x, b->y, b->z);
+    glVertexAttrib3f(n_loc, n->x, n->y, n->z);
+    glTexCoord2f( uv->x, uv->y );
+    glVertex3f( v->x, v->y, v->z );
+}
+
 int main() {
     //INITIALIZATION- Failures here cause a hard exit
     State.AssetFolderPath = "objects";
@@ -46,7 +57,7 @@ int main() {
 
     //Initialize screen struct and buffer for taking screenshots
     Texture screen; screen.asset_path = "Flamerokz";
-    screen.width = 384; screen.height = 384; screen.bytes_per_pixel = 3;
+    screen.width = 1024; screen.height = screen.width; screen.bytes_per_pixel = 3;
     screen.pitch = screen.width * screen.bytes_per_pixel;
     screen.buffer_size = screen.pitch * screen.height;
     screen.buffer = malloc(screen.buffer_size);
@@ -87,7 +98,7 @@ int main() {
     glClearColor( 0.f, 0.f, 0.f, 1.f );
     glEnable(GL_BLEND);
     glEnable(GL_DEPTH_TEST);
-    glEnable(GL_CULL_FACE);
+    //glEnable(GL_CULL_FACE);
     glDepthRange(1.0, 0.0); //change the handedness of the z axis
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -150,31 +161,24 @@ int main() {
             glBindTexture(GL_TEXTURE_2D, object.specular_map->id);
 
             //Bind Attributes
-            GLint normal_location = glGetAttribLocation(object.shader_program,
-                "surface_normal");
             GLint tangent_location = glGetAttribLocation(object.shader_program,
                 "surface_tangent");
+            GLint bitangent_location = glGetAttribLocation(object.shader_program,
+                "surface_bitangent");
+            GLint normal_location = glGetAttribLocation(object.shader_program,
+                "surface_normal");
 
 
             glBegin( GL_TRIANGLES );
             int face_i; Face* face; Point* v; Point* uv; Point* n; Point* t;
             for(face_i = 0; face_i < object.model->face_count; face_i++) {
                 face = &object.model->faces[face_i];
-                v = &face->a.v; uv = &face->a.uv; n = &face->a.n; t = &face->a.t;
-                glTexCoord2f( uv->x, uv->y );
-                glVertexAttrib3f(normal_location, n->x, n->y, n->z);
-                glVertexAttrib3f(tangent_location, t->x, t->y, t->z);
-                glVertex3f( v->x, v->y, v->z );
-                v = &face->b.v; uv = &face->b.uv; n = &face->b.n; t = &face->a.t;
-                glTexCoord2f( uv->x, uv->y );
-                glVertexAttrib3f(normal_location, n->x, n->y, n->z);
-                glVertexAttrib3f(tangent_location, t->x, t->y, t->z);
-                glVertex3f( v->x, v->y, v->z );
-                v = &face->c.v; uv = &face->c.uv; n = &face->c.n; t = &face->a.t;
-                glTexCoord2f( uv->x, uv->y );
-                glVertexAttrib3f(normal_location, n->x, n->y, n->z);
-                glVertexAttrib3f(tangent_location, t->x, t->y, t->z);
-                glVertex3f( v->x, v->y, v->z );
+                send_vertex(&face->a, tangent_location, bitangent_location,
+                    normal_location);
+                send_vertex(&face->b, tangent_location, bitangent_location,
+                    normal_location);
+                send_vertex(&face->c, tangent_location, bitangent_location,
+                    normal_location);
             }
             glEnd();
             SDL_GL_SwapWindow(window);
