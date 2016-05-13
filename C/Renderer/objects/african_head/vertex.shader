@@ -13,7 +13,7 @@ void main() {
     // Transforming The Vertex
     texture_coordinate = vec2(gl_MultiTexCoord0);
     gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
-    local_tangent = surface_tangent;
-    local_bitangent = surface_bitangent;
-    local_normal = normalize(surface_normal);
+    local_tangent = normalize(gl_NormalMatrix * surface_tangent);
+    local_bitangent = normalize(gl_NormalMatrix * surface_bitangent);
+    local_normal = normalize(gl_NormalMatrix * surface_normal);
 }

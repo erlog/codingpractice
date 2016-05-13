@@ -12,23 +12,16 @@
 #include <SDL_opengl.h>
 #include <ruby.h>
 #include "lodepng.c"
-
+//Local Headers
+#include "renderer.h"
 //State Struct
-typedef struct c_state {
-    char* AssetFolderPath;
-    char* OutputFolderPath;
-    bool IsRunning;
-    uint32_t StartTime;
-    uint32_t CurrentTime;
-    uint32_t LastUpdateTime;
-    uint32_t DeltaTime;
-} State_Struct;
 State_Struct State;
 //Local Includes
-#include "renderer.h"
 #include "wavefront.c"
 #include "utilities.c"
+#include "hid_input.c"
 //#include "ruby_functions.c"
+
 
 uint32_t current_time() {
     return SDL_GetTicks();
@@ -57,10 +50,11 @@ int main() {
 
     //Initialize screen struct and buffer for taking screenshots
     Texture screen; screen.asset_path = "Flamerokz";
-    screen.width = 1024; screen.height = screen.width; screen.bytes_per_pixel = 3;
+    screen.width = 384; screen.height = screen.width; screen.bytes_per_pixel = 3;
     screen.pitch = screen.width * screen.bytes_per_pixel;
     screen.buffer_size = screen.pitch * screen.height;
     screen.buffer = malloc(screen.buffer_size);
+    State.screen = &screen;
 
     //Start Ruby
     //ruby_setup_render_environment();
@@ -98,15 +92,16 @@ int main() {
     glClearColor( 0.f, 0.f, 0.f, 1.f );
     glEnable(GL_BLEND);
     glEnable(GL_DEPTH_TEST);
-    //glEnable(GL_CULL_FACE);
-    glDepthRange(1.0, 0.0); //change the handedness of the z axis
+    glEnable(GL_CULL_FACE);
+    glFrontFace(GL_CCW); //Default is CCW, counter-clockwise
+    glDepthRange(1.0, -1.0); //change the handedness of the z axis
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 
     //Intialize Shaders
 
     //GAME INIT- Failures here may cause a proper smooth exit when necessary
-    Object object; object.object_name = "african_head";
+    Object object; object.object_name = "floor";
     if(!load_object(&object)) { State.IsRunning = false; };
 
     State.StartTime = current_time();
@@ -114,6 +109,7 @@ int main() {
 
     //MAIN LOOP- Failures here may cause a proper smooth exit when necessary
     message_log("Starting update loop.", "");
+
     while(State.IsRunning) {
         State.CurrentTime = current_time();
         State.DeltaTime = State.CurrentTime - State.LastUpdateTime;
@@ -123,7 +119,7 @@ int main() {
                 break;
 
             case SDL_KEYDOWN:
-                if(event.key.keysym.sym == SDLK_ESCAPE) { State.IsRunning = false; }
+                handle_keyboard(event.key);
                 break;
 
             case SDL_QUIT:
@@ -134,7 +130,7 @@ int main() {
         //TODO: is there a better way to control our framerate?
         if( State.DeltaTime > 32 ) {
             //rb_funcall(rb_cObject, rb_update_func, 0, NULL);
-            glRotatef(0.2f,0.0f,-1.0f,0.0f);
+            glRotatef(0.2f,0.1f,-0.1f,0.0f);
             //draw stuff
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             glUseProgram(object.shader_program);
@@ -181,13 +177,36 @@ int main() {
                     normal_location);
             }
             glEnd();
+
+            //Debug Grid Lines
+            glUseProgram(0);
+            //glClear(GL_DEPTH_BUFFER_BIT);
+            glBegin( GL_LINES);
+            glColor3f(1.0, 0.0, 0.0);
+            glVertex3f(0.0, 0.0, 0.0);
+            glVertex3f(1.0, 0.0, 0.0);
+            glColor3f(0.0, 1.0, 0.0);
+            glVertex3f(0.0, 0.0, 0.0);
+            glVertex3f(0.0, 1.0, 0.0);
+            glColor3f(0.0, 0.0, 1.0);
+            glVertex3f(0.0, 0.0, 0.0);
+            glVertex3f(0.0, 0.0, 1.0);
+            glEnd();
+
+            glBegin(GL_POINTS);
+            glColor3f(1.0, 1.0, 1.0);
+            glVertex3f(1.0, 0.0, 0.0);
+            glVertex3f(0.0, 1.0, 0.0);
+            glVertex3f(0.0, 0.0, 1.0);
+            glEnd();
+
             SDL_GL_SwapWindow(window);
             State.LastUpdateTime = State.CurrentTime;
             frames_drawn++;
         }
     }
 
-    take_screenshot(&screen);
+    take_screenshot();
     float fps = 1000.0/((float)(State.CurrentTime-State.StartTime)/frames_drawn);
     printf("%f FPS", fps); //TODO:use message log for this
     //ruby_cleanup(0);

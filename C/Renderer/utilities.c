@@ -151,7 +151,7 @@ bool load_object(Object* object) {
     return true;
 }
 
-void take_screenshot(Texture* screen) {
+void take_screenshot() {
     //construct path TODO: better way to do string nonsense?
     char* datetime_string = get_datetime_string();
     int output_path_length = 255+strlen(datetime_string);
@@ -160,11 +160,11 @@ void take_screenshot(Texture* screen) {
     message_log("Taking screenshot-", output_path);
 
     //write screenshot
-    glReadPixels(0, 0, screen->width, screen->height,
-        GL_RGB, GL_UNSIGNED_BYTE, screen->buffer);
-    flip_texture(screen);
-    lodepng_encode24_file(output_path, (const unsigned char*)screen->buffer,
-        screen->width, screen->height);
+    glReadPixels(0, 0, State.screen->width, State.screen->height,
+        GL_RGB, GL_UNSIGNED_BYTE, State.screen->buffer);
+    flip_texture(State.screen);
+    lodepng_encode24_file(output_path, (const unsigned char*)State.screen->buffer,
+        State.screen->width, State.screen->height);
 
     free(datetime_string);
     free(output_path);

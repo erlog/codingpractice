@@ -48,8 +48,21 @@ typedef struct c_object {
     Texture* texture;
     Texture* normal_map;
     Texture* specular_map;
+    Point* location;
     GLuint shader_program; //ID assigned to our compiled shader by OpenGL
 } Object;
+
+typedef struct c_state {
+    char* AssetFolderPath;
+    char* OutputFolderPath;
+    bool IsRunning;
+    bool IsPaused;
+    Texture* screen;
+    uint32_t StartTime;
+    uint32_t CurrentTime;
+    uint32_t LastUpdateTime;
+    uint32_t DeltaTime;
+} State_Struct;
 
 //generic utility functions
 char* construct_asset_path(char* object_name, char* filename);

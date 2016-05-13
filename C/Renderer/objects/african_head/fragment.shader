@@ -32,7 +32,6 @@ void main() {
     mapped_normal = TBN * tangent_normal;
 
     //convert to world space
-    mapped_normal = gl_NormalMatrix * mapped_normal;
     normalize(mapped_normal);
 
     //compute diffuse intensity
@@ -40,7 +39,7 @@ void main() {
     float diffuse_intensity = clamp(dot(light_direction, mapped_normal), 0.0, 1.0);
 
     //compute specular intensity
-    camera_direction = vec3(0.0, 0.0, 1.0);
+    camera_direction = gl_NormalMatrix * vec3(0.0, 0.0, 1.0);
     float factor = dot(mapped_normal, light_direction)*2.0;
     vec3 reflection_vector = (factor * mapped_normal) - light_direction;
     normalize(reflection_vector);
@@ -51,7 +50,7 @@ void main() {
     reflectivity = pow(reflectivity, power);
 
 
-    float intensity = 0.05 + 0.6*reflectivity + 0.75*diffuse_intensity;
+    float intensity = 0.05 + 0.45*reflectivity + 0.6*diffuse_intensity;
     gl_FragColor = texture2D(diffuse, texture_coordinate) * intensity;
-    //gl_FragColor = normal_to_color(mapped_normal);
+    //gl_FragColor = normal_to_color(local_normal);
 }
