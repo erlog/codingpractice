@@ -3,7 +3,7 @@
 
 //Structs
 typedef struct c_texture {
-    char* asset_path;
+    string asset_path;
     GLuint id;  //ID assigned to us by OpenGL
     GLsizei width;
     GLsizei height;
@@ -35,7 +35,7 @@ typedef struct c_face {
 } Face;
 
 typedef struct c_model {
-    char* asset_path;
+    string asset_path;
     int face_count;
     int vertex_count;
     Face* faces;
@@ -43,7 +43,7 @@ typedef struct c_model {
 
 typedef struct c_object {
     //TODO: write code to free an object from memory
-    char* object_name;
+    string object_name;
     Model* model;
     Texture* texture;
     Texture* normal_map;
@@ -53,8 +53,8 @@ typedef struct c_object {
 } Object;
 
 typedef struct c_state {
-    char* AssetFolderPath;
-    char* OutputFolderPath;
+    std::string AssetFolderPath;
+    std::string OutputFolderPath;
     bool IsRunning;
     bool IsPaused;
     Texture* screen;
@@ -65,8 +65,8 @@ typedef struct c_state {
 } State_Struct;
 
 //generic utility functions
-char* construct_asset_path(char* object_name, char* filename);
-void message_log(char* message, char* predicate);
+string construct_asset_path(string object_name, string filename);
+//void message_log(const char* message, const char* predicate);
 
 #endif
 
