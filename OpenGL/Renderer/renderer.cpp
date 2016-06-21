@@ -1,26 +1,30 @@
 //C Standard Library
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdbool.h>
 #include <time.h>
 #include <float.h>
 #include <math.h>
+//C++ Stuff
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <sstream>
+using namespace std;
 //Other Libraries
 #include <GL/glew.h>
-#include <GL/glext.h>
+#include <glm/glm.hpp>
 #include <SDL.h>
 #include <SDL_opengl.h>
+#include <SDL_opengl_glext.h>
 #include <ruby.h>
-#include "lodepng.c"
+#include "lodepng.cpp"
 //Local Headers
 #include "renderer.h"
 //State Struct
 State_Struct State;
 //Local Includes
-#include "wavefront.c"
-#include "utilities.c"
-#include "hid_input.c"
-//#include "ruby_functions.c"
+#include "wavefront.cpp"
+#include "utilities.cpp"
+#include "hid_input.cpp"
+//#include "ruby_functions.cpp"
 
 
 uint32_t current_time() {
@@ -39,6 +43,7 @@ void send_vertex(Vertex* vertex, GLint t_loc, GLint b_loc, GLint n_loc) {
 }
 
 int main() {
+    glm::vec4 testpos = glm::vec4(1.f, 1.f, 1.f, 1.f);
     //INITIALIZATION- Failures here cause a hard exit
     State.AssetFolderPath = "objects";
     State.OutputFolderPath = "output";
@@ -49,11 +54,11 @@ int main() {
     State.DeltaTime = 0;
 
     //Initialize screen struct and buffer for taking screenshots
-    Texture screen; screen.asset_path = "Flamerokz";
+    Texture screen; screen.asset_path = string("Flamerokz");
     screen.width = 384; screen.height = screen.width; screen.bytes_per_pixel = 3;
     screen.pitch = screen.width * screen.bytes_per_pixel;
     screen.buffer_size = screen.pitch * screen.height;
-    screen.buffer = malloc(screen.buffer_size);
+    screen.buffer = (uint8_t*)malloc(screen.buffer_size);
     State.screen = &screen;
 
     //Start Ruby
@@ -69,7 +74,7 @@ int main() {
     SDL_GL_SetAttribute( SDL_GL_CONTEXT_MAJOR_VERSION, 2 ); //Use OpenGL 2.1
     SDL_GL_SetAttribute( SDL_GL_CONTEXT_MINOR_VERSION, 1 );
 
-    SDL_Window* window = SDL_CreateWindow( screen.asset_path, SDL_WINDOWPOS_CENTERED,
+    SDL_Window* window = SDL_CreateWindow( screen.asset_path.c_str(), SDL_WINDOWPOS_CENTERED,
         SDL_WINDOWPOS_CENTERED, screen.width, screen.height, SDL_WINDOW_OPENGL);
     if(window == NULL) {
         message_log("Couldn't initialize-", "SDL OpenGL window"); return 0;
@@ -180,7 +185,7 @@ int main() {
 
             //Debug Grid Lines
             glUseProgram(0);
-            //glClear(GL_DEPTH_BUFFER_BIT);
+
             glBegin( GL_LINES);
             glColor3f(1.0, 0.0, 0.0);
             glVertex3f(0.0, 0.0, 0.0);

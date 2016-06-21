@@ -53,16 +53,16 @@ int parse_face_triplet(char* line, int* result) {
     return i;
 }
 
-bool load_model(char* object_name, Model* model) {
+bool load_model(string object_name, Model* model) {
     //Load file
     model->asset_path = construct_asset_path(object_name, "object.obj");
-    char buffer[255]; FILE* file = fopen(model->asset_path, "r");
+    char buffer[255]; FILE* file = fopen(model->asset_path.c_str(), "r");
     if(file == NULL) {
-        message_log("Error loading file-", model->asset_path); return false;
+        //message_log("Error loading file-", model->asset_path); return false;
     }
 
-    char* vertex_label = "v"; char* uv_label = "vt";
-    char* normal_label = "vn"; char* face_label = "f";
+    const char* vertex_label = "v"; const char* uv_label = "vt";
+    const char* normal_label = "vn"; const char* face_label = "f";
 
     //Count number of items
     int vertex_count = 0; int uv_count = 0;
@@ -85,12 +85,12 @@ bool load_model(char* object_name, Model* model) {
     fseek(file, 0, SEEK_SET);
 
     model->vertex_count = vertex_count;
-    Point* vertices = malloc(sizeof(Point)*vertex_count); vertex_count = 0;
-    Point* uvs = malloc(sizeof(Point)*uv_count); uv_count = 0;
-    Point* normals = malloc(sizeof(Point)*normal_count); normal_count = 0;
+    Point* vertices = (Point*)malloc(sizeof(Point)*vertex_count); vertex_count = 0;
+    Point* uvs = (Point*)malloc(sizeof(Point)*uv_count); uv_count = 0;
+    Point* normals = (Point*)malloc(sizeof(Point)*normal_count); normal_count = 0;
 
     model->face_count = face_count;
-    Face* faces = malloc(sizeof(Face)*face_count); face_count = 0;
+    Face* faces = (Face*)malloc(sizeof(Face)*face_count); face_count = 0;
     model->faces = faces;
 
     //Read data
@@ -142,9 +142,9 @@ bool load_model(char* object_name, Model* model) {
     Point s1t1; Point s2t2;
     Point tangent;
     Point bitangent;
-    Point* tangents = malloc(sizeof(Point)*model->vertex_count);
-    Point* bitangents = malloc(sizeof(Point)*model->vertex_count);
-    int* tangent_uses = malloc(sizeof(int)*model->vertex_count);
+    Point* tangents = (Point*)malloc(sizeof(Point)*model->vertex_count);
+    Point* bitangents = (Point*)malloc(sizeof(Point)*model->vertex_count);
+    int* tangent_uses = (int*)malloc(sizeof(int)*model->vertex_count);
 
     //initialize tangents
     int tangent_i;
