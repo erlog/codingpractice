@@ -7,22 +7,14 @@
 #include "c_bitmap.h"
 
 bool should_draw_face(Point* a_v, Point* b_v, Point* c_v,
-                            double* normal_matrix, Point* camera_direction) {
-    Point* left; left = ALLOC(Point);
-    left->x = b_v->x - a_v->x;
-    left->y = b_v->y - a_v->y;
-    left->z = b_v->z - a_v->z;
+                            float* normal_matrix, Point* camera_direction) {
+    Point left = { b_v->x - a_v->x, b_v->y - a_v->y, b_v->z - a_v->z };
+    Point right = { c_v->x - a_v->x, c_v->y - a_v->y, c_v->z - a_v->z };
 
-    Point* right; right = ALLOC(Point);
-    right->x = c_v->x - a_v->x;
-    right->y = c_v->y - a_v->y;
-    right->z = c_v->z - a_v->z;
+    Point normal = cross_product(&left, &right); normalize(&normal);
+    apply_matrix(&normal, normal_matrix);
+    float result = scalar_product(&normal, camera_direction);
 
-    Point* normal = cross_product(left, right); normalize(normal);
-    apply_matrix(normal, normal_matrix);
-    double result = scalar_product(normal, camera_direction);
-
-    xfree(left); xfree(right); xfree(normal);
     if(result < 0) { return true; } //this means the polygon isn't facing us
     return false;
 }
@@ -54,7 +46,7 @@ void sort_vertices(Vertex** a, Vertex** b, Vertex** c) {
 }
 
 inline void face_to_screen(Vertex* a, Vertex* b, Vertex* c,
-                                double* view_matrix, Point* screen_center) {
+                                float* view_matrix, Point* screen_center) {
     Point_clone(a->v, a->screen_v);
     Point_clone(b->v, b->screen_v);
     Point_clone(c->v, c->screen_v);
@@ -81,17 +73,17 @@ VALUE rb_render_model(VALUE self, VALUE rb_faces,
 
     Matrix* matrix_struct;
     Data_Get_Struct(rb_view_matrix, Matrix, matrix_struct);
-    double* view_matrix = matrix_struct->m;
+    float* view_matrix = matrix_struct->m;
     Data_Get_Struct(rb_normal_matrix, Matrix, matrix_struct);
-    double* normal_matrix = matrix_struct->m;
+    float* normal_matrix = matrix_struct->m;
 
     Point* camera_direction; Data_Get_Struct(rb_camera_direction, Point, camera_direction);
     Point* light_direction; Data_Get_Struct(rb_light_direction, Point, light_direction);
 
-    Point* screen_center =
-        new_point((double)(bitmap->width/2),(double)(bitmap->height/2), 255.0);
-    Point* texture_size =
-        new_point((double)(texture->width-1),(double)(texture->height-1), 0.0);
+    Point screen_center =
+        {(float)(bitmap->width/2),(float)(bitmap->height/2), 255.0};
+    Point texture_size =
+        {(float)(texture->width-1),(float)(texture->height-1), 0.0};
 
 
     int number_of_faces = RARRAY_LEN(rb_faces);
@@ -102,15 +94,15 @@ VALUE rb_render_model(VALUE self, VALUE rb_faces,
     VALUE face;
     Vertex* a; Vertex* b; Vertex* c;
     Point* bary;
-    Point* screen_coord; screen_coord = ALLOC(Point);
-    Point* texture_coord; texture_coord = ALLOC(Point);
+    Point screen_coord;
+    Point texture_coord;
     Point* tangent_normal;
-    Point* normal; normal = ALLOC(Point);
+    Point normal;
     Point* point_list;
-    double diffuse_intensity;
-    double specular_power;
-    double reflectivity;
-    double factor;
+    float diffuse_intensity;
+    float specular_power;
+    float reflectivity;
+    float factor;
 
     for(face_i = 0; face_i < number_of_faces; face_i++) {
         face = rb_ary_entry(rb_faces, face_i);
@@ -121,47 +113,43 @@ VALUE rb_render_model(VALUE self, VALUE rb_faces,
                                                         camera_direction)) {
             drawn_faces++;
             //project face to screen
-            face_to_screen(a, b, c, view_matrix, screen_center);
+            face_to_screen(a, b, c, view_matrix, &screen_center);
             sort_vertices(&a, &b, &c);
 
             number_of_points = triangle(&point_list, a->screen_v,
                                                     b->screen_v, c->screen_v);
             for(point_i = 0; point_i < number_of_points; point_i++) {
                 bary = &point_list[point_i];
-                barycentric_to_cartesian(bary, screen_coord, a->screen_v,
+                barycentric_to_cartesian(bary, &screen_coord, a->screen_v,
                                                     b->screen_v, c->screen_v);
-                screen_coord->x = roundf(screen_coord->x);
-                screen_coord->y = roundf(screen_coord->y);
+                screen_coord.x = roundf(screen_coord.x);
+                screen_coord.y = roundf(screen_coord.y);
                 //convert to clip coordinates
                 to_barycentric_clip(bary, a->screen_v, b->screen_v, c->screen_v);
 
-                if(zbuffer_should_draw(zbuffer, screen_coord)) {
-                    point_to_texture(bary, texture_coord, texture_size,
+                if(zbuffer_should_draw(zbuffer, &screen_coord)) {
+                    point_to_texture(bary, &texture_coord, &texture_size,
                                                         a->uv, b->uv, c->uv);
                     //compute diffuse from tangent normal
-                    tangent_normal = get_normal(normalmap, texture_coord);
+                    tangent_normal = get_normal(normalmap, &texture_coord);
                     convert_tangent_normal(tangent_normal, bary,
-                                            normal, normal_matrix, a, b, c);
-                    diffuse_intensity = scalar_product(normal,
+                                            &normal, normal_matrix, a, b, c);
+                    diffuse_intensity = scalar_product(&normal,
                                                         light_direction) * -1;
                     //compute specularity
-                    specular_power = get_specular(specmap, texture_coord);
-                    reflectivity = compute_reflection(normal, light_direction,
+                    specular_power = get_specular(specmap, &texture_coord);
+                    reflectivity = compute_reflection(&normal, light_direction,
                                             camera_direction, specular_power);
                     //light our pixel with the information
-                    color = bitmap_get_pixel(texture, texture_coord);
+                    color = bitmap_get_pixel(texture, &texture_coord);
                     factor = 0.05 + 0.6*reflectivity + 0.75*diffuse_intensity;
                     color = color_multiply(color, factor);
-                    bitmap_set_pixel(bitmap, screen_coord, color);
+                    bitmap_set_pixel(bitmap, &screen_coord, color);
                 }
             }
             free(point_list);
         }
     }
-    xfree(screen_center);
-    xfree(texture_size);
-    xfree(normal);
-    xfree(screen_coord);
-    xfree(texture_coord);
+
     return INT2NUM(drawn_faces);
 }

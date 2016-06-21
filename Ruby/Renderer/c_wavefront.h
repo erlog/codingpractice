@@ -13,11 +13,6 @@ VALUE C_Vertex_tangent(VALUE self);
 VALUE C_Vertex_bitangent(VALUE self);
 VALUE C_Vertex_set_v(VALUE self, VALUE rb_point);
 
-VALUE C_Vertex_allocate(VALUE klass) {
-    face* face; face = ALLOC(Face);
-    return Data_Wrap_Struct(klass, NULL, deallocate_struct, face);
-}
-
 //C_Face
 VALUE C_Face_allocate(VALUE klass);
 VALUE C_Face_initialize(VALUE self,

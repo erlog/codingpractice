@@ -57,7 +57,7 @@ VALUE C_Vertex_set_v(VALUE self, VALUE rb_point) {
 
 //C_Face
 VALUE C_Face_allocate(VALUE klass) {
-    face* face; face = ALLOC(Face);
+    Face* face; face = ALLOC(Face);
     return Data_Wrap_Struct(klass, NULL, deallocate_struct, face);
 }
 
@@ -67,8 +67,8 @@ VALUE C_Face_initialize(VALUE self,
     Vertex* vertex_a; Data_Get_Struct(rb_vertex_a, Vertex, vertex_a);
     Vertex* vertex_b; Data_Get_Struct(rb_vertex_b, Vertex, vertex_b);
     Vertex* vertex_c; Data_Get_Struct(rb_vertex_c, Vertex, vertex_c);
-    Face->a = vertex_a;
-    Face->b = vertex_b;
-    Face->c = certex_c;
+    face->a = vertex_a;
+    face->b = vertex_b;
+    face->c = vertex_c;
     return self;
 }

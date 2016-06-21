@@ -2,12 +2,12 @@
 #define C_OPTIMIZATION_MAIN_H
 
 //Project Structs
-typedef struct c_point { double x; double y; double z; double q;} Point;
-typedef struct c_matrix { double m[16]; } Matrix;
+typedef struct c_point { float x; float y; float z; float q;} Point;
+typedef struct c_matrix { float m[16]; } Matrix;
 typedef struct c_vertex { Point* v; Point* screen_v; Point* uv;
                     Point* normal; Point* tangent; Point* bitangent;} Vertex;
 typedef struct c_face { Vertex* a; Vertex* b; Vertex* c;} Face;
-typedef struct c_zbuffer { int width; int height; double* buffer;
+typedef struct c_zbuffer { int width; int height; float* buffer;
                            int drawn_pixels; int oob_pixels;
                            int occluded_pixels; } ZBuffer;
 
@@ -27,8 +27,8 @@ extern VALUE RB_NEG;
 
 //Generic Functions
 void Init_c_optimization();
-void sort_doubles(double* a, double* b);
-double clamp(double value, double min, double max);
+void sort_floats(float* a, float* b);
+float clamp(float value, float min, float max);
 
 //Generic Class Methods
 void deallocate_struct(void* my_struct);

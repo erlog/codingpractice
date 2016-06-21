@@ -101,7 +101,7 @@ int main() {
     //Intialize Shaders
 
     //GAME INIT- Failures here may cause a proper smooth exit when necessary
-    Object object; object.object_name = "floor";
+    Object object; object.object_name = "african_head";
     if(!load_object(&object)) { State.IsRunning = false; };
 
     State.StartTime = current_time();
@@ -190,14 +190,14 @@ int main() {
             glVertex3f(0.0, 1.0, 0.0);
             glColor3f(0.0, 0.0, 1.0);
             glVertex3f(0.0, 0.0, 0.0);
-            glVertex3f(0.0, 0.0, 1.0);
+            glVertex3f(0.0, 0.0, -1.0);
             glEnd();
 
             glBegin(GL_POINTS);
             glColor3f(1.0, 1.0, 1.0);
             glVertex3f(1.0, 0.0, 0.0);
             glVertex3f(0.0, 1.0, 0.0);
-            glVertex3f(0.0, 0.0, 1.0);
+            glVertex3f(0.0, 0.0, -1.0);
             glEnd();
 
             SDL_GL_SwapWindow(window);

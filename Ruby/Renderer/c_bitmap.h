@@ -7,7 +7,7 @@ inline int32_t color_to_bgr(int r, int g, int b);
 
 //generic functions
 VALUE C_color_multiply(VALUE self, VALUE rb_color_int, VALUE rb_factor);
-inline int32_t color_multiply(int32_t color, double factor);
+inline int32_t color_multiply(int32_t color, float factor);
 
 //Bitmap class
 typedef struct c_bitmap { int width; int height; int32_t* buffer; } Bitmap;
@@ -43,11 +43,11 @@ VALUE C_NormalMap_get_normal(VALUE self, VALUE rb_point);
 inline Point* get_normal(NormalMap* normalmap, Point* point);
 
 //SpecularMap
-typedef struct c_specularmap { int width; int height; double* buffer; } SpecularMap;
+typedef struct c_specularmap { int width; int height; float* buffer; } SpecularMap;
 void deallocate_specularmap(SpecularMap* specularmap);
 VALUE C_SpecularMap_allocate(VALUE klass);
 VALUE C_SpecularMap_initialize(VALUE self, VALUE rb_bitmap);
 VALUE C_SpecularMap_get_specular(VALUE self, VALUE rb_point);
-inline double get_specular(SpecularMap* specularmap, Point* point);
+inline float get_specular(SpecularMap* specularmap, Point* point);
 
 #endif

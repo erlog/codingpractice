@@ -43,13 +43,13 @@ VALUE C_Matrix_initialize(VALUE self, VALUE rb_array) {
 }
 
 
-void sort_doubles(double* a, double* b) {
-    double backup = *a;
+void sort_floats(float* a, float* b) {
+    float backup = *a;
     if (*a > *b) { *a = *b; *b = backup; }
     return;
 }
 
-double clamp(double value, double min, double max) {
+float clamp(float value, float min, float max) {
     if(value > max) { return max; }
     if(value < min) { return min; }
     return value;
@@ -59,7 +59,7 @@ void Init_c_optimization() {
     C_Optimization = rb_define_module("C_Optimization");
     rb_define_module_function(C_Optimization, "triangle", C_triangle, 1);
     rb_define_module_function(C_Optimization, "color_multiply", C_color_multiply, 2);
-    rb_define_module_function(C_Optimization, "render_model", render_model, 10);
+    rb_define_module_function(C_Optimization, "render_model", rb_render_model, 10);
 
     C_Bitmap = rb_define_class_under(C_Optimization, "Bitmap", rb_cObject);
     rb_define_alloc_func(C_Bitmap, C_Bitmap_allocate);

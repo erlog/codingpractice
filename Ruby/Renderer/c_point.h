@@ -3,24 +3,23 @@
 
 //Generic Functions
 void print_point(Point* point);
-Point* new_point(double x, double y, double z);
 int line_length(Point* src, Point* dest);
-void apply_matrix(Point* point, double* m);
+void apply_matrix(Point* point, float* m);
 void point_to_screen(Point* point, Point* center);
-void lerp(Point* src, Point* dest, Point* result, double amt);
-Point* cross_product(Point* point_a, Point* point_b);
-double scalar_product(Point* point_a, Point* point_b);
-void set_point(Point* point, double x, double y, double z);
+void lerp(Point* src, Point* dest, Point* result, float amt);
+inline Point cross_product(Point* point_a, Point* point_b);
+float scalar_product(Point* point_a, Point* point_b);
+void set_point(Point* point, float x, float y, float z);
 void normalize(Point* point);
 void convert_tangent_normal(Point* tangent_normal, Point* barycentric,
-            Point* result, double* matrix, Vertex* a, Vertex* b, Vertex* c);
+            Point* result, float* matrix, Vertex* a, Vertex* b, Vertex* c);
 void cartesian_to_barycentric(Point* cart, Point* result,
                                                 Point* a, Point* b, Point* c);
 void barycentric_to_cartesian(Point* bary, Point* result,
                                                 Point* a, Point* b, Point* c);
 void Point_clone(Point* point, Point* new_point);
-double compute_reflection(Point* normal, Point* light_direction,
-                        Point* camera_direction, double specular_power);
+float compute_reflection(Point* normal, Point* light_direction,
+                        Point* camera_direction, float specular_power);
 void to_barycentric_clip(Point* bary, Point* a_v, Point* b_v, Point* c_v);
 
 //Class Methods
